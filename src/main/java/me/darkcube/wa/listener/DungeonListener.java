@@ -12,7 +12,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
-import org.bukkit.Registry;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -76,7 +75,6 @@ public class DungeonListener implements Listener {
                 " [" + (int)baseLoc.getX() + ", " + (int)baseLoc.getZ() + "]");
 
         Bukkit.getScheduler().runTask(plugin, () -> {
-            // Спавним боссов
             if (config.bosses.enabled && config.bosses.types != null) {
                 for (var bossConfig : config.bosses.types) {
                     if (bossConfig.enabled && random.nextDouble() < 0.3) {
@@ -89,7 +87,6 @@ public class DungeonListener implements Listener {
                 }
             }
 
-            // Сканируем bounding box структуры и помечаем все сундуки dungeon_id
             var bb = event.getBoundingBox();
             int minX = (int) Math.floor(bb.getMinX());
             int minY = (int) Math.floor(bb.getMinY());
@@ -115,40 +112,21 @@ public class DungeonListener implements Listener {
         });
     }
 
+    // ─── Ванильные структуры: LootGenerateEvent ───
+
     @EventHandler(priority = EventPriority.HIGH)
     public void onLootGenerate(LootGenerateEvent event) {
         if (!plugin.getConfigManager().getMainConfig().dungeons.lootInjection) return;
         if (event.isCancelled()) return;
 
-        InventoryHolder holder = event.getInventoryHolder();
-        if (holder == null) return;
-
-        Location loc;
-        if (holder instanceof BlockState state) {
-            loc = state.getLocation();
-        } else if (holder instanceof DoubleChest dc) {
-            loc = dc.getLocation();
-        } else {
-            return;
-        }
-
-        // Определяем ID данжа — сначала по PDC, потом по лутейблу, потом по трекеру
-        String dungeonId = null;
-        if (holder instanceof org.bukkit.block.TileState tile) {
-            dungeonId = tile.getPersistentDataContainer().get(DUNGEON_ID_KEY, PersistentDataType.STRING);
-        }
-        if (dungeonId == null) {
-            dungeonId = findDungeonByLootTable(loc, holder);
-        }
-        if (dungeonId == null) {
-            dungeonId = findDungeonAtLocation(loc.getWorld(), loc);
-        }
+        // Определяем данж по лутейблу — это самый надёжный способ для ванильных структур
+        NamespacedKey lootTableKey = event.getLootTable().getKey();
+        String dungeonId = mapLootTableToDungeon(lootTableKey);
         if (dungeonId == null) return;
 
         DungeonManager.DungeonConfig config = dungeonManager.getConfig(dungeonId);
         if (config == null || !config.loot.enabled) return;
 
-        // Режим INJECT
         if ("INJECT".equalsIgnoreCase(config.loot.mode)) {
             List<ItemStack> extraLoot = dungeonManager.generateLoot(dungeonId);
             if (!extraLoot.isEmpty()) {
@@ -156,9 +134,7 @@ public class DungeonListener implements Listener {
                 existingLoot.addAll(extraLoot);
                 event.setLoot(existingLoot);
             }
-        }
-        // Режим REPLACE
-        else if ("REPLACE".equalsIgnoreCase(config.loot.mode)) {
+        } else if ("REPLACE".equalsIgnoreCase(config.loot.mode)) {
             List<ItemStack> existingLoot = event.getLoot();
             List<ItemStack> modifiedLoot = new ArrayList<>(existingLoot);
             int replaceCount = (int) (modifiedLoot.size() * config.loot.replaceChance);
@@ -174,11 +150,14 @@ public class DungeonListener implements Listener {
             }
         }
 
-        // Помечаем контейнер как обработанный
+        // Помечаем контейнер
+        InventoryHolder holder = event.getInventoryHolder();
         if (holder instanceof org.bukkit.block.TileState tile) {
             tile.getPersistentDataContainer().set(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN, true);
         }
     }
+
+    // ─── Кастомные схематики: открытие сундука ───
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onChestOpen(PlayerInteractEvent event) {
@@ -191,23 +170,16 @@ public class DungeonListener implements Listener {
         if (!(holder instanceof org.bukkit.block.TileState tile)) return;
         Inventory inv = holder.getInventory();
 
-        // Если лут уже сгенерирован — пропускаем
         if (tile.getPersistentDataContainer().has(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN)) return;
 
-        // Определяем ID данжа
+        // Для кастомных схематик: данж определяется ТОЛЬКО по PDC на сундуке
         String dungeonId = tile.getPersistentDataContainer().get(DUNGEON_ID_KEY, PersistentDataType.STRING);
-        if (dungeonId == null) {
-            dungeonId = findDungeonByLootTable(block.getLocation(), holder);
-        }
-        if (dungeonId == null) {
-            dungeonId = findDungeonAtLocation(block.getWorld(), block.getLocation());
-        }
         if (dungeonId == null) return;
 
         DungeonManager.DungeonConfig config = dungeonManager.getConfig(dungeonId);
         if (config == null || !config.loot.enabled) return;
 
-        // Проверяем — может лут уже есть (от ванильного лутейбла или сторонних плагинов)
+        // Если в сундуке уже есть предметы — не трогаем
         boolean hasExistingLoot = false;
         for (ItemStack item : inv.getContents()) {
             if (item != null && item.getType() != Material.AIR) {
@@ -217,14 +189,10 @@ public class DungeonListener implements Listener {
         }
         if (hasExistingLoot) return;
 
-        // Пустой сундук — генерируем ванильные предметы + предметы плагина
-
-        // Генерируем ванильные предметы + предметы плагина
         List<ItemStack> chestLoot = new ArrayList<>();
         chestLoot.addAll(dungeonManager.generateVanillaLoot(dungeonId));
         chestLoot.addAll(dungeonManager.generateLoot(dungeonId));
 
-        // Раскладываем по случайным пустым слотам (вразноброс)
         List<Integer> emptySlots = new ArrayList<>();
         for (int i = 0; i < inv.getSize(); i++) {
             ItemStack content = inv.getItem(i);
@@ -245,7 +213,6 @@ public class DungeonListener implements Listener {
         tile.getPersistentDataContainer().set(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN, true);
         tile.update(true, false);
 
-        // Спавним босса
         if (config.bosses.enabled && config.bosses.types != null && random.nextDouble() < 0.2) {
             var bossConfig = config.bosses.types.get(random.nextInt(config.bosses.types.size()));
             if (bossConfig.enabled) {
@@ -257,76 +224,25 @@ public class DungeonListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onBossDeath(EntityDeathEvent event) {
-        LivingEntity entity = event.getEntity();
-        Player killer = entity.getKiller();
-        if (killer == null) return;
+    // ─── Маппинг лутейблов Minecraft → ID данжа ───
 
-        var pdc = entity.getPersistentDataContainer();
+    private String mapLootTableToDungeon(NamespacedKey lootTable) {
+        if (lootTable == null) return null;
+        String key = lootTable.getKey().toLowerCase();
 
-        String artifactId = pdc.get(
-                new NamespacedKey(plugin, "boss_artifact"), PersistentDataType.STRING);
-        if (artifactId != null && random.nextDouble() < 0.25) {
-            Artifact artifact = plugin.getArtifactRegistry().get(artifactId);
-            if (artifact != null) {
-                ItemStack item = plugin.getArtifactManager().createItemStack(artifact);
-                entity.getWorld().dropItemNaturally(entity.getLocation(), item);
-                killer.sendMessage(plugin.getConfigManager().getLang("artifact-found"));
-            }
-        }
+        if (key.contains("stronghold")) return "stronghold";
+        if (key.contains("nether_bridge") || key.contains("fortress")) return "fortress";
+        if (key.contains("ancient_city")) return "ancient_city";
+        if (key.contains("bastion")) return "bastion";
+        if (key.contains("mansion")) return "mansion";
+        if (key.contains("underwater_ruin") || key.contains("monument")) return "monument";
+        if (key.contains("desert_pyramid") || key.contains("temple")) return "temple";
+        if (key.contains("jungle_pyramid") || key.contains("jungle_temple")) return "jungle_temple";
+        if (key.contains("igloo")) return "igloo";
+        if (key.contains("village")) return "village";
+        if (key.contains("shipwreck")) return "shipwreck";
+        if (key.contains("end_city")) return "end_city";
 
-        String bpId = pdc.get(
-                new NamespacedKey(plugin, "boss_blueprint"), PersistentDataType.STRING);
-        if (bpId != null && random.nextDouble() < 0.5) {
-            var recipe = plugin.getAltarManager().getCraftingManager().getRecipe(bpId);
-            if (recipe != null) {
-                var art = plugin.getArtifactRegistry().get(recipe.getResultId());
-                String name = art != null ? art.getDisplayName() : recipe.getResultId();
-                ItemStack bp = me.darkcube.wa.altar.AltarBlockTracker.createBlueprint(
-                        bpId, name, "PAPER", "<gold>📜 Чертёж: " + name, null, 5001);
-                entity.getWorld().dropItemNaturally(entity.getLocation(), bp);
-                killer.sendMessage(plugin.getConfigManager().getLang("artifact-found"));
-            }
-        }
-    }
-
-    // ─── Определение данжа по лутейблу сундука ───
-
-    private String findDungeonByLootTable(Location loc, InventoryHolder holder) {
-        if (!(loc.getWorld() instanceof World world)) return null;
-        if (!(holder instanceof org.bukkit.block.TileState tile)) return null;
-
-        String fromPdc = tile.getPersistentDataContainer().get(DUNGEON_ID_KEY, PersistentDataType.STRING);
-        if (fromPdc != null) return fromPdc;
-
-        var structureRegistry = Registry.STRUCTURE;
-        if (structureRegistry == null) return null;
-
-        String[][] structureMap = {
-            {"stronghold", "stronghold"},
-            {"fortress", "fortress"},
-            {"ancient_city", "ancient_city"},
-            {"bastion_remnant", "bastion"},
-            {"mansion", "mansion"},
-            {"monument", "monument"},
-            {"desert_pyramid", "temple"},
-            {"jungle_pyramid", "jungle_temple"},
-            {"igloo", "igloo"},
-            {"village_plains", "village"},
-            {"shipwreck", "shipwreck"},
-            {"end_city", "end_city"}
-        };
-        for (String[] pair : structureMap) {
-            try {
-                var structure = Registry.STRUCTURE.get(NamespacedKey.minecraft(pair[0]));
-                if (structure == null) continue;
-                var found = world.locateNearestStructure(loc, structure, 50, false);
-                if (found != null && found.getLocation().distanceSquared(loc) < 2500) {
-                    return pair[1];
-                }
-            } catch (Exception ignored) {}
-        }
         return null;
     }
 
@@ -349,30 +265,6 @@ public class DungeonListener implements Listener {
         if (structName.contains("igloo")) return "igloo";
         if (structName.contains("village")) return "village";
         if (structName.contains("shipwreck")) return "shipwreck";
-        return null;
-    }
-
-    // ─── Поиск данжа по отслеженным структурам ───
-
-    private String findDungeonAtLocation(World world, Location loc) {
-        for (var entry : dungeonManager.getAllConfigs().entrySet()) {
-            String dungeonId = entry.getKey();
-            for (String trackKey : trackedStructures) {
-                if (trackKey.startsWith(world.getName() + ":")) {
-                    String[] parts = trackKey.split(":");
-                    if (parts.length >= 3) {
-                        try {
-                            double minX = Double.parseDouble(parts[2]);
-                            double minZ = Double.parseDouble(parts[3]);
-                            double dist = loc.distanceSquared(new Location(world, minX, loc.getY(), minZ));
-                            if (dist < 10000) {
-                                return dungeonId;
-                            }
-                        } catch (NumberFormatException ignored) {}
-                    }
-                }
-            }
-        }
         return null;
     }
 }
