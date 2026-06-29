@@ -642,3 +642,379 @@ dungeons:
             - effect: INCREASE_DAMAGE
               amplifier: 1
               duration: -1
+
+  village:
+    enabled: true
+    loot:
+      mode: INJECT
+      vanillaItems:
+        - item: EMERALD
+          weight: 40
+          minCount: 1
+          maxCount: 4
+        - item: BREAD
+          weight: 60
+          minCount: 2
+          maxCount: 6
+        - item: APPLE
+          weight: 40
+          minCount: 1
+          maxCount: 3
+        - item: IRON_INGOT
+          weight: 25
+          minCount: 1
+          maxCount: 3
+        - item: GOLD_INGOT
+          weight: 15
+          minCount: 1
+          maxCount: 2
+        - item: DIAMOND
+          weight: 5
+          minCount: 1
+          maxCount: 1
+        - item: ARROW
+          weight: 30
+          minCount: 2
+          maxCount: 6
+        - item: BOOK
+          weight: 20
+          minCount: 1
+          maxCount: 2
+        - item: PAPER
+          weight: 35
+          minCount: 1
+          maxCount: 4
+      customItems:
+        - id: "ancient_coin"
+          weight: 30
+          minCount: 1
+          maxCount: 4
+        - id: "spectral_dust"
+          weight: 15
+          minCount: 1
+          maxCount: 2
+        - id: "enchanted_cloth"
+          weight: 10
+          minCount: 1
+          maxCount: 2
+        - id: "arcane_essence"
+          weight: 12
+          minCount: 1
+          maxCount: 2
+
+  temple:
+    enabled: true
+    loot:
+      mode: INJECT
+      vanillaItems:
+        - item: DIAMOND
+          weight: 15
+          minCount: 1
+          maxCount: 3
+        - item: EMERALD
+          weight: 25
+          minCount: 2
+          maxCount: 6
+        - item: IRON_INGOT
+          weight: 35
+          minCount: 3
+          maxCount: 7
+        - item: GOLD_INGOT
+          weight: 30
+          minCount: 2
+          maxCount: 5
+        - item: BONE
+          weight: 50
+          minCount: 3
+          maxCount: 8
+        - item: ROTTEN_FLESH
+          weight: 60
+          minCount: 2
+          maxCount: 6
+        - item: GUNPOWDER
+          weight: 25
+          minCount: 1
+          maxCount: 4
+        - item: STRING
+          weight: 30
+          minCount: 2
+          maxCount: 5
+        - item: ENCHANTED_BOOK
+          weight: 8
+          minCount: 1
+          maxCount: 1
+      customItems:
+        - id: "ancient_coin"
+          weight: 30
+          minCount: 2
+          maxCount: 5
+        - id: "wasteland_sand"
+          weight: 35
+          minCount: 2
+          maxCount: 5
+        - id: "ancient_scrap"
+          weight: 20
+          minCount: 1
+          maxCount: 3
+        - id: "runic_tablet"
+          weight: 10
+          minCount: 1
+          maxCount: 1
+        - id: "forgotten_key"
+          weight: 8
+          minCount: 1
+          maxCount: 1
+      blueprints:
+        - recipeId: "basic_altar_craft_fire_sword"
+          weight: 5
+          amount: 1
+
+  jungle_temple:
+    enabled: true
+    loot:
+      mode: INJECT
+      vanillaItems:
+        - item: DIAMOND
+          weight: 10
+          minCount: 1
+          maxCount: 2
+        - item: EMERALD
+          weight: 20
+          minCount: 2
+          maxCount: 5
+        - item: IRON_INGOT
+          weight: 30
+          minCount: 2
+          maxCount: 6
+        - item: BONE
+          weight: 40
+          minCount: 3
+          maxCount: 7
+        - item: ARROW
+          weight: 35
+          minCount: 4
+          maxCount: 10
+        - item: STRING
+          weight: 30
+          minCount: 2
+          maxCount: 5
+        - item: ENCHANTED_BOOK
+          weight: 10
+          minCount: 1
+          maxCount: 1
+        - item: GOLDEN_APPLE
+          weight: 5
+          minCount: 1
+          maxCount: 1
+      artifacts:
+        - id: "shadow_cloak"
+          weight: 3
+          minCount: 1
+          maxCount: 1
+      customItems:
+        - id: "ancient_coin"
+          weight: 25
+          minCount: 2
+          maxCount: 4
+        - id: "thorn_vine"
+          weight: 30
+          minCount: 1
+          maxCount: 3
+        - id: "poison_gland"
+          weight: 15
+          minCount: 1
+          maxCount: 2
+        - id: "runic_tablet"
+          weight: 10
+          minCount: 1
+          maxCount: 1
+
+  igloo:
+    enabled: true
+    loot:
+      mode: INJECT
+      vanillaItems:
+        - item: GOLDEN_APPLE
+          weight: 10
+          minCount: 1
+          maxCount: 1
+        - item: GOLD_INGOT
+          weight: 20
+          minCount: 1
+          maxCount: 3
+        - item: IRON_INGOT
+          weight: 25
+          minCount: 1
+          maxCount: 3
+        - item: EMERALD
+          weight: 20
+          minCount: 1
+          maxCount: 3
+        - item: BREAD
+          weight: 40
+          minCount: 1
+          maxCount: 3
+        - item: REDSTONE
+          weight: 20
+          minCount: 2
+          maxCount: 5
+      customItems:
+        - id: "frozen_shard"
+          weight: 35
+          minCount: 1
+          maxCount: 3
+        - id: "ancient_scrap"
+          weight: 20
+          minCount: 1
+          maxCount: 2
+        - id: "arcane_essence"
+          weight: 15
+          minCount: 1
+          maxCount: 2
+
+  shipwreck:
+    enabled: true
+    loot:
+      mode: INJECT
+      vanillaItems:
+        - item: IRON_INGOT
+          weight: 35
+          minCount: 3
+          maxCount: 7
+        - item: GOLD_INGOT
+          weight: 25
+          minCount: 2
+          maxCount: 5
+        - item: EMERALD
+          weight: 20
+          minCount: 1
+          maxCount: 4
+        - item: DIAMOND
+          weight: 8
+          minCount: 1
+          maxCount: 2
+        - item: HEART_OF_THE_SEA
+          weight: 3
+          minCount: 1
+          maxCount: 1
+        - item: NAUTILUS_SHELL
+          weight: 10
+          minCount: 1
+          maxCount: 2
+        - item: PRISMARINE_SHARD
+          weight: 30
+          minCount: 2
+          maxCount: 6
+        - item: BONE
+          weight: 40
+          minCount: 3
+          maxCount: 8
+        - item: PAPER
+          weight: 35
+          minCount: 1
+          maxCount: 5
+        - item: MAP
+          weight: 15
+          minCount: 1
+          maxCount: 1
+      customItems:
+        - id: "water_pearl"
+          weight: 20
+          minCount: 1
+          maxCount: 2
+        - id: "ancient_coin"
+          weight: 35
+          minCount: 2
+          maxCount: 5
+        - id: "siren_tear"
+          weight: 5
+          minCount: 1
+          maxCount: 1
+        - id: "kraken_tentacle"
+          weight: 3
+          minCount: 1
+          maxCount: 1
+        - id: "forgotten_key"
+          weight: 15
+          minCount: 1
+          maxCount: 1
+      blueprints:
+        - recipeId: "basic_altar_craft_fire_sword"
+          weight: 3
+          amount: 1
+
+  monument:
+    enabled: true
+    loot:
+      mode: INJECT
+      vanillaItems:
+        - item: PRISMARINE_SHARD
+          weight: 50
+          minCount: 4
+          maxCount: 10
+        - item: PRISMARINE_CRYSTALS
+          weight: 35
+          minCount: 2
+          maxCount: 6
+        - item: SPONGE
+          weight: 10
+          minCount: 1
+          maxCount: 2
+        - item: GOLD_INGOT
+          weight: 30
+          minCount: 2
+          maxCount: 6
+        - item: IRON_INGOT
+          weight: 35
+          minCount: 3
+          maxCount: 7
+        - item: DIAMOND
+          weight: 10
+          minCount: 1
+          maxCount: 2
+        - item: ENCHANTED_BOOK
+          weight: 8
+          minCount: 1
+          maxCount: 2
+        - item: WET_SPONGE
+          weight: 15
+          minCount: 1
+          maxCount: 2
+        - item: COD
+          weight: 30
+          minCount: 2
+          maxCount: 5
+        - item: SALMON
+          weight: 25
+          minCount: 2
+          maxCount: 5
+      artifacts:
+        - id: "staff_of_storms"
+          weight: 2
+          minCount: 1
+          maxCount: 1
+      customItems:
+        - id: "water_pearl"
+          weight: 25
+          minCount: 1
+          maxCount: 3
+        - id: "elder_shard"
+          weight: 20
+          minCount: 1
+          maxCount: 2
+        - id: "eye_of_abyss"
+          weight: 8
+          minCount: 1
+          maxCount: 1
+        - id: "siren_tear"
+          weight: 8
+          minCount: 1
+          maxCount: 1
+        - id: "kraken_tentacle"
+          weight: 5
+          minCount: 1
+          maxCount: 1
+      blueprints:
+        - recipeId: "advanced_altar_craft_necronomicon"
+          weight: 3
+          amount: 1
