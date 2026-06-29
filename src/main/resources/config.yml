@@ -1,0 +1,44 @@
+# ─── Wasteland Artifacts — Главный конфиг ───
+
+resource-pack:
+  mode: AUTO
+  autoHost: true
+  hostPort: 8192
+  force: true
+  prompt: "<gold>Этот сервер использует кастомный ресурс-пак!"
+  hash: ""
+
+dungeons:
+  enabled: true
+  scanOnStartup: true
+  lootInjection: true
+  specialChests: true
+  bossSpawners: true
+
+crafting:
+  enabled: true
+  altarEnabled: true
+  keepIngredients: false
+
+artifacts:
+  defaultAmount: 1
+  dropOnDeath: false
+  soulbind: false
+  allowInAnvil: false
+
+database:
+  enabled: true
+  type: SQLITE
+  host: localhost
+  port: 3306
+  database: artifacts
+  user: root
+  password: ""
+
+gui:
+  rows: 6
+  title: "<dark_gray>Артефакты Пустоши"
+  fill-glass: true
+
+lang:
+  locale: ru_RU

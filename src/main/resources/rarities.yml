@@ -1,0 +1,53 @@
+# ═══ Конфигурация редкостей ═══
+# Можно добавлять свои, менять цвета, порядок.
+# Порядок (order) определяет: чем выше число, тем реже/ценнее.
+# color — hex RGB, decoration — BOLD | ITALIC | STRIKETHROUGH | UNDERLINE | MAGIC
+
+rarities:
+  COMMON:
+    displayName: "<gray>Обычный"
+    color: "#808080"
+    decoration: ITALIC
+    order: 0
+  UNCOMMON:
+    displayName: "<green>Необычный"
+    color: "#55FF55"
+    decoration: ITALIC
+    order: 1
+  RARE:
+    displayName: "<aqua>Редкий"
+    color: "#55FFFF"
+    decoration: ITALIC
+    order: 2
+  EPIC:
+    displayName: "<light_purple>Эпический"
+    color: "#FF55FF"
+    decoration: ITALIC
+    order: 3
+  LEGENDARY:
+    displayName: "<gold>Легендарный"
+    color: "#FFAA00"
+    decoration: BOLD
+    order: 4
+  MYTHIC:
+    displayName: "<dark_red>Мифический"
+    color: "#AA0000"
+    decoration: BOLD
+    order: 5
+  UNKNOWN:
+    displayName: "<dark_aqua>Неизвестный"
+    color: "#00AAAA"
+    decoration: BOLD
+    order: 6
+  VOID:
+    displayName: "<black>Пустота"
+    color: "#000000"
+    decoration: BOLD
+    order: 7
+
+# Пример кастомной редкости (раскомментируй чтобы добавить):
+# CUSTOM_LEGEND:
+#   displayName: "<gradient:gold:red>Легенда"
+#   color: "#FFD700"
+#   decoration: BOLD
+#   order: 8

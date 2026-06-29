@@ -1,0 +1,107 @@
+# ═══ Отдельный конфиг для крафта чертежей в верстаке ═══
+# Каждый рецепт имеет ID рецепта из altars.yml + свой workbench паттерн.
+# Если рецепт НЕ указан здесь — плагин использует auto-fallback по тиру.
+
+recipes:
+
+  # Пример: крафт чертежа Огненного Клинка
+  # Recipe ID = "basic_altar_craft_fire_sword" (tier_altar + "_" + recipe.id)
+  basic_altar_craft_fire_sword:
+    enabled: true
+    pattern:
+      - " B "
+      - "BSB"
+      - " B "
+    ingredients:
+      B: BLAZE_ROD
+      S: NETHERITE_SCRAP
+
+  basic_altar_craft_shadow_cloak:
+    enabled: true
+    pattern:
+      - "FFF"
+      - "FEF"
+      - "FFF"
+    ingredients:
+      F: PHANTOM_MEMBRANE
+      E: ELYTRA
+
+  advanced_altar_craft_ice_breaker:
+    enabled: true
+    pattern:
+      - "DID"
+      - "IBI"
+      - "DID"
+    ingredients:
+      D: DIAMOND_BLOCK
+      I: ICE
+      B: BLUE_ICE
+
+  advanced_altar_craft_necronomicon:
+    enabled: true
+    pattern:
+      - "BSB"
+      - "SNS"
+      - "BSB"
+    ingredients:
+      B: BONE
+      S: STRING
+      N: NETHERITE_INGOT
+
+  legendary_altar_craft_warden_chestplate:
+    enabled: true
+    pattern:
+      - "DTD"
+      - "TNT"
+      - "DTD"
+    ingredients:
+      D: DIAMOND_BLOCK
+      T: TOTEM_OF_UNDYING
+      N: NETHERITE_CHESTPLATE
+
+  legendary_altar_craft_staff_of_storms:
+    enabled: true
+    pattern:
+      - "CAC"
+      - "ALA"
+      - "CAC"
+    ingredients:
+      C: COPPER_BLOCK
+      A: AMETHYST_SHARD
+      L: LIGHTNING_ROD
+
+  # ─── СВЯТОЙ ГРААЛЬ — крафт в верстаке из Unknown артефактов ───
+  # Результат: сам артефакт (не чертёж)
+  # Чертеж Святого Грааля (для алтаря)
+  legendary_altar_craft_holy_grail:
+    enabled: true
+    pattern:
+      - " B "
+      - "BNB"
+      - " B "
+    ingredients:
+      B: BOWL
+      N: NETHER_STAR
+
+  # Чертеж Сумки Пустоши (для алтаря)
+  legendary_altar_craft_wasteland_bag:
+    enabled: true
+    pattern:
+      - " B "
+      - "BNB"
+      - " B "
+    ingredients:
+      B: COMPASS
+      N: NETHER_STAR
+
+  holy_grail_direct:
+    enabled: true
+    type: direct_artifact    # особый тип: выдаёт артефакт, а не чертёж
+    result: holy_grail
+    pattern:
+      - "AAA"
+      - "ABA"
+      - "AAA"
+    ingredients:
+      A: "artifact:unknown_relic"
+      B: "artifact:unknown_eye"

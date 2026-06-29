@@ -1,0 +1,584 @@
+# ═══ Кастомные предметы (компоненты для крафта артефактов) ═══
+# Каждый предмет = ингредиент для алтаря
+# ID используется в altar recipes и mob/dungeon loot
+# Всего: 68 предметов (6001–6068)
+
+items:
+
+  # ── Элементы стихий (8) ──
+
+  fire_core:
+    material: BLAZE_POWDER
+    name: "<red>Огненное Ядро"
+    lore:
+      - "<gray>Пульсирует жаром Пустоши"
+    customModelData: 6001
+    rarity: UNCOMMON
+
+  shadow_essence:
+    material: INK_SAC
+    name: "<dark_purple>Теневая Эссенция"
+    lore:
+      - "<gray>Сгусток тьмы из Пустоши"
+    customModelData: 6002
+    rarity: RARE
+
+  frozen_shard:
+    material: ICE
+    name: "<aqua>Ледяной Осколок"
+    lore:
+      - "<gray>Холод древних глубин"
+    customModelData: 6003
+    rarity: UNCOMMON
+
+  storm_crystal:
+    material: AMETHYST_SHARD
+    name: "<gold>Кристалл Бури"
+    lore:
+      - "<gray>Искрит электричеством"
+    customModelData: 6004
+    rarity: EPIC
+
+  earth_core:
+    material: COBBLESTONE
+    name: "<green>Ядро Земли"
+    lore:
+      - "<gray>Тяжесть древних скал"
+    customModelData: 6016
+    rarity: UNCOMMON
+
+  wind_essence:
+    material: FEATHER
+    name: "<white>Эссенция Ветра"
+    lore:
+      - "<gray>Шепчет голосами пустоши"
+    customModelData: 6017
+    rarity: UNCOMMON
+
+  water_pearl:
+    material: PRISMARINE_SHARD
+    name: "<blue>Водная Жемчужина"
+    lore:
+      - "<gray>Хранит память океанов"
+    customModelData: 6018
+    rarity: RARE
+
+  light_fragment:
+    material: GLOWSTONE_DUST
+    name: "<yellow>Осколок Света"
+    lore:
+      - "<gray>Сияет даже в Пустоши"
+    customModelData: 6019
+    rarity: RARE
+
+  # ── Части существ (8) ──
+
+  warden_heart:
+    material: SCULK
+    name: "<dark_green>Сердце Стража"
+    lore:
+      - "<gray>Бьётся в такт тьме"
+    customModelData: 6005
+    rarity: LEGENDARY
+
+  ancient_bone:
+    material: BONE
+    name: "<gold>Кость Древних"
+    lore:
+      - "<gray>Останки древнего существа"
+    customModelData: 6007
+    rarity: UNCOMMON
+
+  dragon_scales:
+    material: PRISMARINE_CRYSTALS
+    name: "<aqua>Чешуя Дракона"
+    lore:
+      - "<gray>Прочнее стали"
+    customModelData: 6009
+    rarity: LEGENDARY
+
+  wither_skull:
+    material: WITHER_SKELETON_SKULL
+    name: "<dark_gray>Череп Иссушения"
+    lore:
+      - "<gray>Вмещает силу Визера"
+    customModelData: 6013
+    rarity: LEGENDARY
+
+  eye_of_abyss:
+    material: ENDER_EYE
+    name: "<light_purple>Глаз Бездны"
+    lore:
+      - "<gray>Видит то, что скрыто"
+    customModelData: 6020
+    rarity: EPIC
+
+  shadow_claw:
+    material: BLACK_DYE
+    name: "<dark_gray>Коготь Тени"
+    lore:
+      - "<gray>Острее бритвы"
+    customModelData: 6021
+    rarity: RARE
+
+  phantom_wing:
+    material: PHANTOM_MEMBRANE
+    name: "<white>Крыло Фантома"
+    lore:
+      - "<gray>Ткань между мирами"
+    customModelData: 6022
+    rarity: RARE
+
+  horn_of_dread:
+    material: BONE
+    name: "<dark_red>Рог Ужаса"
+    lore:
+      - "<gray>Трубит перед бурей"
+    customModelData: 6023
+    rarity: EPIC
+
+  # ── Древние артефакты (9) ──
+
+  totem_fragment:
+    material: TOTEM_OF_UNDYING
+    name: "<gold>Осколок Тотема"
+    lore:
+      - "<gray>Часть древнего тотема"
+    customModelData: 6014
+    rarity: EPIC
+
+  ancient_coin:
+    material: GOLD_NUGGET
+    name: "<gold>Монета Древних"
+    lore:
+      - "<gray>Потускневшая от времени"
+    customModelData: 6024
+    rarity: UNCOMMON
+
+  runic_tablet:
+    material: STONE
+    name: "<gray>Руническая Таблица"
+    lore:
+      - "<gray>Покрыта забытыми письменами"
+    customModelData: 6025
+    rarity: RARE
+
+  elder_shard:
+    material: PRISMARINE_SHARD
+    name: "<aqua>Осколок Старших"
+    lore:
+      - "<gray>Фрагмент древней силы"
+    customModelData: 6026
+    rarity: EPIC
+
+  forgotten_key:
+    material: TRIPWIRE_HOOK
+    name: "<yellow>Забытый Ключ"
+    lore:
+      - "<gray>Открывает путь к тайнам"
+    customModelData: 6027
+    rarity: RARE
+
+  void_seal:
+    material: OBSIDIAN
+    name: "<dark_purple>Печать Бездны"
+    lore:
+      - "<gray>Сдерживает древнее зло"
+    customModelData: 6028
+    rarity: EPIC
+
+  ethereal_orb:
+    material: GLOWSTONE
+    name: "<white>Эфирная Сфера"
+    lore:
+      - "<gray>Парит в невесомости"
+    customModelData: 6029
+    rarity: LEGENDARY
+
+  ancient_crown:
+    material: GOLD_INGOT
+    name: "<gold>Корона Древних"
+    lore:
+      - "<gray>Венец утерянной цивилизации"
+    customModelData: 6030
+    rarity: LEGENDARY
+
+  ring_of_pact:
+    material: IRON_NUGGET
+    name: "<light_purple>Кольцо Договора"
+    lore:
+      - "<gray>Скрепляет нерушимую клятву"
+    customModelData: 6031
+    rarity: RARE
+
+  # ── Алхимия (9) ──
+
+  soul_fragment:
+    material: GHAST_TEAR
+    name: "<yellow>Осколок Души"
+    lore:
+      - "<gray>Частица потерянной души"
+    customModelData: 6008
+    rarity: RARE
+
+  arcane_essence:
+    material: EXPERIENCE_BOTTLE
+    name: "<green>Мистическая Эссенция"
+    lore:
+      - "<gray>Чистая магическая энергия"
+    customModelData: 6032
+    rarity: RARE
+
+  spectral_dust:
+    material: GUNPOWDER
+    name: "<gray>Призрачная Пыль"
+    lore:
+      - "<gray>Мерцает неестественным светом"
+    customModelData: 6033
+    rarity: UNCOMMON
+
+  chaos_crystal:
+    material: AMETHYST_SHARD
+    name: "<dark_red>Кристалл Хаоса"
+    lore:
+      - "<gray>Нестабильная энергия"
+    customModelData: 6034
+    rarity: EPIC
+
+  alchemic_potion:
+    material: POTION
+    name: "<light_purple>Алхимическое Зелье"
+    lore:
+      - "<gray>Бурлит неизведанной силой"
+    customModelData: 6035
+    rarity: RARE
+
+  primal_catalyst:
+    material: BLAZE_ROD
+    name: "<red>Первозданный Катализатор"
+    lore:
+      - "<gray>Усиливает любую реакцию"
+    customModelData: 6036
+    rarity: EPIC
+
+  life_elixir:
+    material: HONEY_BOTTLE
+    name: "<green>Эликсир Жизни"
+    lore:
+      - "<gray>Дарует второе дыхание"
+    customModelData: 6037
+    rarity: LEGENDARY
+
+  purified_salt:
+    material: SUGAR
+    name: "<white>Очищенная Соль"
+    lore:
+      - "<gray>Отгоняет нечистую силу"
+    customModelData: 6038
+    rarity: UNCOMMON
+
+  quicksilver:
+    material: IRON_NUGGET
+    name: "<gray>Живое Серебро"
+    lore:
+      - "<gray>Текучая ртуть древних"
+    customModelData: 6039
+    rarity: RARE
+
+  # ── Пустошь (8) ──
+
+  wasteland_sand:
+    material: SAND
+    name: "<yellow>Песок Пустоши"
+    lore:
+      - "<gray>Горячий и безжизненный"
+    customModelData: 6040
+    rarity: COMMON
+
+  withered_bone:
+    material: BONE
+    name: "<white>Иссохшая Кость"
+    lore:
+      - "<gray>Хрупкая, но полная силы"
+    customModelData: 6041
+    rarity: COMMON
+
+  thorn_vine:
+    material: VINE
+    name: "<dark_green>Шиповатая Лоза"
+    lore:
+      - "<gray>Ранит каждого, кто коснётся"
+    customModelData: 6042
+    rarity: UNCOMMON
+
+  rusted_ingot:
+    material: IRON_INGOT
+    name: "<dark_red>Ржавый Слиток"
+    lore:
+      - "<gray>Источен коррозией Пустоши"
+    customModelData: 6043
+    rarity: UNCOMMON
+
+  ash_pile:
+    material: GUNPOWDER
+    name: "<dark_gray>Куча Пепла"
+    lore:
+      - "<gray>Останки сгоревшего мира"
+    customModelData: 6044
+    rarity: COMMON
+
+  toxic_slime:
+    material: SLIME_BALL
+    name: "<green>Токсичная Слизь"
+    lore:
+      - "<gray>Ядовитая масса Пустоши"
+    customModelData: 6045
+    rarity: UNCOMMON
+
+  fungal_spore:
+    material: RED_MUSHROOM
+    name: "<red>Грибная Спора"
+    lore:
+      - "<gray>Заражает живое"
+    customModelData: 6046
+    rarity: RARE
+
+  poison_gland:
+    material: SPIDER_EYE
+    name: "<green>Ядовитая Железа"
+    lore:
+      - "<gray>Содержит чистый токсин"
+    customModelData: 6047
+    rarity: RARE
+
+  # ── Космос (9) ──
+
+  void_crystal:
+    material: ECHO_SHARD
+    name: "<light_purple>Кристалл Бездны"
+    lore:
+      - "<gray>Фрагмент пустоты"
+    customModelData: 6006
+    rarity: EPIC
+
+  ender_gem:
+    material: ENDER_EYE
+    name: "<green>Жемчуг Края"
+    lore:
+      - "<gray>Наполнен энергией Края"
+    customModelData: 6015
+    rarity: RARE
+
+  celestial_star:
+    material: NETHER_STAR
+    name: "<gold>Небесная Звезда"
+    lore:
+      - "<gray>Свет погасшего солнца"
+    customModelData: 6048
+    rarity: LEGENDARY
+
+  moon_shard:
+    material: QUARTZ
+    name: "<white>Осколок Луны"
+    lore:
+      - "<gray>Холодный свет ночного светила"
+    customModelData: 6049
+    rarity: RARE
+
+  sun_fragment:
+    material: GLOWSTONE
+    name: "<gold>Фрагмент Солнца"
+    lore:
+      - "<gray>Ослепительный жар"
+    customModelData: 6050
+    rarity: EPIC
+
+  void_essence:
+    material: BLACK_DYE
+    name: "<dark_purple>Эссенция Пустоты"
+    lore:
+      - "<gray>Абсолютная тишина"
+    customModelData: 6051
+    rarity: EPIC
+
+  galaxy_dust:
+    material: GLOW_BERRIES
+    name: "<light_purple>Галактическая Пыль"
+    lore:
+      - "<gray>Пыльца мёртвых звёзд"
+    customModelData: 6052
+    rarity: RARE
+
+  nebula_crystal:
+    material: AMETHYST_SHARD
+    name: "<light_purple>Кристалл Тумана"
+    lore:
+      - "<gray>Застывшая туманность"
+    customModelData: 6053
+    rarity: EPIC
+
+  meteor_iron:
+    material: IRON_INGOT
+    name: "<gray>Метеоритное Железо"
+    lore:
+      - "<gray>Ковано в космическом огне"
+    customModelData: 6054
+    rarity: RARE
+
+  # ── Материалы (9) ──
+
+  corrupted_ingot:
+    material: NETHERITE_SCRAP
+    name: "<dark_red>Искажённый Слиток"
+    lore:
+      - "<gray>Пропитан энергией Пустоши"
+    customModelData: 6010
+    rarity: EPIC
+
+  phantom_weave:
+    material: PHANTOM_MEMBRANE
+    name: "<white>Призрачное Плетение"
+    lore:
+      - "<gray>Ткань между мирами"
+    customModelData: 6011
+    rarity: RARE
+
+  enchanted_cloth:
+    material: WHITE_WOOL
+    name: "<light_purple>Зачарованная Ткань"
+    lore:
+      - "<gray>Мягкая, но несокрушимая"
+    customModelData: 6055
+    rarity: UNCOMMON
+
+  ancient_leather:
+    material: LEATHER
+    name: "<gold>Древняя Кожа"
+    lore:
+      - "<gray>Выдержала испытание временем"
+    customModelData: 6056
+    rarity: UNCOMMON
+
+  spectral_thread:
+    material: STRING
+    name: "<white>Призрачная Нить"
+    lore:
+      - "<gray>Невидимая, но прочная"
+    customModelData: 6057
+    rarity: RARE
+
+  reinforced_plate:
+    material: IRON_INGOT
+    name: "<gray>Усиленная Пластина"
+    lore:
+      - "<gray>Закалена в битвах"
+    customModelData: 6058
+    rarity: UNCOMMON
+
+  clockwork_gear:
+    material: IRON_NUGGET
+    name: "<gold>Механизм Времени"
+    lore:
+      - "<gray>Тикает в такт вечности"
+    customModelData: 6059
+    rarity: RARE
+
+  energy_spring:
+    material: COPPER_INGOT
+    name: "<yellow>Энергетическая Пружина"
+    lore:
+      - "<gray>Накапливает и отдаёт энергию"
+    customModelData: 6060
+    rarity: UNCOMMON
+
+  magnetic_core:
+    material: IRON_BLOCK
+    name: "<gray>Магнитный Стержень"
+    lore:
+      - "<gray>Притягивает скрытые силы"
+    customModelData: 6061
+    rarity: RARE
+
+  # ── Мифические (8) ──
+
+  magma_core:
+    material: MAGMA_BLOCK
+    name: "<gold>Магмовое Ядро"
+    lore:
+      - "<gray>Раскалённый шар из недр"
+    customModelData: 6012
+    rarity: UNCOMMON
+
+  phoenix_feather:
+    material: FEATHER
+    name: "<red>Перо Феникса"
+    lore:
+      - "<gray>Пылает огнём возрождения"
+    customModelData: 6062
+    rarity: LEGENDARY
+
+  unicorn_horn:
+    material: BONE
+    name: "<white>Рог Единорога"
+    lore:
+      - "<gray>Чистейшая магия"
+    customModelData: 6063
+    rarity: LEGENDARY
+
+  titan_heart:
+    material: NETHERITE_SCRAP
+    name: "<dark_red>Сердце Титана"
+    lore:
+      - "<gray>Бьётся силой гор"
+    customModelData: 6064
+    rarity: LEGENDARY
+
+  siren_tear:
+    material: HEART_OF_THE_SEA
+    name: "<aqua>Слеза Сирены"
+    lore:
+      - "<gray>Грусть глубочайших вод"
+    customModelData: 6065
+    rarity: EPIC
+
+  chimera_claw:
+    material: FLINT
+    name: "<dark_green>Коготь Химеры"
+    lore:
+      - "<gray>Собран из разных существ"
+    customModelData: 6066
+    rarity: EPIC
+
+  hydra_tooth:
+    material: BONE
+    name: "<green>Зуб Гидры"
+    lore:
+      - "<gray>Растёт снова и снова"
+    customModelData: 6067
+    rarity: EPIC
+
+  kraken_tentacle:
+    material: PRISMARINE_CRYSTALS
+    name: "<aqua>Щупальце Кракена"
+    lore:
+      - "<gray>Древний ужас глубин"
+    customModelData: 6068
+    rarity: LEGENDARY
+
+  poseidon_flame:
+    material: BLAZE_POWDER
+    name: "<gold>Пламя Посейдона"
+    lore:
+      - "<gray>Пылает даже под водой"
+      - "<dark_gray>Дроп с боссов Ада"
+    customModelData: 6069
+    rarity: LEGENDARY
+
+  heart_of_poseidon:
+    material: HEART_OF_THE_SEA
+    name: "<aqua>Сердце Посейдона"
+    lore:
+      - "<gray>Бьётся в ритме океана"
+      - "<dark_gray>Верховный артефакт"
+    customModelData: 6070
+    rarity: VOID

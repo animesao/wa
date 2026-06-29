@@ -1,0 +1,1217 @@
+# ─── Wasteland Artifacts — Примеры артефактов ───
+# Все артефакты полностью рабочие. Надевай — и эффекты применяются.
+#
+# 📝 ФОРМАТ ИНГРЕДИЕНТОВ В РЕЦЕПТАХ:
+#
+# 1) Простой материал:
+#    A: DIAMOND
+#
+# 2) Артефакт из этого плагина:
+#    B: "artifact:fire_sword"
+#
+# 3) Кастомный предмет из custom_items.yml:
+#    C: "custom:fire_core"
+#
+# 4) Расширенный формат (с именем/лором для матчинга других плагинов):
+#    D:
+#      type: DIAMOND_SWORD
+#      name: "<red>Эпичный Меч"           # имя предмета (MiniMessage)
+#      lore:                               # лор (опционально)
+#        - "<gray>Легендарный меч"
+#      customModelData: 123                # кастомная модель (опционально)
+#
+# Вариант 4 использует ItemStack.isSimilar() для матчинга.
+# Это позволяет использовать предметы из ЛЮБЫХ других плагинов
+# (MMOItems, ItemsAdder, Nexo, Oraxen, EcoItems и т.д.)
+# Достаточно чтобы у предмета было совпадающее имя + лор + CMD.
+
+artifacts:
+
+  # ⚔️ ОРУЖИЕ — работают в руке (удар/ПКМ)
+  # ─────────────────────────────────────
+
+  - id: "fire_sword"
+    displayName: "<red>Огненный Клинок"
+    lore:
+      - "<gray>Выкован в недрах Пустоши"
+      - "<dark_red>♨ Поджигает врагов"
+    baseItem: DIAMOND_SWORD
+    customModelData: 1001
+    rarity: RARE
+    unbreakable: true
+    components:
+      - type: DAMAGE
+        damage: 12.0
+      - type: FIRE_ASPECT
+        level: 2
+      - type: LIGHTNING
+        chance: 0.15
+      - type: PARTICLE_ON_HIT
+        particle: FLAME
+        count: 15
+      - type: SOUND_ON_HIT
+        sound: ENTITY_BLAZE_HURT
+      - type: COOLDOWN
+        seconds: 3
+
+  - id: "ice_breaker"
+    displayName: "<aqua>Ледяной Сокрушитель"
+    lore:
+      - "<gray>Замораживает врагов"
+      - "<blue>❄ Шанс 30% на молнию"
+    baseItem: NETHERITE_AXE
+    customModelData: 1004
+    rarity: EPIC
+    unbreakable: true
+    components:
+      - type: DAMAGE
+        damage: 14.0
+      - type: FIRE_ASPECT
+        level: 1
+      - type: LIGHTNING
+        chance: 0.30
+      - type: LIFE_STEAL
+        percentage: 0.15
+      - type: PARTICLE_ON_HIT
+        particle: SOUL_FIRE_FLAME
+        count: 20
+      - type: SOUND_ON_HIT
+        sound: ENTITY_SKELETON_HURT
+
+  - id: "staff_of_storms"
+    displayName: "<gold>Посох Бурь"
+    lore:
+      - "<gray>Призывает молнии на врагов"
+      - "<gold>⚡ ПКМ — выстрел снарядом"
+    baseItem: BLAZE_ROD
+    customModelData: 1005
+    rarity: LEGENDARY
+    unbreakable: true
+    components:
+      - type: PROJECTILE
+        projectileType: FIREBALL
+        speed: 2.0
+        yield: 3.0
+      - type: LIGHTNING
+        chance: 0.50
+      - type: COOLDOWN
+        seconds: 5
+      - type: SOUND_ON_USE
+        sound: ENTITY_ILLUSIONER_CAST_SPELL
+        volume: 1.0
+        pitch: 0.8
+      - type: PARTICLE_ON_HIT
+        particle: ELECTRIC_SPARK
+        count: 30
+
+  - id: "bow_of_the_lost"
+    displayName: "<dark_green>Лук Забвения"
+    lore:
+      - "<gray>Стрелы с эффектом взрыва"
+      - "<green>🏹 Взрыв при попадании"
+    baseItem: BOW
+    customModelData: 1006
+    rarity: EPIC
+    unbreakable: true
+    components:
+      - type: EXPLOSION
+        power: 2.0
+        safe: true
+      - type: PARTICLE_ON_HIT
+        particle: POOF
+        count: 20
+      - type: SOUND_ON_HIT
+        sound: ENTITY_GENERIC_EXPLODE
+
+  # 🛡️ БРОНЯ — работает при надевании в слот брони
+  # ────────────────────────────────────────────
+
+  - id: "crown_of_the_wasteland"
+    displayName: "<gold>Корона Пустоши"
+    lore:
+      - "<gray>Даёт Resistance и Night Vision"
+      - "<gold>👑 Светится в темноте"
+    baseItem: GOLDEN_HELMET
+    customModelData: 2001
+    rarity: RARE
+    unbreakable: true
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: RESISTANCE
+        amplifier: 0
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: NIGHT_VISION
+        amplifier: 0
+        ambient: true
+      - type: PARTICLE_AMBIENT
+        particle: GLOW
+        count: 5
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR
+        amount: 3.0
+        operation: ADD_NUMBER
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR_TOUGHNESS
+        amount: 2.0
+        operation: ADD_NUMBER
+
+  - id: "warden_chestplate"
+    displayName: "<dark_green>Нагрудник Стража"
+    lore:
+      - "<gray>Даёт Strength и Health Boost"
+      - "<green>🛡 Поглощает урон"
+    baseItem: NETHERITE_CHESTPLATE
+    customModelData: 2002
+    rarity: EPIC
+    unbreakable: true
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: STRENGTH
+        amplifier: 0
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: HEALTH_BOOST
+        amplifier: 3
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: ABSORPTION
+        amplifier: 1
+        ambient: true
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR
+        amount: 8.0
+        operation: ADD_NUMBER
+      - type: ATTRIBUTE
+        attribute: GENERIC_ATTACK_DAMAGE
+        amount: 2.0
+        operation: ADD_NUMBER
+
+  - id: "void_boots"
+    displayName: "<dark_purple>Сапоги Бездны"
+    lore:
+      - "<gray>Дают Speed и Jump Boost"
+      - "<purple>👟 Бесшумный шаг"
+    baseItem: NETHERITE_BOOTS
+    customModelData: 2003
+    rarity: RARE
+    unbreakable: true
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: SPEED
+        amplifier: 1
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: JUMP_BOOST
+        amplifier: 1
+        ambient: true
+      - type: ATTRIBUTE
+        attribute: GENERIC_MOVEMENT_SPEED
+        amount: 0.1
+        operation: MULTIPLY_SCALAR_1
+      - type: ATTRIBUTE
+        attribute: GENERIC_SAFE_FALL_DISTANCE
+        amount: 10.0
+        operation: ADD_NUMBER
+      - type: PARTICLE_AMBIENT
+        particle: SOUL
+        count: 2
+
+  - id: "ancient_leggings"
+    displayName: "<gold>Поножи Древних"
+    lore:
+      - "<gray>Дают Regeneration и насыщение"
+      - "<gold>⚕ Медленно восстанавливает здоровье"
+    baseItem: DIAMOND_LEGGINGS
+    customModelData: 2004
+    rarity: EPIC
+    unbreakable: true
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: REGENERATION
+        amplifier: 1
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: SATURATION
+        amplifier: 0
+        ambient: true
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR
+        amount: 6.0
+        operation: ADD_NUMBER
+
+  # 🧢 АКСЕССУАРЫ — Elytra, Щиты, Off-hand
+  # ─────────────────────────────────────
+
+  - id: "shadow_cloak"
+    displayName: "<dark_purple>Плащ Теней"
+    lore:
+      - "<gray>Невидимость + скорость"
+      - "<purple>👻 Становишься тенью"
+    baseItem: ELYTRA
+    customModelData: 1002
+    rarity: EPIC
+    unbreakable: true
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: INVISIBILITY
+        amplifier: 0
+        ambient: true
+      - type: ATTRIBUTE
+        attribute: GENERIC_MOVEMENT_SPEED
+        amount: 0.2
+        operation: MULTIPLY_SCALAR_1
+      - type: ATTRIBUTE
+        attribute: GENERIC_JUMP_STRENGTH
+        amount: 0.3
+        operation: MULTIPLY_SCALAR_1
+      - type: PARTICLE_AMBIENT
+        particle: SMOKE
+        count: 5
+
+  - id: "artifact_of_flight"
+    displayName: "<aqua>Артефакт Полёта"
+    lore:
+      - "<gray>Позволяет летать в Пустоши"
+      - "<aqua>🕊 Парение в воздухе"
+    baseItem: ELYTRA
+    customModelData: 2005
+    rarity: LEGENDARY
+    unbreakable: true
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: SLOW_FALLING
+        amplifier: 0
+        ambient: true
+      - type: ATTRIBUTE
+        attribute: GENERIC_MOVEMENT_SPEED
+        amount: 0.5
+        operation: MULTIPLY_SCALAR_1
+      - type: ATTRIBUTE
+        attribute: GENERIC_SAFE_FALL_DISTANCE
+        amount: 100.0
+        operation: ADD_NUMBER
+      - type: PARTICLE_AMBIENT
+        particle: CLOUD
+        count: 10
+
+  - id: "shield_of_the_ancients"
+    displayName: "<gold>Щит Древних"
+    lore:
+      - "<gray>Даёт Resistance при блокировании"
+      - "<gold>🛡 Непробиваемый"
+    baseItem: SHIELD
+    customModelData: 2006
+    rarity: EPIC
+    unbreakable: true
+    components:
+      - type: ATTRIBUTE
+        attribute: GENERIC_KNOCKBACK_RESISTANCE
+        amount: 1.0
+        operation: ADD_NUMBER
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: RESISTANCE
+        amplifier: 0
+        ambient: true
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR
+        amount: 5.0
+        operation: ADD_NUMBER
+
+  # 📖 КНИГИ — работают по ПКМ
+  # ─────────────────────
+
+  - id: "necronomicon"
+    displayName: "<dark_red>Некрономикон"
+    lore:
+      - "<gray>Призывает скелетов"
+      - "<dark_red>📖 ПКМ — призыв 3 скелетов"
+    baseItem: BOOK
+    customModelData: 1003
+    rarity: LEGENDARY
+    maxStackSize: 1
+    components:
+      - type: SUMMON
+        entityType: SKELETON
+        amount: 3
+        duration: 300
+        withEquipment: true
+      - type: EXPLOSION
+        power: 2.0
+        safe: true
+      - type: COOLDOWN
+        seconds: 30
+      - type: SOUND_ON_USE
+        sound: ENTITY_WITHER_SPAWN
+        volume: 1.0
+        pitch: 0.5
+      - type: PARTICLE_ON_HIT
+        particle: SOUL_FIRE_FLAME
+        count: 25
+
+  - id: "tome_of_storms"
+    displayName: "<gold>Фолиант Штормов"
+    lore:
+      - "<gray>ПКМ — удар молнии по области"
+      - "<gold>🌩 Бьёт молниями вокруг"
+    baseItem: ENCHANTED_BOOK
+    customModelData: 1007
+    rarity: EPIC
+    maxStackSize: 1
+    components:
+      - type: AOE
+        radius: 8.0
+        damage: 10.0
+      - type: LIGHTNING
+        chance: 1.0
+      - type: COOLDOWN
+        seconds: 15
+      - type: SOUND_ON_USE
+        sound: ENTITY_LIGHTNING_BOLT_THUNDER
+      - type: PARTICLE_ON_HIT
+        particle: ELECTRIC_SPARK
+        count: 50
+
+  # 🛠 ИНСТРУМЕНТЫ — работают в руке
+  # ────────────────────────────
+
+  - id: "pickaxe_of_the_depths"
+    displayName: "<aqua>Кирка Глубин"
+    lore:
+      - "<gray>Быстрое копание с удачей"
+      - "<aqua>⛏ Эффективнось + Haste"
+    baseItem: NETHERITE_PICKAXE
+    customModelData: 3001
+    rarity: RARE
+    unbreakable: true
+    components:
+      - type: DAMAGE
+        damage: 8.0
+      - type: FIRE_ASPECT
+        level: 1
+      - type: ATTRIBUTE
+        attribute: GENERIC_MOVEMENT_SPEED
+        amount: 0.1
+        operation: MULTIPLY_SCALAR_1
+
+  - id: "axe_of_the_giants"
+    displayName: "<gold>Секира Великанов"
+    lore:
+      - "<gray>Огромный урон и вампиризм"
+      - "<gold>🪓 25% вампиризма"
+    baseItem: NETHERITE_AXE
+    customModelData: 3002
+    rarity: EPIC
+    unbreakable: true
+    components:
+      - type: DAMAGE
+        damage: 18.0
+      - type: LIFE_STEAL
+        percentage: 0.25
+      - type: LIGHTNING
+        chance: 0.20
+      - type: PARTICLE_ON_HIT
+        particle: ENCHANTED_HIT
+        count: 20
+      - type: SOUND_ON_HIT
+        sound: ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR
+
+  # 👤 ГОЛОВА ПУСТОШИ — кастомный скин через player head
+  - id: "wasteland_head"
+    displayName: "<dark_red>Голова Пустоши"
+    lore:
+      - "<gray>Лик из самого сердца Пустоши"
+      - "<dark_gray>Хранит древнюю силу"
+    baseItem: PLAYER_HEAD
+    customModelData: 0
+    rarity: LEGENDARY
+    unbreakable: true
+    skinTexture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2NjMjE3YTliOWUzY2UzY2QwNDg0YzdlOGNlNDlkMWNmNzQxMjgxYmRkYTVhNGQ2Y2I4MjFmMzc4NzUyNzE4In19fQ=="
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: RESISTANCE
+        amplifier: 1
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: FIRE_RESISTANCE
+        amplifier: 0
+        ambient: true
+      - type: ATTRIBUTE
+        attribute: GENERIC_MAX_HEALTH
+        amount: 10.0
+        operation: ADD_NUMBER
+      - type: PARTICLE_AMBIENT
+        particle: SOUL_FIRE_FLAME
+        count: 5
+    recipe:
+      type: shaped
+      pattern:
+        - "ABC"
+        - "DED"
+        - "FGH"
+      ingredients:
+        A: "artifact:fire_sword"
+        B: "artifact:shadow_cloak"
+        C: "artifact:ice_breaker"
+        D: "artifact:necronomicon"
+        E: DRAGON_EGG
+        F: "artifact:staff_of_storms"
+        G: "artifact:artifact_of_flight"
+        H: "artifact:crown_of_the_wasteland"
+
+  # 📡 РАЦИЯ — открывает GUI быстрого доступа к артефактам
+  - id: "artifact_radio"
+    displayName: "<gold>📡 Рация Пустоши"
+    lore:
+      - "<gray>Открывает быстрый доступ к артефактам"
+      - "<gold>📡 Надень в сумку и используй"
+    baseItem: COMPASS
+    customModelData: 4001
+    rarity: EPIC
+    unbreakable: true
+    components:
+      - type: COMMAND
+        command: "bag"
+        asPlayer: true
+      - type: COOLDOWN
+        seconds: 1
+      - type: SOUND_ON_USE
+        sound: BLOCK_NOTE_BLOCK_BELL
+        volume: 1.0
+        pitch: 1.5
+      - type: PARTICLE_ON_HIT
+        particle: ELECTRIC_SPARK
+        count: 20
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: SPEED
+        amplifier: 0
+        ambient: true
+
+  # ─── 12 MID-TIER ARTIFACTS (RARE / EPIC) ───
+  # ──────────────────────────────────────────
+
+  - id: "poison_dagger"
+    displayName: "<green>Отравленный Кинжал"
+    lore:
+      - "<gray>Клинок, покрытый ядом Пустоши"
+      - "<green>☠ Отравляет врагов"
+    baseItem: WOODEN_SWORD
+    customModelData: 5001
+    rarity: RARE
+    unbreakable: true
+    components:
+      - type: DAMAGE
+        damage: 7.0
+      - type: POTION_EFFECT_ON_HIT
+        effect: POISON
+        duration: 100
+        amplifier: 1
+      - type: LIFE_STEAL
+        percentage: 0.05
+      - type: PARTICLE_ON_HIT
+        particle: ITEM_SLIME
+        count: 10
+      - type: SOUND_ON_HIT
+        sound: ENTITY_SPIDER_HURT
+
+  - id: "thunder_hammer"
+    displayName: "<yellow>Громовой Молот"
+    lore:
+      - "<gray>Сокрушает врагов молниями"
+      - "<yellow>⚡ 50% шанс молнии"
+    baseItem: IRON_AXE
+    customModelData: 5002
+    rarity: EPIC
+    unbreakable: true
+    components:
+      - type: DAMAGE
+        damage: 13.0
+      - type: LIGHTNING
+        chance: 0.50
+      - type: AOE
+        radius: 3.0
+        damage: 6.0
+      - type: SOUND_ON_HIT
+        sound: ENTITY_LIGHTNING_BOLT_THUNDER
+        volume: 1.0
+        pitch: 0.8
+      - type: PARTICLE_ON_HIT
+        particle: ELECTRIC_SPARK
+        count: 25
+
+  - id: "frost_bow"
+    displayName: "<aqua>Морозный Лук"
+    lore:
+      - "<gray>Стрелы замораживают врагов"
+      - "<aqua>❄ Замедление на 5 секунд"
+    baseItem: BOW
+    customModelData: 5003
+    rarity: RARE
+    unbreakable: true
+    components:
+      - type: POTION_EFFECT_ON_HIT
+        effect: SLOWNESS
+        duration: 100
+        amplifier: 1
+      - type: PARTICLE_ON_HIT
+        particle: SNOWFLAKE
+        count: 15
+      - type: SOUND_ON_HIT
+        sound: BLOCK_POWDER_SNOW_BREAK
+
+  - id: "nature_staff"
+    displayName: "<dark_green>Посох Природы"
+    lore:
+      - "<gray>ПКМ — восстанавливает здоровье"
+      - "<green>🌿 Лечит союзников"
+    baseItem: STICK
+    customModelData: 5004
+    rarity: EPIC
+    unbreakable: true
+    components:
+      - type: AOE
+        radius: 6.0
+        damage: -8.0
+      - type: COOLDOWN
+        seconds: 10
+      - type: SOUND_ON_USE
+        sound: ENTITY_EXPERIENCE_ORB_PICKUP
+        volume: 1.0
+        pitch: 1.2
+      - type: PARTICLE_ON_HIT
+        particle: HEART
+        count: 20
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: REGENERATION
+        amplifier: 0
+        ambient: true
+
+  - id: "lava_ring"
+    displayName: "<red>Лавовое Кольцо"
+    lore:
+      - "<gray>Кольцо из магмы Пустоши"
+      - "<red>🔥 Полный иммунитет к огню"
+    baseItem: FIRE_CHARGE
+    customModelData: 5005
+    rarity: EPIC
+    unbreakable: true
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: FIRE_RESISTANCE
+        amplifier: 0
+        ambient: true
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR_TOUGHNESS
+        amount: 4.0
+        operation: ADD_NUMBER
+      - type: ATTRIBUTE
+        attribute: GENERIC_MAX_HEALTH
+        amount: 4.0
+        operation: ADD_NUMBER
+      - type: PARTICLE_AMBIENT
+        particle: FLAME
+        count: 3
+      - type: FIRE_ASPECT
+        level: 1
+
+  - id: "wind_boots"
+    displayName: "<white>Сапоги Ветра"
+    lore:
+      - "<gray>Несут владельца быстрее ветра"
+      - "<white>💨 Скорость +40%"
+    baseItem: CHAINMAIL_BOOTS
+    customModelData: 5006
+    rarity: RARE
+    unbreakable: true
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: SPEED
+        amplifier: 1
+        ambient: true
+      - type: ATTRIBUTE
+        attribute: GENERIC_MOVEMENT_SPEED
+        amount: 0.15
+        operation: MULTIPLY_SCALAR_1
+      - type: ATTRIBUTE
+        attribute: GENERIC_SAFE_FALL_DISTANCE
+        amount: 15.0
+        operation: ADD_NUMBER
+      - type: PARTICLE_AMBIENT
+        particle: CLOUD
+        count: 3
+
+  - id: "crystal_shield"
+    displayName: "<light_purple>Хрустальный Щит"
+    lore:
+      - "<gray>Отражает урон обратно"
+      - "<purple>💎 20% отражения"
+    baseItem: SHIELD
+    customModelData: 5007
+    rarity: EPIC
+    unbreakable: true
+    components:
+      - type: ATTRIBUTE
+        attribute: GENERIC_KNOCKBACK_RESISTANCE
+        amount: 1.0
+        operation: ADD_NUMBER
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR
+        amount: 6.0
+        operation: ADD_NUMBER
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: RESISTANCE
+        amplifier: 0
+        ambient: true
+      - type: PARTICLE_AMBIENT
+        particle: END_ROD
+        count: 5
+
+  - id: "void_blade"
+    displayName: "<dark_purple>Клинок Бездны"
+    lore:
+      - "<gray>Поражает иссушающим эффектом"
+      - "<purple>🌀 Wither + вампиризм"
+    baseItem: IRON_SWORD
+    customModelData: 5008
+    rarity: EPIC
+    unbreakable: true
+    components:
+      - type: DAMAGE
+        damage: 11.0
+      - type: POTION_EFFECT_ON_HIT
+        effect: WITHER
+        duration: 80
+        amplifier: 1
+      - type: LIFE_STEAL
+        percentage: 0.10
+      - type: PARTICLE_ON_HIT
+        particle: SOUL_FIRE_FLAME
+        count: 15
+      - type: SOUND_ON_HIT
+        sound: ENTITY_WITHER_HURT
+
+  - id: "holy_grail"
+    displayName: "<gold>Святой Грааль"
+    lore:
+      - "<gray>Древняя реликвия исцеления"
+      - "<gold>✨ Дарует регенерацию"
+    baseItem: BOWL
+    customModelData: 5009
+    rarity: LEGENDARY
+    unbreakable: true
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: REGENERATION
+        amplifier: 1
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: ABSORPTION
+        amplifier: 0
+        ambient: true
+      - type: COOLDOWN
+        seconds: 1
+      - type: PARTICLE_AMBIENT
+        particle: HEART
+        count: 8
+      - type: SOUND_ON_USE
+        sound: BLOCK_BEACON_ACTIVATE
+    recipe:
+      type: shaped
+      pattern:
+        - "AAA"
+        - "ABA"
+        - "AAA"
+      ingredients:
+        A: "artifact:unknown_relic"
+        B: "artifact:unknown_eye"
+
+  - id: "skeleton_king_crown"
+    displayName: "<gray>Корона Короля Скелетов"
+    lore:
+      - "<gray>Призывает скелетов-стражников"
+      - "<white>☠ ПКМ — армия костей"
+    baseItem: SKELETON_SKULL
+    customModelData: 5010
+    rarity: LEGENDARY
+    unbreakable: true
+    components:
+      - type: SUMMON
+        entityType: SKELETON
+        amount: 4
+        duration: 200
+        withEquipment: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: STRENGTH
+        amplifier: 0
+        ambient: true
+      - type: COOLDOWN
+        seconds: 45
+      - type: SOUND_ON_USE
+        sound: ENTITY_SKELETON_AMBIENT
+      - type: PARTICLE_ON_HIT
+        particle: ASH
+        count: 20
+
+  - id: "sea_trident"
+    displayName: "<dark_aqua>Морской Трезубец"
+    lore:
+      - "<gray>Власть над океаном"
+      - "<aqua>🌊 Дыхание под водой + урон"
+    baseItem: TRIDENT
+    customModelData: 5011
+    rarity: EPIC
+    unbreakable: true
+    components:
+      - type: DAMAGE
+        damage: 10.0
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: DOLPHINS_GRACE
+        amplifier: 0
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: WATER_BREATHING
+        amplifier: 0
+        ambient: true
+      - type: LIGHTNING
+        chance: 0.25
+      - type: PARTICLE_ON_HIT
+        particle: DRIPPING_WATER
+        count: 20
+      - type: SOUND_ON_HIT
+        sound: BLOCK_BUBBLE_COLUMN_UPWARDS_AMBIENT
+
+  - id: "inferno_axe"
+    displayName: "<red>Инфернальная Секира"
+    lore:
+      - "<gray>Выкована в адском пламени"
+      - "<dark_red>🔥 Взрывает и поджигает"
+    baseItem: NETHERITE_AXE
+    customModelData: 5012
+    rarity: LEGENDARY
+    unbreakable: true
+    components:
+      - type: DAMAGE
+        damage: 17.0
+      - type: FIRE_ASPECT
+        level: 3
+      - type: EXPLOSION
+        power: 2.5
+        safe: true
+      - type: PARTICLE_ON_HIT
+        particle: LAVA
+        count: 25
+      - type: SOUND_ON_HIT
+        sound: ENTITY_BLAZE_SHOOT
+
+  # ─── 4 HIGH-TIER ARTIFACTS (LEGENDARY / MYTHIC) ───
+  # ───────────────────────────────────────────────
+
+  - id: "time_clock"
+    displayName: "<gold>Часы Времени"
+    lore:
+      - "<gray>Замедляет время вокруг"
+      - "<yellow>⏳ Аура замедления + защита"
+    baseItem: CLOCK
+    customModelData: 6001
+    rarity: MYTHIC
+    unbreakable: true
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: RESISTANCE
+        amplifier: 1
+        ambient: true
+      - type: AOE
+        radius: 8.0
+        damage: 0.0
+      - type: POTION_EFFECT_AURA
+        effect: SLOWNESS
+        amplifier: 2
+        radius: 6.0
+      - type: ATTRIBUTE
+        attribute: GENERIC_KNOCKBACK_RESISTANCE
+        amount: 1.0
+        operation: ADD_NUMBER
+      - type: COOLDOWN
+        seconds: 20
+      - type: PARTICLE_AMBIENT
+        particle: END_ROD
+        count: 10
+
+  - id: "gravity_stone"
+    displayName: "<dark_gray>Камень Гравитации"
+    lore:
+      - "<gray>Притягивает и взрывает врагов"
+      - "<dark_gray>🌀 ПКМ — гравитационный коллапс"
+    baseItem: HEAVY_WEIGHTED_PRESSURE_PLATE
+    customModelData: 6002
+    rarity: MYTHIC
+    unbreakable: true
+    components:
+      - type: EXPLOSION
+        power: 4.0
+        safe: true
+      - type: AOE
+        radius: 10.0
+        damage: 12.0
+      - type: COOLDOWN
+        seconds: 30
+      - type: SOUND_ON_USE
+        sound: ENTITY_WITHER_SPAWN
+        volume: 2.0
+      - type: PARTICLE_ON_HIT
+        particle: PORTAL
+        count: 50
+
+  - id: "phoenix_wings"
+    displayName: "<red>Крылья Феникса"
+    lore:
+      - "<gray>Возрождение в огне"
+      - "<gold>🔥 Огненная защита + парение"
+    baseItem: ELYTRA
+    customModelData: 6003
+    rarity: LEGENDARY
+    unbreakable: true
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: FIRE_RESISTANCE
+        amplifier: 0
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: SLOW_FALLING
+        amplifier: 0
+        ambient: true
+      - type: ATTRIBUTE
+        attribute: GENERIC_SAFE_FALL_DISTANCE
+        amount: 100.0
+        operation: ADD_NUMBER
+      - type: ATTRIBUTE
+        attribute: GENERIC_MAX_HEALTH
+        amount: 6.0
+        operation: ADD_NUMBER
+      - type: PARTICLE_AMBIENT
+        particle: FLAME
+        count: 8
+      - type: FIRE_ASPECT
+        level: 1
+
+  - id: "shadow_walker"
+    displayName: "<dark_purple>Теневой Странник"
+    lore:
+      - "<gray>Становится невидимым в темноте"
+      - "<purple>🌙 Ночное зрение + скорость"
+    baseItem: LEATHER_BOOTS
+    customModelData: 6004
+    rarity: MYTHIC
+    unbreakable: true
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: INVISIBILITY
+        amplifier: 0
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: NIGHT_VISION
+        amplifier: 0
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: SPEED
+        amplifier: 1
+        ambient: true
+      - type: ATTRIBUTE
+        attribute: GENERIC_MOVEMENT_SPEED
+        amount: 0.2
+        operation: MULTIPLY_SCALAR_1
+      - type: PARTICLE_AMBIENT
+        particle: SMOKE
+        count: 4
+
+  # ─── 2 UNKNOWN-RANK ARTIFACTS ───
+  # ──────────────────────────────
+
+  - id: "unknown_relic"
+    displayName: "<dark_red><bold>Неизвестная Реликвия"
+    lore:
+      - "<gray>Древняя сила, не поддающаяся пониманию"
+      - "<red>❓ Все эффекты в одном"
+    baseItem: NETHER_STAR
+    customModelData: 7001
+    rarity: UNKNOWN
+    unbreakable: true
+    components:
+      - type: DAMAGE
+        damage: 20.0
+      - type: FIRE_ASPECT
+        level: 2
+      - type: LIGHTNING
+        chance: 0.40
+      - type: LIFE_STEAL
+        percentage: 0.20
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: RESISTANCE
+        amplifier: 1
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: REGENERATION
+        amplifier: 1
+        ambient: true
+      - type: EXPLOSION
+        power: 3.0
+        safe: true
+      - type: COOLDOWN
+        seconds: 10
+    recipe:
+      type: shaped
+      pattern:
+        - "ABC"
+        - "DEF"
+        - "GHI"
+      ingredients:
+        A: "artifact:fire_sword"
+        B: "artifact:ice_breaker"
+        C: "artifact:staff_of_storms"
+        D: "artifact:skeleton_king_crown"
+        E: NETHER_STAR
+        F: "artifact:holy_grail"
+        G: "artifact:crown_of_the_wasteland"
+        H: "artifact:shadow_cloak"
+        I: "artifact:void_blade"
+
+  - id: "unknown_eye"
+    displayName: "<gold><bold>Око Неизведанного"
+    lore:
+      - "<gray>Видит истинную суть вещей"
+      - "<yellow>👁 Истинное зрение + прозрение"
+    baseItem: ENDER_EYE
+    customModelData: 7002
+    rarity: UNKNOWN
+    unbreakable: true
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: NIGHT_VISION
+        amplifier: 0
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: GLOWING
+        amplifier: 0
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: SPEED
+        amplifier: 1
+        ambient: true
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR
+        amount: 8.0
+        operation: ADD_NUMBER
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR_TOUGHNESS
+        amount: 4.0
+        operation: ADD_NUMBER
+      - type: AOE
+        radius: 12.0
+        damage: 5.0
+      - type: COOLDOWN
+        seconds: 15
+      - type: PARTICLE_AMBIENT
+        particle: PORTAL
+        count: 10
+    recipe:
+      type: shaped
+      pattern:
+        - "ABC"
+        - "DEF"
+        - "GHI"
+      ingredients:
+        A: "artifact:frost_bow"
+        B: "artifact:nature_staff"
+        C: "artifact:lava_ring"
+        D: "artifact:wind_boots"
+        E: DRAGON_EGG
+        F: "artifact:sea_trident"
+        G: "artifact:crystal_shield"
+        H: "artifact:poison_dagger"
+        I: "artifact:inferno_axe"
+
+  # ─── 2 VOID-RANK ARTIFACTS ───
+  # ───────────────────────────
+
+  - id: "void_heart"
+    displayName: "<dark_purple><bold>Сердце Бездны"
+    lore:
+      - "<gray>Абсолютная защита Пустоты"
+      - "<purple>🖤 Неуязвимость"
+    baseItem: HEART_OF_THE_SEA
+    customModelData: 8001
+    rarity: VOID
+    unbreakable: true
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: RESISTANCE
+        amplifier: 3
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: ABSORPTION
+        amplifier: 4
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: REGENERATION
+        amplifier: 2
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: FIRE_RESISTANCE
+        amplifier: 0
+        ambient: true
+      - type: ATTRIBUTE
+        attribute: GENERIC_MAX_HEALTH
+        amount: 20.0
+        operation: ADD_NUMBER
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR
+        amount: 10.0
+        operation: ADD_NUMBER
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR_TOUGHNESS
+        amount: 8.0
+        operation: ADD_NUMBER
+      - type: PARTICLE_AMBIENT
+        particle: SOUL_FIRE_FLAME
+        count: 12
+    recipe:
+      type: shaped
+      pattern:
+        - "ABC"
+        - "DEF"
+        - "GHI"
+      ingredients:
+        A: "artifact:unknown_relic"
+        B: "artifact:time_clock"
+        C: "artifact:unknown_eye"
+        D: "artifact:gravity_stone"
+        E: DRAGON_EGG
+        F: "artifact:phoenix_wings"
+        G: "artifact:shadow_walker"
+        H: "artifact:warden_chestplate"
+        I: "artifact:crown_of_the_wasteland"
+
+  - id: "void_shatterer"
+    displayName: "<dark_red><bold>Крушитель Миров"
+    lore:
+      - "<gray>Способен уничтожить саму реальность"
+      - "<red>💥 Абсолютная мощь"
+    baseItem: NETHERITE_SWORD
+    customModelData: 8002
+    rarity: VOID
+    unbreakable: true
+    components:
+      - type: DAMAGE
+        damage: 30.0
+      - type: FIRE_ASPECT
+        level: 4
+      - type: LIGHTNING
+        chance: 0.75
+      - type: LIFE_STEAL
+        percentage: 0.35
+      - type: EXPLOSION
+        power: 5.0
+        safe: true
+      - type: AOE
+        radius: 8.0
+        damage: 15.0
+      - type: POTION_EFFECT_ON_HIT
+        effect: WITHER
+        duration: 200
+        amplifier: 2
+      - type: COOLDOWN
+        seconds: 5
+    recipe:
+      type: shaped
+      pattern:
+        - "ABC"
+        - "DEF"
+        - "GHI"
+      ingredients:
+        A: "artifact:void_heart"
+        B: "artifact:ice_breaker"
+        C: "artifact:inferno_axe"
+        D: "artifact:staff_of_storms"
+        E: DRAGON_EGG
+        F: "artifact:necronomicon"
+        G: "artifact:axe_of_the_giants"
+        H: "artifact:fire_sword"
+        I: "artifact:void_blade"
+
+  # 🌊 СЕРДЦЕ ПОСЕЙДОНА — повелитель океанов
+  - id: "heart_of_poseidon"
+    displayName: "<aqua>Сердце Посейдона"
+    lore:
+      - "<gray>Властелин морей и океанов"
+      - "<aqua>🌊 Дарует силу глубин"
+    baseItem: HEART_OF_THE_SEA
+    customModelData: 6070
+    rarity: VOID
+    unbreakable: true
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: WATER_BREATHING
+        amplifier: 0
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: DOLPHINS_GRACE
+        amplifier: 1
+        ambient: true
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: CONDUIT_POWER
+        amplifier: 0
+        ambient: true
+      - type: ATTRIBUTE
+        attribute: GENERIC_MAX_HEALTH
+        amount: 20.0
+        operation: ADD_NUMBER
+      - type: ATTRIBUTE
+        attribute: GENERIC_MOVEMENT_SPEED
+        amount: 0.15
+        operation: MULTIPLY_SCALAR_1
+      - type: PARTICLE_AMBIENT
+        particle: BUBBLE_COLUMN_UP
+        count: 10
+      - type: SOUND_ON_USE
+        sound: BLOCK_CONDUIT_ACTIVATE
+    recipe:
+      type: shaped
+      pattern:
+        - "PPP"
+        - "PHP"
+        - "PPP"
+      ingredients:
+        P: "custom:poseidon_flame"
+        H: HEART_OF_THE_SEA
+
+  # 🎒 СУМКА ПУСТОШИ — открывает /bag
+  - id: "wasteland_bag"
+    displayName: "<gold>🎒 Сумка Пустоши"
+    lore:
+      - "<gray>Позволяет хранить артефакты"
+      - "<gold>🎒 Без неё /bag не работает"
+    baseItem: COMPASS
+    customModelData: 8001
+    rarity: LEGENDARY
+    unbreakable: true
+    components:
+      - type: COMMAND
+        command: "bag"
+        asPlayer: true
+      - type: COOLDOWN
+        seconds: 1
+      - type: SOUND_ON_USE
+        sound: BLOCK_ENDER_CHEST_OPEN
+      - type: PARTICLE_AMBIENT
+        particle: PORTAL
+        count: 10
+    recipe:
+      type: shaped
+      pattern:
+        - "NEN"
+        - "ECE"
+        - "NEN"
+      ingredients:
+        N: "artifact:necronomicon"
+        E: "artifact:staff_of_storms"
+        C: "custom:celestial_star"

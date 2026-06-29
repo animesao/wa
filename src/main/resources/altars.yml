@@ -1,0 +1,428 @@
+# ═══ КОНФИГУРАЦИЯ АЛТАРЕЙ v2 ═══
+# 3D-структуры с колоннами, рецепты с несколькими ингредиентами
+
+altars:
+
+  # ─── TIER 1: Базовый алтарь ───
+  basic_altar:
+    enabled: true
+    displayName: "<gold>Базовый Алтарь"
+    tier: 1
+    description: "Позволяет крафтить базовые артефакты"
+    activatorBlock: CHISELED_STONE_BRICKS
+    globalCooldown: 5
+    structures:
+      - layers:
+          - "OOO"           # Y=0: пол из обсидиана
+          - "OAO"           #      A = активатор
+          - "OOO"
+          - "B B"           # Y=1: арки из чернокаменных кирпичей
+          - "   "
+          - "B B"
+          - "   "           # Y=2: колонны по углам
+          - " B "
+          - "   "
+        mapping:
+          O: OBSIDIAN
+          A: CHISELED_STONE_BRICKS
+          B: POLISHED_BLACKSTONE_BRICKS
+    # ─── РЕЦЕПТЫ ───
+    # Ингредиенты можно указывать двумя способами:
+    #
+    # 1) По типу (Material) — подходит любой предмет этого типа:
+    #      - type: DIAMOND_SWORD
+    #        amount: 1
+    #        slot: 5
+    #
+    # 2) По полному совпадению (type + name + lore + CMD) — для кастомных предметов:
+    #      - type: DIAMOND_SWORD
+    #        amount: 1
+    #        slot: 5
+    #        name: "<gold>Древний Клинок"       # кастомное имя
+    #        lore:                               # кастомное описание
+    #          - "<gray>Древнее оружие"
+    #        customModelData: 5010               # кастомная модель
+    #
+    # Вариант 2 использует ItemStack.isSimilar() — сравнивает тип + имя + лор + зачарования.
+    # Это позволяет матчить предметы из ДРУГИХ ПЛАГИНОВ (MMOItems, ItemsAdder и т.д.)
+    recipes:
+      - id: craft_fire_sword
+        result: fire_sword
+        experience: 5
+        cooldown: 10
+        blueprintMaterial: PAPER
+        blueprintName: "<red>📜 Чертеж: Огненный Клинок"
+        blueprintCustomModelData: 5001
+        workbench:
+          pattern:
+            - " B "
+            - "BSB"
+            - " B "
+          ingredients:
+            B: BLAZE_ROD
+            S: NETHERITE_SCRAP
+        ingredients:
+          - type: DIAMOND_SWORD
+            amount: 1
+            slot: 5
+          - type: BLAZE_ROD
+            amount: 2
+            slot: 4
+          - type: BLAZE_POWDER
+            amount: 4
+            slot: 8
+          - type: MAGMA_CREAM
+            amount: 2
+            slot: 6
+          # Кастомные предметы
+          - type: BLAZE_POWDER
+            amount: 2
+            slot: 1
+            name: "<red>Огненное Ядро"
+            customModelData: 6001
+      - id: craft_shadow_cloak
+        result: shadow_cloak
+        experience: 10
+        cooldown: 15
+        catalyst:
+          item: NETHER_STAR
+          consume: true
+        ingredients:
+          - type: PHANTOM_MEMBRANE
+            amount: 8
+            slot: 1
+          - type: PHANTOM_MEMBRANE
+            amount: 8
+            slot: 3
+          - type: ELYTRA
+            amount: 1
+            slot: 5
+          - type: INK_SAC
+            amount: 16
+            slot: 7
+          - type: INK_SAC
+            amount: 16
+            slot: 8
+
+  # ─── TIER 2: Продвинутый алтарь ───
+  advanced_altar:
+    enabled: true
+    displayName: "<aqua>Продвинутый Алтарь"
+    tier: 2
+    description: "Открывает редкие и эпические артефакты"
+    activatorBlock: RESPAWN_ANCHOR
+    globalCooldown: 10
+    structures:
+      - layers:
+          - "BBBBB"         # Y=0: пол 5x5
+          - "B   B"
+          - "B C B"
+          - "B   B"
+          - "BBBBB"
+          - "B   B"         # Y=1: стены с проходами
+          - "     "
+          - "  C  "
+          - "     "
+          - "B   B"
+          - "B   B"         # Y=2: колонны
+          - "     "
+          - "     "
+          - "     "
+          - "B   B"
+        mapping:
+          B: CRYING_OBSIDIAN
+          C: RESPAWN_ANCHOR
+    recipes:
+      - id: craft_ice_breaker
+        result: ice_breaker
+        experience: 20
+        cooldown: 20
+        ingredients:
+          - type: DIAMOND_AXE
+            amount: 1
+            slot: 5
+          - type: ICE
+            amount: 8
+            slot: 1
+          - type: PACKED_ICE
+            amount: 4
+            slot: 3
+          - type: BLUE_ICE
+            amount: 4
+            slot: 6
+          # Кастомные
+          - type: ICE
+            amount: 3
+            slot: 4
+            name: "<aqua>Ледяной Осколок"
+            customModelData: 6003
+          - type: AMETHYST_SHARD
+            amount: 1
+            slot: 8
+            name: "<gold>Кристалл Бури"
+            customModelData: 6004
+      - id: craft_necronomicon
+        result: necronomicon
+        experience: 30
+        cooldown: 30
+        catalyst:
+          item: END_CRYSTAL
+          consume: true
+        blueprintMaterial: WRITTEN_BOOK
+        blueprintName: "<dark_red>📖 Фолиант: Некрономикон"
+        blueprintCustomModelData: 5002
+        ingredients:
+          - type: BOOK
+            amount: 1
+            slot: 5
+          - type: NETHERITE_INGOT
+            amount: 2
+            slot: 6
+          # Кастомные
+          - type: BONE
+            amount: 3
+            slot: 1
+            name: "<gold>Кость Древних"
+            customModelData: 6007
+          - type: WITHER_SKELETON_SKULL
+            amount: 1
+            slot: 4
+            name: "<dark_gray>Череп Иссушения"
+            customModelData: 6013
+          - type: GHAST_TEAR
+            amount: 1
+            slot: 8
+            name: "<yellow>Осколок Души"
+            customModelData: 6008
+          - type: GHAST_TEAR
+            amount: 4
+            slot: 8
+
+      # ─── Пример с кастомными предметами (по name/lore) ───
+      - id: craft_custom_sword
+        result: fire_sword
+        experience: 15
+        cooldown: 20
+        ingredients:
+          # Ингредиент по Material + кастомное имя + CMD
+          - type: DIAMOND_SWORD
+            amount: 1
+            slot: 5
+            name: "<gold>Древний Клинок"
+            lore:
+              - "<gray>Покрыт ржавчиной"
+              - "<dark_gray>Когда-то им владел герой"
+            customModelData: 5010
+          # Ингредиент по Material + кастомное имя (другой плагин)
+          - type: BLAZE_ROD
+            amount: 2
+            slot: 1
+            name: "<red>Стержень Пламени"
+          # Просто материал (без кастомного имени)
+          - type: MAGMA_CREAM
+            amount: 2
+            slot: 4
+          # Ещё один кастомный предмет
+          - type: NETHERITE_INGOT
+            amount: 1
+            slot: 8
+            name: "<dark_red>☠ Проклятый Слиток"
+            customModelData: 5050
+
+  # ─── TIER 3: Легендарный алтарь ───
+  legendary_altar:
+    enabled: true
+    displayName: "<dark_red>Легендарный Алтарь"
+    tier: 3
+    description: "Позволяет создавать легендарные и мифические артефакты"
+    activatorBlock: RESPAWN_ANCHOR
+    globalCooldown: 30
+    structures:
+      - layers:
+          - "BBBBB"         # Y=0: пол 5x5
+          - "B   B"
+          - "B C B"
+          - "B   B"
+          - "BBBBB"
+          - "B   B"         # Y=1: стены
+          - "     "
+          - "  C  "
+          - "     "
+          - "B   B"
+          - "B   B"         # Y=2: колонны
+          - "     "
+          - "     "
+          - "     "
+          - "B   B"
+        mapping:
+          B: NETHERITE_BLOCK
+          C: RESPAWN_ANCHOR
+    recipes:
+      - id: craft_warden_chestplate
+        result: warden_chestplate
+        experience: 40
+        cooldown: 60
+        catalyst:
+          item: DRAGON_EGG
+          consume: true
+        blueprintMaterial: NETHERITE_CHESTPLATE
+        blueprintName: "<dark_green>🛡 Чертеж: Нагрудник Стража"
+        blueprintCustomModelData: 5003
+        ingredients:
+          - type: NETHERITE_CHESTPLATE
+            amount: 1
+            slot: 5
+          - type: DIAMOND_BLOCK
+            amount: 8
+            slot: 1
+          - type: DIAMOND_BLOCK
+            amount: 8
+            slot: 2
+          - type: DIAMOND_BLOCK
+            amount: 8
+            slot: 3
+          - type: NETHERITE_INGOT
+            amount: 4
+            slot: 4
+          - type: NETHERITE_INGOT
+            amount: 4
+            slot: 6
+          - type: TOTEM_OF_UNDYING
+            amount: 2
+            slot: 7
+          - type: TOTEM_OF_UNDYING
+            amount: 2
+            slot: 8
+          - type: TOTEM_OF_UNDYING
+            amount: 2
+            slot: 8
+      - id: craft_staff_of_storms
+        result: staff_of_storms
+        experience: 25
+        cooldown: 30
+        blueprintMaterial: BLAZE_ROD
+        blueprintName: "<gold>⚡ Свиток: Посох Бурь"
+        blueprintCustomModelData: 5004
+        ingredients:
+          - type: BLAZE_ROD
+            amount: 3
+            slot: 2
+          - type: BLAZE_ROD
+            amount: 3
+            slot: 8
+          - type: LIGHTNING_ROD
+            amount: 1
+            slot: 5
+          - type: COPPER_BLOCK
+            amount: 16
+            slot: 1
+          - type: COPPER_BLOCK
+            amount: 16
+            slot: 3
+          - type: AMETHYST_SHARD
+            amount: 8
+            slot: 4
+          - type: AMETHYST_SHARD
+            amount: 8
+            slot: 6
+
+      # ─── СВЯТОЙ ГРААЛЬ — требует Unknown артефакты ───
+      - id: craft_holy_grail
+        result: holy_grail
+        experience: 50
+        cooldown: 60
+        blueprintMaterial: BOWL
+        blueprintName: "<gold>📜 Чертёж: Святой Грааль"
+        blueprintCustomModelData: 5009
+        ingredients:
+          - type: HEART_OF_THE_SEA
+            amount: 1
+            slot: 5
+          - type: NETHER_STAR
+            amount: 3
+            slot: 1
+            name: "<dark_aqua>Неизвестный <dark_red><bold>Неизвестная Реликвия"
+            customModelData: 7001
+          - type: NETHER_STAR
+            amount: 3
+            slot: 2
+            name: "<dark_aqua>Неизвестный <dark_red><bold>Неизвестная Реликвия"
+            customModelData: 7001
+          - type: NETHER_STAR
+            amount: 3
+            slot: 3
+            name: "<dark_aqua>Неизвестный <dark_red><bold>Неизвестная Реликвия"
+            customModelData: 7001
+          - type: NETHER_STAR
+            amount: 3
+            slot: 4
+            name: "<dark_aqua>Неизвестный <dark_red><bold>Неизвестная Реликвия"
+            customModelData: 7001
+          - type: NETHER_STAR
+            amount: 3
+            slot: 6
+            name: "<dark_aqua>Неизвестный <dark_red><bold>Неизвестная Реликвия"
+            customModelData: 7001
+          - type: NETHER_STAR
+            amount: 3
+            slot: 7
+            name: "<dark_aqua>Неизвестный <dark_red><bold>Неизвестная Реликвия"
+            customModelData: 7001
+          - type: ENDER_EYE
+            amount: 1
+            slot: 8
+            name: "<dark_aqua>Неизвестный <gold><bold>Око Неизведанного"
+            customModelData: 7002
+
+      # ─── СУМКА ПУСТОШИ — открывает /bag ───
+      - id: craft_wasteland_bag
+        result: wasteland_bag
+        experience: 30
+        cooldown: 30
+        blueprintMaterial: COMPASS
+        blueprintName: "<gold>📜 Чертёж: Сумка Пустоши"
+        blueprintCustomModelData: 8001
+        # Катализатор не нужен — слот 0 занят чертежом
+        ingredients:
+          - type: NETHER_STAR
+            amount: 3
+            slot: 1
+            name: "<dark_aqua>Неизвестный <dark_red><bold>Неизвестная Реликвия"
+            customModelData: 7001
+          - type: NETHER_STAR
+            amount: 3
+            slot: 2
+            name: "<dark_aqua>Неизвестный <dark_red><bold>Неизвестная Реликвия"
+            customModelData: 7001
+          - type: NETHER_STAR
+            amount: 3
+            slot: 3
+            name: "<dark_aqua>Неизвестный <dark_red><bold>Неизвестная Реликвия"
+            customModelData: 7001
+          - type: NETHER_STAR
+            amount: 3
+            slot: 4
+            name: "<dark_aqua>Неизвестный <dark_red><bold>Неизвестная Реликвия"
+            customModelData: 7001
+          - type: ENDER_EYE
+            amount: 1
+            slot: 8
+            name: "<dark_aqua>Неизвестный <gold><bold>Око Неизведанного"
+            customModelData: 7002
+          - type: NETHERITE_INGOT
+            amount: 4
+            slot: 6
+          - type: NETHERITE_INGOT
+            amount: 4
+            slot: 7
+
+# ─── НАСТРОЙКИ ───
+settings:
+  maxAltarsPerChunk: 1
+  allowInAllWorlds: true
+  worlds: []
+  particlesEnabled: true
+  soundsEnabled: true
+  titleGUI: "<dark_gray>Алтарь Артефактов"
+  guiRows: 6
+  previewMaxDistance: 10.0

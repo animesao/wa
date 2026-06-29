@@ -1,0 +1,412 @@
+# ═══ Дроп с мобов — только кастомные предметы ═══
+# Все предметы из custom_items.yml.
+#
+# 📝 КАК ДОБАВИТЬ СВОЕГО МОБА:
+#
+# 1) Ванильный моб (по EntityType):
+#    BLAZE:
+#      drops:
+#        - item: magma_core
+#          chance: 0.5
+#
+# 2) Кастомный моб по имени (MythicMobs, EliteMobs и т.д.):
+#    my_boss:
+#      displayName: "§cКороль Ада"    # часть custom name моба
+#      drops:
+#        - item: poseidon_flame
+#          chance: 0.8
+#
+# 3) Кастомный моб по scoreboard тегам:
+#    mythic_boss:
+#      tags:
+#        - "mythicmobs:boss"
+#        - "mythicmobs:hell_knight"
+#      drops:
+#        - item: warden_heart
+#          chance: 0.5
+
+mobs:
+
+  BLAZE:
+    enabled: true
+    drops:
+      - item: magma_core
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.7
+      - item: fire_core
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.4
+      - item: poseidon_flame
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.05
+
+  WITHER_SKELETON:
+    enabled: true
+    drops:
+      - item: wither_skull
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.15
+      - item: corrupted_ingot
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.3
+      - item: ancient_bone
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.4
+      - item: poseidon_flame
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.08
+
+  SKELETON:
+    enabled: true
+    drops:
+      - item: ancient_bone
+        minAmount: 1
+        maxAmount: 3
+        chance: 0.5
+      - item: withered_bone
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.3
+      - item: spectral_thread
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.1
+
+  ZOMBIE:
+    enabled: true
+    drops:
+      - item: wasteland_sand
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.4
+      - item: rusted_ingot
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.2
+      - item: toxic_slime
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.3
+
+  CREEPER:
+    enabled: true
+    drops:
+      - item: storm_crystal
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.1
+      - item: chaos_crystal
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.05
+      - item: ash_pile
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.3
+
+  SPIDER:
+    enabled: true
+    drops:
+      - item: poison_gland
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.3
+      - item: phantom_weave
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.2
+      - item: toxic_slime
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.2
+
+  ENDERMAN:
+    enabled: true
+    drops:
+      - item: ender_gem
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.4
+      - item: void_crystal
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.2
+      - item: eye_of_abyss
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.1
+
+  MAGMA_CUBE:
+    enabled: true
+    drops:
+      - item: magma_core
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.5
+      - item: fire_core
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.2
+      - item: quicksilver
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.1
+
+  GHAST:
+    enabled: true
+    drops:
+      - item: soul_fragment
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.5
+      - item: soul_fragment
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.3
+      - item: ethereal_orb
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.1
+
+  PHANTOM:
+    enabled: true
+    drops:
+      - item: phantom_weave
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.6
+      - item: shadow_essence
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.3
+      - item: phantom_wing
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.1
+
+  WARDEN:
+    enabled: true
+    drops:
+      - item: warden_heart
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.6
+      - item: void_crystal
+        minAmount: 2
+        maxAmount: 3
+        chance: 0.8
+      - item: runic_tablet
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.3
+      - item: reinforced_plate
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.4
+
+  ELDER_GUARDIAN:
+    enabled: true
+    drops:
+      - item: dragon_scales
+        minAmount: 2
+        maxAmount: 4
+        chance: 0.7
+      - item: kraken_tentacle
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.3
+      - item: water_pearl
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.4
+
+  WITCH:
+    enabled: true
+    drops:
+      - item: arcane_essence
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.5
+      - item: purified_salt
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.3
+      - item: alchemic_potion
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.2
+
+  HOGLIN:
+    enabled: true
+    drops:
+      - item: corrupted_ingot
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.3
+      - item: horn_of_dread
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.2
+      - item: ancient_leather
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.4
+
+  PIGLIN_BRUTE:
+    enabled: true
+    drops:
+      - item: corrupted_ingot
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.5
+      - item: reinforced_plate
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.3
+      - item: reinforced_plate
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.2
+
+  ENDER_DRAGON:
+    enabled: true
+    drops:
+      - item: dragon_scales
+        minAmount: 3
+        maxAmount: 5
+        chance: 1.0
+      - item: ender_gem
+        minAmount: 2
+        maxAmount: 4
+        chance: 0.8
+      - item: fire_core
+        minAmount: 3
+        maxAmount: 5
+        chance: 1.0
+      - item: star_fragment
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.5
+
+  RAVAGER:
+    enabled: true
+    drops:
+      - item: chimera_claw
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.4
+      - item: horn_of_dread
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.3
+      - item: ancient_leather
+        minAmount: 2
+        maxAmount: 4
+        chance: 0.5
+
+  EVOKER:
+    enabled: true
+    drops:
+      - item: totem_fragment
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.5
+      - item: void_seal
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.3
+      - item: arcane_essence
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.4
+
+  VEX:
+    enabled: true
+    drops:
+      - item: spectral_dust
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.4
+      - item: phantom_weave
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.2
+
+  PILLAGER:
+    enabled: true
+    drops:
+      - item: ancient_coin
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.3
+      - item: rusted_ingot
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.2
+
+  VINDICATOR:
+    enabled: true
+    drops:
+      - item: ancient_coin
+        minAmount: 1
+        maxAmount: 3
+        chance: 0.5
+      - item: reinforced_plate
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.2
+
+  ZOMBIFIED_PIGLIN:
+    enabled: true
+    drops:
+      - item: corrupted_ingot
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.2
+      - item: corrupted_ingot
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.1
+
+  BEE:
+    enabled: true
+    drops:
+      - item: life_elixir
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.1
+
+  DROWNED:
+    enabled: true
+    drops:
+      - item: water_pearl
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.2
+      - item: siren_tear
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.05
+
+  STRIDER:
+    enabled: true
+    drops:
+      - item: magma_core
+        minAmount: 1
+        maxAmount: 1
+        chance: 0.2
+
+  WOLF:
+    enabled: true
+    drops:
+      - item: ancient_bone
+        minAmount: 1
+        maxAmount: 2
+        chance: 0.3

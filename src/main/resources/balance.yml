@@ -1,0 +1,36 @@
+# ═══ Баланс и лимиты стакания эффектов ═══
+
+# Лимиты стакания одинаковых эффектов (максимальный amplifier)
+# Если игрок имеет 2 артефакта с Speed I, стакается до Speed II
+# Максимум: указывает предел amplifier (0 = I, 1 = II, ... 4 = V)
+stacking:
+  maxAmplifier: 4
+  enabled: true
+
+  # Индивидуальные лимиты для каждого эффекта
+  perEffect:
+    SPEED:
+      maxAmplifier: 3      # Speed capped at IV
+    STRENGTH:
+      maxAmplifier: 2      # Strength capped at III
+    REGENERATION:
+      maxAmplifier: 1      # Regeneration capped at II
+    RESISTANCE:
+      maxAmplifier: 2      # Resistance capped at III
+    JUMP_BOOST:
+      maxAmplifier: 3      # Jump Boost capped at IV
+    HEALTH_BOOST:
+      maxAmplifier: 4      # Health Boost capped at V
+    ABSORPTION:
+      maxAmplifier: 4      # Absorption capped at V
+
+# Лимиты артефактов в сумке
+bag:
+  maxSlots: 54             # всего слотов (макс 54)
+  allowSameInBag: true     # можно ли хранить одинаковые артефакты
+  effectApplyDelay: 20     # тиков между пересчётом эффектов
+
+# Лимиты оффхенда (левая рука)
+offhand:
+  enabled: true            # артефакты работают в левой руке
+  allowStacking: true       # стакаются ли с эффектами из сумки

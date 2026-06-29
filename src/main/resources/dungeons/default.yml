@@ -1,0 +1,183 @@
+# ─── Конфигурация подземелий ───
+
+dungeons:
+
+  stronghold:
+    enabled: true
+    loot:
+      mode: INJECT
+      replaceChance: 0.15
+      artifacts:
+        - id: "fire_sword"
+          weight: 10
+          minCount: 1
+          maxCount: 1
+        - id: "shadow_cloak"
+          weight: 3
+          minCount: 1
+          maxCount: 1
+      blueprints:
+        - recipeId: "basic_altar_craft_fire_sword"
+          weight: 8
+          amount: 1
+        - recipeId: "basic_altar_craft_shadow_cloak"
+          weight: 3
+          amount: 1
+    special-chests:
+      enabled: true
+      positions:
+        - rx: 5
+          ry: 3
+          rz: -2
+        - rx: -5
+          ry: 1
+          rz: 3
+    bosses:
+      enabled: true
+      types:
+        - entity: WITHER_SKELETON
+          name: "<red>Хранитель Пламени"
+          artifact: "fire_sword"
+          blueprint: "basic_altar_craft_fire_sword"
+          dropChance: 0.25
+          health: 200.0
+          equipment:
+            mainhand: DIAMOND_SWORD
+            helmet: NETHERITE_HELMET
+          potionEffects:
+            - effect: SPEED
+              amplifier: 1
+              duration: -1
+
+  fortress:
+    enabled: true
+    loot:
+      mode: ADD_CHEST
+      artifacts:
+        - id: "necronomicon"
+          weight: 2
+          minCount: 1
+          maxCount: 1
+      blueprints:
+        - recipeId: "advanced_altar_craft_necronomicon"
+          weight: 5
+          amount: 1
+        - recipeId: "advanced_altar_craft_ice_breaker"
+          weight: 4
+          amount: 1
+    bosses:
+      enabled: true
+      types:
+        - entity: BLAZE
+          name: "<gold>Пылающий Лорд"
+          artifact: "necronomicon"
+          dropChance: 0.10
+          health: 100.0
+
+  ancient_city:
+    enabled: true
+    loot:
+      mode: REPLACE
+      replaceChance: 0.30
+      artifacts:
+        - id: "shadow_cloak"
+          weight: 8
+          minCount: 1
+          maxCount: 1
+      blueprints:
+        - recipeId: "advanced_altar_craft_ice_breaker"
+          weight: 6
+          amount: 1
+
+  bastion:
+    enabled: true
+    loot:
+      mode: INJECT
+      replaceChance: 0.20
+      artifacts:
+        - id: "axe_of_the_giants"
+          weight: 5
+          minCount: 1
+          maxCount: 1
+      blueprints:
+        - recipeId: "basic_altar_craft_fire_sword"
+          weight: 10
+          amount: 2
+        - recipeId: "basic_altar_craft_shadow_cloak"
+          weight: 5
+          amount: 1
+
+  mansion:
+    enabled: true
+    loot:
+      mode: INJECT
+      artifacts:
+        - id: "staff_of_storms"
+          weight: 2
+          minCount: 1
+          maxCount: 1
+      blueprints:
+        - recipeId: "advanced_altar_craft_necronomicon"
+          weight: 3
+          amount: 1
+
+  end_city:
+    enabled: true
+    loot:
+      mode: INJECT
+      replaceChance: 0.15
+      artifacts:
+        - id: "artifact_of_flight"
+          weight: 3
+          minCount: 1
+          maxCount: 1
+      blueprints:
+        - recipeId: "legendary_altar_craft_warden_chestplate"
+          weight: 2
+          amount: 1
+        - recipeId: "legendary_altar_craft_staff_of_storms"
+          weight: 3
+          amount: 1
+
+  # ─── ПРИМЕР: Кастомный данж через схематику ───
+  # Скопируй .nbt файл в plugins/WastelandArtifacts/schematics/
+  # и плагин сам загрузит его при старте
+  custom_dungeon_example:
+    enabled: true
+    loot:
+      mode: INJECT
+      artifacts:
+        - id: "staff_of_storms"
+          weight: 5
+          minCount: 1
+          maxCount: 1
+        - id: "void_boots"
+          weight: 8
+          minCount: 1
+          maxCount: 1
+      blueprints:
+        - recipeId: "advanced_altar_craft_necronomicon"
+          weight: 10
+          amount: 1
+    bosses:
+      enabled: true
+      types:
+        - entity: WITHER
+          name: "<dark_red>Хранитель Сокровищ"
+          artifact: "necronomicon"
+          blueprint: "advanced_altar_craft_necronomicon"
+          dropChance: 0.35
+          health: 400.0
+          equipment:
+            mainhand: NETHERITE_SWORD
+            helmet: NETHERITE_HELMET
+            chestplate: NETHERITE_CHESTPLATE
+            leggings: NETHERITE_LEGGINGS
+            boots: NETHERITE_BOOTS
+          potionEffects:
+            - effect: SPEED
+              amplifier: 2
+              duration: -1
+            - effect: INCREASE_DAMAGE
+              amplifier: 1
+              duration: -1

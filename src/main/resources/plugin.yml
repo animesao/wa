@@ -1,0 +1,76 @@
+name: WastelandArtifacts
+version: 1.0.0
+main: me.darkcube.wa.WastelandArtifacts
+api-version: "1.21"
+
+author: animesao
+description: Создавай, крафти и находи артефакты в данжах
+
+dependencies:
+  - name: WorldEdit
+    required: false
+  - name: FastAsyncWorldEdit
+    required: false
+
+permissions:
+  wastelandartifacts.*:
+    description: Все права
+    default: op
+    children:
+      wastelandartifacts.admin: true
+      wastelandartifacts.player: true
+
+  wastelandartifacts.admin:
+    description: Админ-команды
+    default: op
+    children:
+      wastelandartifacts.admin.altar: true
+      wastelandartifacts.admin.blueprint: true
+      wastelandartifacts.admin.customitem: true
+      wastelandartifacts.admin.debug: true
+      wastelandartifacts.admin.rp: true
+
+  wastelandartifacts.player:
+    description: Игрок-команды
+    default: true
+    children:
+      wastelandartifacts.player.altar: true
+      wastelandartifacts.player.bag: true
+      wastelandartifacts.player.artifact: true
+      wastelandartifacts.player.blueprint: true
+
+  wastelandartifacts.admin.altar:
+    description: Управление алтарями (build, schematic)
+    default: op
+
+  wastelandartifacts.admin.blueprint:
+    description: Выдача чертежей
+    default: op
+
+  wastelandartifacts.admin.customitem:
+    description: Выдача кастомных предметов
+    default: op
+
+  wastelandartifacts.admin.debug:
+    description: Отладка
+    default: op
+
+  wastelandartifacts.admin.rp:
+    description: Управление ресурспаком
+    default: op
+
+  wastelandartifacts.player.altar:
+    description: Просмотр и предпросмотр алтарей
+    default: true
+
+  wastelandartifacts.player.bag:
+    description: Сумка артефактов
+    default: true
+
+  wastelandartifacts.player.artifact:
+    description: Получение артефактов
+    default: true
+
+  wastelandartifacts.player.blueprint:
+    description: Использование чертежей на алтаре
+    default: true
