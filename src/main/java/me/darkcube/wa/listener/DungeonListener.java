@@ -35,6 +35,9 @@ public class DungeonListener implements Listener {
     private final DungeonManager dungeonManager;
     private final Random random = new Random();
     private final Set<String> trackedStructures = new HashSet<>();
+    private final Map<String, String> chunkDungeonCache = new HashMap<>();
+    private static final long CHUNK_CACHE_TTL = 600_000L; // 10 минут
+    private final Map<String, Long> chunkCacheTime = new HashMap<>();
 
     public DungeonListener(WastelandArtifacts plugin) {
         this.plugin = plugin;
@@ -289,11 +292,25 @@ public class DungeonListener implements Listener {
             if (fromPdc != null) return fromPdc;
         }
 
-        // 2) Поиск структуры рядом через Registry.STRUCTURE (для существующих структур)
-        String fromStructure = findDungeonByStructure(world, loc);
-        if (fromStructure != null) return fromStructure;
+        // 2) Кеш чанков (чтобы не дёргать locateNearestStructure каждый раз)
+        String chunkKey = world.getName() + ":" + (loc.getBlockX() >> 4) + ":" + (loc.getBlockZ() >> 4);
+        Long cachedTime = chunkCacheTime.get(chunkKey);
+        if (cachedTime != null && System.currentTimeMillis() - cachedTime < CHUNK_CACHE_TTL) {
+            String cached = chunkDungeonCache.get(chunkKey);
+            if (cached != null && !cached.isEmpty()) return cached;
+            if (cached != null) return null; // кешировано что данжа нет
+        }
 
-        // 3) По отслеженным структурам (для новых структур)
+        // 3) Поиск структуры рядом через Registry.STRUCTURE (для существующих структур)
+        String fromStructure = findDungeonByStructure(world, loc);
+        chunkCacheTime.put(chunkKey, System.currentTimeMillis());
+        if (fromStructure != null) {
+            chunkDungeonCache.put(chunkKey, fromStructure);
+            return fromStructure;
+        }
+        chunkDungeonCache.put(chunkKey, ""); // кешируем что данжа нет
+
+        // 4) По отслеженным структурам (для новых структур)
         return findDungeonAtLocation(world, loc);
     }
 
