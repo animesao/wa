@@ -31,6 +31,7 @@ public class DungeonManager {
         this.plugin = plugin;
     }
 
+    @SuppressWarnings("unchecked")
     public void loadConfigs() {
         dungeonConfigs.clear();
         File dir = new File(plugin.getDataFolder(), "dungeons");
@@ -42,14 +43,22 @@ public class DungeonManager {
         for (File file : files) {
             try {
                 ObjectMapper mapper = plugin.getConfigManager().getYamlMapper();
-                DungeonConfig config = mapper.readValue(file, DungeonConfig.class);
-                String name = file.getName().replace(".yml", "");
-                dungeonConfigs.put(name, config);
-                plugin.getComponentLogger().info("<green>Загружен конфиг данжа: " + name);
+                // Парсим корневой объект, извлекаем ключ "dungeons", конвертим каждую секцию
+                Map<String, Object> root = mapper.readValue(file, Map.class);
+                Object dungeonsRaw = root.get("dungeons");
+                if (dungeonsRaw instanceof Map<?, ?> dungeonsMap) {
+                    for (var entry : dungeonsMap.entrySet()) {
+                        String id = entry.getKey().toString();
+                        DungeonConfig cfg = mapper.convertValue(entry.getValue(), DungeonConfig.class);
+                        dungeonConfigs.put(id, cfg);
+                        plugin.getComponentLogger().info("<green>Загружен данж: " + id);
+                    }
+                }
             } catch (IOException e) {
                 plugin.getComponentLogger().warn("<red>Ошибка загрузки " + file.getName() + ": " + e.getMessage());
             }
         }
+        plugin.getComponentLogger().info("<green>Загружено " + dungeonConfigs.size() + " конфигов данжей");
     }
 
     public void scanAllWorlds() {
