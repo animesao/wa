@@ -178,6 +178,14 @@ public class DungeonListener implements Listener {
         if (!(holder instanceof org.bukkit.block.TileState tile)) return;
         if (tile.getPersistentDataContainer().has(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN)) return;
 
+        // Используем верхний инвентарь (сам сундук), а не комбинированный вид
+        Inventory topInv = event.getView().getTopInventory();
+        if (topInv != inv) inv = topInv;
+        holder = inv.getHolder();
+        if (!(holder instanceof org.bukkit.block.TileState tile2)) return;
+        tile = tile2;
+        if (tile.getPersistentDataContainer().has(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN)) return;
+
         Block block = ((org.bukkit.block.BlockState) holder).getBlock();
         String dungeonId = findDungeonForChest(block.getWorld(), block.getLocation(), holder);
         if (dungeonId == null) return;
@@ -187,40 +195,57 @@ public class DungeonListener implements Listener {
 
         plugin.getComponentLogger().info("<aqua>InventoryOpen: данж=" + dungeonId + " в " + block.getLocation());
 
-        List<ItemStack> loot = dungeonManager.generateLoot(dungeonId);
-        boolean chestEmpty = true;
-        for (ItemStack item : inv.getContents()) {
-            if (item != null && item.getType() != Material.AIR) {
-                chestEmpty = false;
-                break;
-            }
-        }
-        if (chestEmpty) {
-            loot.addAll(0, dungeonManager.generateVanillaLoot(dungeonId));
-        }
-
-        if (!loot.isEmpty()) {
-            List<Integer> slots = new ArrayList<>();
-            for (int i = 0; i < inv.getSize(); i++) {
-                ItemStack content = inv.getItem(i);
-                if (content == null || content.getType() == Material.AIR) {
-                    slots.add(i);
-                }
-            }
-            Collections.shuffle(slots, random);
-            int idx = 0;
-            for (ItemStack item : loot) {
-                if (idx < slots.size()) {
-                    inv.setItem(slots.get(idx++), item);
-                } else {
-                    inv.addItem(item);
-                }
-            }
-            plugin.getComponentLogger().info("<green>InventoryOpen: добавлено " + loot.size() + " предметов в " + dungeonId);
-        }
+        // Схема: добавляем лут и форсим синхронизацию через тайк
+        Location chestLoc = block.getLocation().clone();
+        String finalDungeonId = dungeonId;
 
         tile.getPersistentDataContainer().set(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN, true);
         tile.update(true, false);
+
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            Block currentBlock = chestLoc.getBlock();
+            if (!(currentBlock.getState() instanceof InventoryHolder currentHolder)) return;
+            if (!(currentHolder instanceof org.bukkit.block.TileState currentTile)) return;
+            Inventory chestInv = currentHolder.getInventory();
+            if (!currentTile.getPersistentDataContainer().has(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN)) return;
+
+            List<ItemStack> loot = dungeonManager.generateLoot(finalDungeonId);
+            boolean chestEmpty = true;
+            for (ItemStack item : chestInv.getContents()) {
+                if (item != null && item.getType() != Material.AIR) {
+                    chestEmpty = false;
+                    break;
+                }
+            }
+            if (chestEmpty) {
+                loot.addAll(0, dungeonManager.generateVanillaLoot(finalDungeonId));
+            }
+
+            if (!loot.isEmpty()) {
+                List<Integer> slots = new ArrayList<>();
+                for (int i = 0; i < chestInv.getSize(); i++) {
+                    ItemStack content = chestInv.getItem(i);
+                    if (content == null || content.getType() == Material.AIR) {
+                        slots.add(i);
+                    }
+                }
+                Collections.shuffle(slots, random);
+                int idx = 0;
+                for (ItemStack item : loot) {
+                    if (idx < slots.size()) {
+                        chestInv.setItem(slots.get(idx++), item);
+                    } else {
+                        chestInv.addItem(item);
+                    }
+                }
+                plugin.getComponentLogger().info("<green>InventoryOpen: добавлено " + loot.size() + " предметов в " + finalDungeonId);
+            }
+
+            // Форсим обновление для игрока
+            if (event.getPlayer() instanceof org.bukkit.entity.Player player) {
+                player.updateInventory();
+            }
+        });
 
         // Спавним босса
         if (config.bosses.enabled && config.bosses.types != null && !config.bosses.types.isEmpty() && random.nextDouble() < 0.2) {
