@@ -191,10 +191,19 @@ public class DungeonListener implements Listener {
 
         plugin.getComponentLogger().info("<aqua>ChestOpen: данж=" + dungeonId + " в " + block.getLocation());
 
-        // Генерируем предметы плагина (артефакты, чертежи, кастомные ингредиенты)
+        // Проверяем — есть ли у сундука ванильный лутейбл
+        // Если есть — НЕ трогаем лут здесь, он сгенерируется через LootGenerateEvent
+        boolean hasLootTable = hasLootTable(tile);
+        if (hasLootTable) {
+            plugin.getComponentLogger().info("<aqua>ChestOpen: у сундука есть лутейбл, пропускаем (LootGenerateEvent добавит предметы)");
+            tile.getPersistentDataContainer().set(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN, true);
+            tile.update(true, false);
+            return;
+        }
+
+        // Сундук без лутейбла (кастомная схематика) — генерируем лут
         List<ItemStack> pluginLoot = dungeonManager.generateLoot(dungeonId);
 
-        // Если сундук пустой — добавляем ещё и базовые ванильные предметы
         boolean chestHasItems = false;
         for (ItemStack item : inv.getContents()) {
             if (item != null && item.getType() != Material.AIR) {
@@ -206,7 +215,6 @@ public class DungeonListener implements Listener {
             pluginLoot.addAll(0, dungeonManager.generateVanillaLoot(dungeonId));
         }
 
-        // Раскладываем по случайным слотам
         if (!pluginLoot.isEmpty()) {
             List<Integer> emptySlots = new ArrayList<>();
             for (int i = 0; i < inv.getSize(); i++) {
@@ -238,6 +246,20 @@ public class DungeonListener implements Listener {
                 Player player = event.getPlayer();
                 player.sendMessage(plugin.getConfigManager().getLang("boss-spawned"));
             }
+        }
+    }
+
+    // ─── Проверка наличия лутейбла на сундуке ───
+
+    private boolean hasLootTable(org.bukkit.block.TileState tile) {
+        try {
+            // В Paper 1.21.11 Container не имеет getLootTable(), используем рефлексию
+            java.lang.reflect.Method method = tile.getClass().getMethod("getLootTable");
+            Object result = method.invoke(tile);
+            return result != null;
+        } catch (Exception e) {
+            // Если метод не найден — предполагаем что лутейбла нет
+            return false;
         }
     }
 
