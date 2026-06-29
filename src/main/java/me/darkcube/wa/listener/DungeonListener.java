@@ -285,6 +285,11 @@ public class DungeonListener implements Listener {
 
     // ─── Определение данжа для сундука ───
 
+    private void cacheChunk(String key, String value) {
+        chunkDungeonCache.put(key, value);
+        chunkCacheTime.put(key, System.currentTimeMillis());
+    }
+
     private String findDungeonForChest(World world, Location loc, InventoryHolder holder) {
         // 1) PDC на сундуке (кастомные схематики)
         if (holder instanceof org.bukkit.block.TileState tile) {
@@ -292,26 +297,33 @@ public class DungeonListener implements Listener {
             if (fromPdc != null) return fromPdc;
         }
 
-        // 2) Кеш чанков (чтобы не дёргать locateNearestStructure каждый раз)
         String chunkKey = world.getName() + ":" + (loc.getBlockX() >> 4) + ":" + (loc.getBlockZ() >> 4);
+
+        // 2) Кеш чанков — только ПОЛОЖИТЕЛЬНЫЙ результат (данж найден)
         Long cachedTime = chunkCacheTime.get(chunkKey);
         if (cachedTime != null && System.currentTimeMillis() - cachedTime < CHUNK_CACHE_TTL) {
             String cached = chunkDungeonCache.get(chunkKey);
             if (cached != null && !cached.isEmpty()) return cached;
-            if (cached != null) return null; // кешировано что данжа нет
+            // null/пусто — не возвращаем, проверяем другие источники
         }
 
-        // 3) Поиск структуры рядом через Registry.STRUCTURE (для существующих структур)
+        // 3) Поиск структуры рядом через Registry.STRUCTURE
         String fromStructure = findDungeonByStructure(world, loc);
-        chunkCacheTime.put(chunkKey, System.currentTimeMillis());
         if (fromStructure != null) {
-            chunkDungeonCache.put(chunkKey, fromStructure);
+            cacheChunk(chunkKey, fromStructure);
             return fromStructure;
         }
-        chunkDungeonCache.put(chunkKey, ""); // кешируем что данжа нет
 
         // 4) По отслеженным структурам (для новых структур)
-        return findDungeonAtLocation(world, loc);
+        String fromTracked = findDungeonAtLocation(world, loc);
+        if (fromTracked != null) {
+            cacheChunk(chunkKey, fromTracked);
+            return fromTracked;
+        }
+
+        // 5) Все методы не нашли — кешируем отрицательный результат
+        cacheChunk(chunkKey, "");
+        return null;
     }
 
     private String findDungeonByStructure(World world, Location loc) {
