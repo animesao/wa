@@ -326,6 +326,7 @@ MIT License — см. файл [LICENSE](LICENSE).
 
 ---
 
+
 # 🇬🇧 English Documentation
 
 # 🏜️ Wasteland Artifacts
