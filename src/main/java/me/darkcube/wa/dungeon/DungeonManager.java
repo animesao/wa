@@ -103,6 +103,23 @@ public class DungeonManager {
         return loot;
     }
 
+    public @NotNull List<ItemStack> generateVanillaLoot(@NotNull String dungeonId) {
+        DungeonConfig config = dungeonConfigs.get(dungeonId);
+        if (config == null || config.loot.vanillaItems == null) return Collections.emptyList();
+
+        List<ItemStack> loot = new ArrayList<>();
+        for (var entry : config.loot.vanillaItems) {
+            if (random.nextDouble() * 100 < entry.weight) {
+                Material mat = Material.matchMaterial(entry.item);
+                if (mat != null) {
+                    int count = entry.minCount + random.nextInt(entry.maxCount - entry.minCount + 1);
+                    loot.add(new ItemStack(mat, count));
+                }
+            }
+        }
+        return loot;
+    }
+
     private @Nullable ItemStack createBlueprintDrop(String recipeId) {
         var recipe = plugin.getAltarManager().getCraftingManager().getRecipe(recipeId);
         if (recipe == null) return null;
@@ -197,7 +214,6 @@ public class DungeonManager {
     public static class DungeonConfig {
         public boolean enabled = true;
         public LootConfig loot = new LootConfig();
-        public SpecialChestConfig specialChests = new SpecialChestConfig();
         public BossConfigSection bosses = new BossConfigSection();
 
         public static class LootConfig {
@@ -207,6 +223,7 @@ public class DungeonManager {
             public List<LootEntry> artifacts = new ArrayList<>();
             public List<BlueprintLootEntry> blueprints = new ArrayList<>();
             public List<CustomItemLootEntry> customItems = new ArrayList<>();
+            public List<BaseLootEntry> vanillaItems = new ArrayList<>();
         }
 
         public static class LootEntry {
@@ -229,13 +246,11 @@ public class DungeonManager {
             public int maxCount = 3;
         }
 
-        public static class SpecialChestConfig {
-            public boolean enabled = true;
-            public List<ChestPosition> positions = new ArrayList<>();
-        }
-
-        public static class ChestPosition {
-            public int rx, ry, rz;
+        public static class BaseLootEntry {
+            public String item = "IRON_INGOT";
+            public double weight = 20;
+            public int minCount = 1;
+            public int maxCount = 3;
         }
 
         public static class BossConfigSection {

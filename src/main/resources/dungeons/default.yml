@@ -1,4 +1,8 @@
 # ─── Конфигурация подземелий ───
+# vanillaItems — базовые ванильные предметы
+# artifacts — готовые артефакты
+# blueprints — чертежи для алтарей
+# customItems — ингредиенты для крафта артефактов
 
 dungeons:
 
@@ -7,6 +11,55 @@ dungeons:
     loot:
       mode: INJECT
       replaceChance: 0.15
+      vanillaItems:
+        - item: DIAMOND
+          weight: 15
+          minCount: 1
+          maxCount: 3
+        - item: IRON_INGOT
+          weight: 40
+          minCount: 3
+          maxCount: 8
+        - item: GOLD_INGOT
+          weight: 30
+          minCount: 2
+          maxCount: 5
+        - item: EMERALD
+          weight: 20
+          minCount: 1
+          maxCount: 4
+        - item: BREAD
+          weight: 50
+          minCount: 2
+          maxCount: 6
+        - item: ARROW
+          weight: 35
+          minCount: 4
+          maxCount: 12
+        - item: ENCHANTED_BOOK
+          weight: 5
+          minCount: 1
+          maxCount: 1
+        - item: OBSIDIAN
+          weight: 10
+          minCount: 2
+          maxCount: 5
+        - item: REDSTONE
+          weight: 25
+          minCount: 3
+          maxCount: 8
+        - item: LAPIS_LAZULI
+          weight: 20
+          minCount: 2
+          maxCount: 6
+        - item: BONE
+          weight: 40
+          minCount: 3
+          maxCount: 7
+        - item: ROTTEN_FLESH
+          weight: 60
+          minCount: 2
+          maxCount: 5
       artifacts:
         - id: "fire_sword"
           weight: 10
@@ -36,15 +89,14 @@ dungeons:
           weight: 25
           minCount: 2
           maxCount: 5
-    special-chests:
-      enabled: true
-      positions:
-        - rx: 5
-          ry: 3
-          rz: -2
-        - rx: -5
-          ry: 1
-          rz: 3
+        - id: "arcane_essence"
+          weight: 12
+          minCount: 1
+          maxCount: 2
+        - id: "ancient_coin"
+          weight: 30
+          minCount: 1
+          maxCount: 4
     bosses:
       enabled: true
       types:
@@ -65,7 +117,52 @@ dungeons:
   fortress:
     enabled: true
     loot:
-      mode: ADD_CHEST
+      mode: INJECT
+      vanillaItems:
+        - item: NETHERITE_SCRAP
+          weight: 5
+          minCount: 1
+          maxCount: 2
+        - item: BLAZE_ROD
+          weight: 30
+          minCount: 1
+          maxCount: 3
+        - item: MAGMA_CREAM
+          weight: 25
+          minCount: 1
+          maxCount: 3
+        - item: GOLD_INGOT
+          weight: 35
+          minCount: 2
+          maxCount: 6
+        - item: QUARTZ
+          weight: 40
+          minCount: 3
+          maxCount: 8
+        - item: GLOWSTONE_DUST
+          weight: 35
+          minCount: 2
+          maxCount: 6
+        - item: NETHER_WART
+          weight: 20
+          minCount: 1
+          maxCount: 4
+        - item: GHAST_TEAR
+          weight: 8
+          minCount: 1
+          maxCount: 2
+        - item: WITHER_SKELETON_SKULL
+          weight: 3
+          minCount: 1
+          maxCount: 1
+        - item: IRON_INGOT
+          weight: 30
+          minCount: 2
+          maxCount: 5
+        - item: BONE
+          weight: 40
+          minCount: 3
+          maxCount: 7
       artifacts:
         - id: "necronomicon"
           weight: 2
@@ -91,6 +188,14 @@ dungeons:
           weight: 15
           minCount: 1
           maxCount: 3
+        - id: "wither_skull"
+          weight: 5
+          minCount: 1
+          maxCount: 1
+        - id: "soul_fragment"
+          weight: 12
+          minCount: 1
+          maxCount: 2
     bosses:
       enabled: true
       types:
@@ -105,6 +210,47 @@ dungeons:
     loot:
       mode: REPLACE
       replaceChance: 0.30
+      vanillaItems:
+        - item: DIAMOND
+          weight: 20
+          minCount: 2
+          maxCount: 4
+        - item: ECHO_SHARD
+          weight: 15
+          minCount: 1
+          maxCount: 3
+        - item: SCULK
+          weight: 30
+          minCount: 3
+          maxCount: 8
+        - item: AMETHYST_SHARD
+          weight: 25
+          minCount: 2
+          maxCount: 6
+        - item: DEEPSLATE
+          weight: 50
+          minCount: 4
+          maxCount: 12
+        - item: IRON_INGOT
+          weight: 30
+          minCount: 2
+          maxCount: 6
+        - item: GOLD_INGOT
+          weight: 20
+          minCount: 1
+          maxCount: 4
+        - item: ENCHANTED_BOOK
+          weight: 8
+          minCount: 1
+          maxCount: 2
+        - item: REDSTONE
+          weight: 30
+          minCount: 4
+          maxCount: 10
+        - item: BONE
+          weight: 35
+          minCount: 2
+          maxCount: 6
       artifacts:
         - id: "shadow_cloak"
           weight: 8
@@ -127,12 +273,65 @@ dungeons:
           weight: 15
           minCount: 1
           maxCount: 2
+        - id: "void_crystal"
+          weight: 8
+          minCount: 1
+          maxCount: 1
+        - id: "ancient_bone"
+          weight: 25
+          minCount: 1
+          maxCount: 4
 
   bastion:
     enabled: true
     loot:
       mode: INJECT
       replaceChance: 0.20
+      vanillaItems:
+        - item: GOLD_INGOT
+          weight: 50
+          minCount: 3
+          maxCount: 8
+        - item: GOLD_BLOCK
+          weight: 10
+          minCount: 1
+          maxCount: 2
+        - item: IRON_INGOT
+          weight: 35
+          minCount: 2
+          maxCount: 6
+        - item: CRYING_OBSIDIAN
+          weight: 15
+          minCount: 1
+          maxCount: 3
+        - item: LAVA_BUCKET
+          weight: 10
+          minCount: 1
+          maxCount: 1
+        - item: OBSIDIAN
+          weight: 20
+          minCount: 2
+          maxCount: 5
+        - item: MAGMA_CREAM
+          weight: 25
+          minCount: 1
+          maxCount: 3
+        - item: QUARTZ
+          weight: 40
+          minCount: 3
+          maxCount: 8
+        - item: NETHERITE_SCRAP
+          weight: 5
+          minCount: 1
+          maxCount: 1
+        - item: ARROW
+          weight: 30
+          minCount: 4
+          maxCount: 10
+        - item: PORKCHOP
+          weight: 35
+          minCount: 2
+          maxCount: 5
       artifacts:
         - id: "axe_of_the_giants"
           weight: 5
@@ -158,11 +357,60 @@ dungeons:
           weight: 25
           minCount: 2
           maxCount: 6
+        - id: "corrupted_ingot"
+          weight: 10
+          minCount: 1
+          maxCount: 2
+        - id: "ancient_coin"
+          weight: 30
+          minCount: 2
+          maxCount: 6
 
   mansion:
     enabled: true
     loot:
       mode: INJECT
+      vanillaItems:
+        - item: DIAMOND
+          weight: 20
+          minCount: 1
+          maxCount: 3
+        - item: EMERALD
+          weight: 30
+          minCount: 2
+          maxCount: 6
+        - item: GOLD_INGOT
+          weight: 25
+          minCount: 2
+          maxCount: 5
+        - item: IRON_INGOT
+          weight: 35
+          minCount: 3
+          maxCount: 7
+        - item: ENCHANTED_BOOK
+          weight: 12
+          minCount: 1
+          maxCount: 2
+        - item: BREAD
+          weight: 45
+          minCount: 2
+          maxCount: 5
+        - item: REDSTONE
+          weight: 25
+          minCount: 3
+          maxCount: 7
+        - item: STRING
+          weight: 30
+          minCount: 2
+          maxCount: 6
+        - item: SPIDER_EYE
+          weight: 20
+          minCount: 1
+          maxCount: 3
+        - item: GUNPOWDER
+          weight: 25
+          minCount: 1
+          maxCount: 4
       artifacts:
         - id: "staff_of_storms"
           weight: 2
@@ -185,12 +433,61 @@ dungeons:
           weight: 20
           minCount: 2
           maxCount: 4
+        - id: "spectral_dust"
+          weight: 18
+          minCount: 1
+          maxCount: 3
+        - id: "enchanted_cloth"
+          weight: 15
+          minCount: 1
+          maxCount: 2
 
   end_city:
     enabled: true
     loot:
       mode: INJECT
       replaceChance: 0.15
+      vanillaItems:
+        - item: DIAMOND
+          weight: 25
+          minCount: 2
+          maxCount: 4
+        - item: ENDER_PEARL
+          weight: 20
+          minCount: 1
+          maxCount: 3
+        - item: CHORUS_FRUIT
+          weight: 30
+          minCount: 2
+          maxCount: 5
+        - item: SHULKER_SHELL
+          weight: 8
+          minCount: 1
+          maxCount: 2
+        - item: IRON_INGOT
+          weight: 30
+          minCount: 3
+          maxCount: 7
+        - item: GOLD_INGOT
+          weight: 25
+          minCount: 2
+          maxCount: 5
+        - item: EMERALD
+          weight: 20
+          minCount: 1
+          maxCount: 4
+        - item: ENCHANTED_BOOK
+          weight: 10
+          minCount: 1
+          maxCount: 2
+        - item: OBSIDIAN
+          weight: 15
+          minCount: 2
+          maxCount: 5
+        - item: EXPERIENCE_BOTTLE
+          weight: 30
+          minCount: 3
+          maxCount: 8
       artifacts:
         - id: "artifact_of_flight"
           weight: 3
@@ -216,6 +513,18 @@ dungeons:
           weight: 8
           minCount: 1
           maxCount: 1
+        - id: "ender_gem"
+          weight: 15
+          minCount: 1
+          maxCount: 2
+        - id: "celestial_star"
+          weight: 3
+          minCount: 1
+          maxCount: 1
+        - id: "dragon_scales"
+          weight: 5
+          minCount: 1
+          maxCount: 2
 
   # ─── ПРИМЕР: Кастомный данж через схематику ───
   # Скопируй .nbt файл в plugins/WastelandArtifacts/schematics/
@@ -224,6 +533,51 @@ dungeons:
     enabled: true
     loot:
       mode: INJECT
+      vanillaItems:
+        - item: DIAMOND
+          weight: 25
+          minCount: 2
+          maxCount: 5
+        - item: NETHERITE_SCRAP
+          weight: 10
+          minCount: 1
+          maxCount: 2
+        - item: IRON_INGOT
+          weight: 40
+          minCount: 3
+          maxCount: 8
+        - item: GOLD_INGOT
+          weight: 30
+          minCount: 2
+          maxCount: 6
+        - item: EMERALD
+          weight: 25
+          minCount: 1
+          maxCount: 4
+        - item: ENCHANTED_BOOK
+          weight: 12
+          minCount: 1
+          maxCount: 2
+        - item: OBSIDIAN
+          weight: 20
+          minCount: 2
+          maxCount: 6
+        - item: EXPERIENCE_BOTTLE
+          weight: 35
+          minCount: 3
+          maxCount: 8
+        - item: REDSTONE
+          weight: 30
+          minCount: 4
+          maxCount: 10
+        - item: ARROW
+          weight: 35
+          minCount: 4
+          maxCount: 12
+        - item: COOKED_BEEF
+          weight: 40
+          minCount: 2
+          maxCount: 6
       artifacts:
         - id: "staff_of_storms"
           weight: 5
@@ -258,6 +612,14 @@ dungeons:
           weight: 15
           minCount: 1
           maxCount: 3
+        - id: "arcane_essence"
+          weight: 18
+          minCount: 1
+          maxCount: 3
+        - id: "ancient_coin"
+          weight: 30
+          minCount: 2
+          maxCount: 6
     bosses:
       enabled: true
       types:

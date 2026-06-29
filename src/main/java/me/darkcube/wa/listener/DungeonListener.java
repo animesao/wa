@@ -89,18 +89,24 @@ public class DungeonListener implements Listener {
                 }
             }
 
-            // Генерируем специальные сундуки
-            if (config.specialChests.enabled && config.specialChests.positions != null) {
-                for (var pos : config.specialChests.positions) {
-                    Location chestLoc = baseLoc.clone().add(pos.rx, pos.ry, pos.rz);
-                    Block block = chestLoc.getBlock();
-                    if (block.getType() == Material.CHEST) {
-                        List<ItemStack> loot = dungeonManager.generateLoot(dungeonId);
-                        if (!loot.isEmpty() && block.getState() instanceof Chest chest) {
-                            Inventory inv = chest.getInventory();
-                            for (ItemStack item : loot) {
-                                int slot = random.nextInt(inv.getSize());
-                                inv.setItem(slot, item);
+            // Сканируем bounding box структуры и помечаем все сундуки dungeon_id
+            var bb = event.getBoundingBox();
+            int minX = (int) Math.floor(bb.getMinX());
+            int minY = (int) Math.floor(bb.getMinY());
+            int minZ = (int) Math.floor(bb.getMinZ());
+            int maxX = (int) Math.ceil(bb.getMaxX());
+            int maxY = (int) Math.ceil(bb.getMaxY());
+            int maxZ = (int) Math.ceil(bb.getMaxZ());
+            for (int x = minX; x <= maxX; x++) {
+                for (int y = minY; y <= maxY; y++) {
+                    for (int z = minZ; z <= maxZ; z++) {
+                        Block block = world.getBlockAt(x, y, z);
+                        Material type = block.getType();
+                        if (type == Material.CHEST || type == Material.BARREL || type.name().endsWith("_SHULKER_BOX")) {
+                            if (block.getState() instanceof org.bukkit.block.TileState tile) {
+                                tile.getPersistentDataContainer().set(
+                                        DUNGEON_ID_KEY, PersistentDataType.STRING, dungeonId);
+                                tile.update(true, false);
                             }
                         }
                     }
@@ -167,6 +173,7 @@ public class DungeonListener implements Listener {
     }
 
     private static final NamespacedKey LOOT_POPULATED_KEY = new NamespacedKey("wastelandartifacts", "loot_populated");
+    private static final NamespacedKey DUNGEON_ID_KEY = new NamespacedKey("wastelandartifacts", "dungeon_id");
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onChestOpen(PlayerInteractEvent event) {
@@ -182,14 +189,17 @@ public class DungeonListener implements Listener {
         // Пропускаем, если лут уже был сгенерирован плагином
         if (tile.getPersistentDataContainer().has(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN)) return;
 
-        // Определяем ID данжа по местоположению
-        String dungeonId = findDungeonAtLocation(block.getWorld(), block.getLocation());
+        // Определяем ID данжа — сначала по PDC на сундуке, потом по местоположению
+        String dungeonId = tile.getPersistentDataContainer().get(DUNGEON_ID_KEY, PersistentDataType.STRING);
+        if (dungeonId == null) {
+            dungeonId = findDungeonAtLocation(block.getWorld(), block.getLocation());
+        }
         if (dungeonId == null) return;
 
         DungeonManager.DungeonConfig config = dungeonManager.getConfig(dungeonId);
         if (config == null || !config.loot.enabled) return;
 
-        // Проверяем — если в сундуке уже есть лут (ванильный), пропускаем (он уже обработан LootGenerateEvent)
+        // Проверяем — если в сундуке уже есть предметы (ванильный лут от LootTable)
         boolean hasExistingLoot = false;
         for (ItemStack item : inv.getContents()) {
             if (item != null && item.getType() != Material.AIR) {
@@ -197,12 +207,26 @@ public class DungeonListener implements Listener {
                 break;
             }
         }
+
         if (!hasExistingLoot) {
-            // Пустой сундук в зоне данжа — генерируем лут
-            List<ItemStack> loot = dungeonManager.generateLoot(dungeonId);
-            for (ItemStack item : loot) {
+            // Пустой сундук в зоне данжа — генерируем ванильный лут из конфига + плагиновые предметы
+            List<ItemStack> chestLoot = new ArrayList<>();
+
+            // Базовые ванильные предметы (настраивается в vanillaItems конфига данжа)
+            chestLoot.addAll(dungeonManager.generateVanillaLoot(dungeonId));
+
+            // Предметы плагина: артефакты, чертежи, кастомные ингредиенты
+            chestLoot.addAll(dungeonManager.generateLoot(dungeonId));
+
+            // Раскладываем по случайным слотам
+            for (ItemStack lootItem : chestLoot) {
                 int slot = random.nextInt(inv.getSize());
-                inv.setItem(slot, item);
+                ItemStack existing = inv.getItem(slot);
+                if (existing == null || existing.getType() == Material.AIR) {
+                    inv.setItem(slot, lootItem);
+                } else {
+                    inv.addItem(lootItem);
+                }
             }
         }
 
