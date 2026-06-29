@@ -14,6 +14,7 @@
 [![Paper](https://img.shields.io/badge/Paper-1.21.1--1.21.4-blue?logo=paper)](https://papermc.io)
 [![Java](https://img.shields.io/badge/Java-21-orange?logo=java)](https://adoptium.net)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Build](https://github.com/animesao/WA/actions/workflows/build.yml/badge.svg)](https://github.com/animesao/WA/actions)
 
 ---
 
