@@ -121,8 +121,6 @@ public class DungeonListener implements Listener {
         Location loc;
         if (holder instanceof BlockState state) {
             loc = state.getLocation();
-        } else if (holder instanceof Chest chest) {
-            loc = chest.getLocation();
         } else if (holder instanceof DoubleChest dc) {
             loc = dc.getLocation();
         } else {
@@ -161,26 +159,56 @@ public class DungeonListener implements Listener {
                 }
             }
         }
+
+        // Помечаем контейнер как обработанный
+        if (holder instanceof org.bukkit.block.TileState tile) {
+            tile.getPersistentDataContainer().set(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN, true);
+        }
     }
+
+    private static final NamespacedKey LOOT_POPULATED_KEY = new NamespacedKey("wastelandartifacts", "loot_populated");
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onChestOpen(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         Block block = event.getClickedBlock();
-        if (block == null || block.getType() != Material.CHEST) return;
+        if (block == null || (block.getType() != Material.CHEST && block.getType() != Material.BARREL
+                && block.getType() != Material.SHULKER_BOX)) return;
 
-        if (!(block.getState() instanceof Chest chest)) return;
+        if (!(block.getState() instanceof InventoryHolder holder)) return;
+        if (!(holder instanceof org.bukkit.block.TileState tile)) return;
+        Inventory inv = holder.getInventory();
 
-        // Проверяем, есть ли PDC метка что это сундук с лутом данжа
-        var pdc = chest.getPersistentDataContainer();
-        String dungeonId = pdc.get(
-                new NamespacedKey(plugin, "dungeon_id"),
-                PersistentDataType.STRING
-        );
+        // Пропускаем, если лут уже был сгенерирован плагином
+        if (tile.getPersistentDataContainer().has(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN)) return;
+
+        // Определяем ID данжа по местоположению
+        String dungeonId = findDungeonAtLocation(block.getWorld(), block.getLocation());
         if (dungeonId == null) return;
 
         DungeonManager.DungeonConfig config = dungeonManager.getConfig(dungeonId);
-        if (config == null) return;
+        if (config == null || !config.loot.enabled) return;
+
+        // Проверяем — если в сундуке уже есть лут (ванильный), пропускаем (он уже обработан LootGenerateEvent)
+        boolean hasExistingLoot = false;
+        for (ItemStack item : inv.getContents()) {
+            if (item != null && item.getType() != Material.AIR) {
+                hasExistingLoot = true;
+                break;
+            }
+        }
+        if (!hasExistingLoot) {
+            // Пустой сундук в зоне данжа — генерируем лут
+            List<ItemStack> loot = dungeonManager.generateLoot(dungeonId);
+            for (ItemStack item : loot) {
+                int slot = random.nextInt(inv.getSize());
+                inv.setItem(slot, item);
+            }
+        }
+
+        // Помечаем сундук как обработанный
+        tile.getPersistentDataContainer().set(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN, true);
+        tile.update(true, false);
 
         // Спавним босса при открытии сундука
         if (config.bosses.enabled && config.bosses.types != null && random.nextDouble() < 0.2) {

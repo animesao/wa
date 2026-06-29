@@ -89,6 +89,17 @@ public class DungeonManager {
                 }
             }
         }
+        // Custom item loot (ингредиенты для артефактов)
+        for (var entry : config.loot.customItems) {
+            if (random.nextDouble() * 100 < entry.weight) {
+                ItemStack item = plugin.getCustomItemRegistry().create(entry.id);
+                if (item != null) {
+                    int count = entry.minCount + random.nextInt(entry.maxCount - entry.minCount + 1);
+                    item.setAmount(count);
+                    loot.add(item);
+                }
+            }
+        }
         return loot;
     }
 
@@ -195,6 +206,7 @@ public class DungeonManager {
             public double replaceChance = 0.15;
             public List<LootEntry> artifacts = new ArrayList<>();
             public List<BlueprintLootEntry> blueprints = new ArrayList<>();
+            public List<CustomItemLootEntry> customItems = new ArrayList<>();
         }
 
         public static class LootEntry {
@@ -208,6 +220,13 @@ public class DungeonManager {
             public String recipeId;
             public double weight = 5;
             public int amount = 1;
+        }
+
+        public static class CustomItemLootEntry {
+            public String id;
+            public double weight = 10;
+            public int minCount = 1;
+            public int maxCount = 3;
         }
 
         public static class SpecialChestConfig {
