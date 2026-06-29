@@ -1,8 +1,6 @@
 # Gradle
 .gradle/
 build/
-!gradle/wrapper/gradle-wrapper.jar
-!gradle/wrapper/gradle-wrapper.properties
 
 # IDE
 .idea/
@@ -20,7 +18,6 @@ bin/
 Thumbs.db
 
 # Minecraft server
-*.jar
 server.properties
 eula.txt
 ops.json
@@ -32,3 +29,6 @@ world/
 world_nether/
 world_the_end/
 logs/
+
+# Keep gradle wrapper
+!gradle/wrapper/gradle-wrapper.jar
