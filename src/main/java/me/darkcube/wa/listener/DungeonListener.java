@@ -76,7 +76,7 @@ public class DungeonListener implements Listener {
                 " [" + (int)baseLoc.getX() + ", " + (int)baseLoc.getZ() + "]");
 
         Bukkit.getScheduler().runTask(plugin, () -> {
-            if (config.bosses.enabled && config.bosses.types != null) {
+            if (config.bosses.enabled && config.bosses.types != null && !config.bosses.types.isEmpty()) {
                 for (var bossConfig : config.bosses.types) {
                     if (bossConfig.enabled && random.nextDouble() < 0.3) {
                         Location bossLoc = baseLoc.clone().add(
@@ -238,7 +238,7 @@ public class DungeonListener implements Listener {
         tile.getPersistentDataContainer().set(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN, true);
         tile.update(true, false);
 
-        if (config.bosses.enabled && config.bosses.types != null && random.nextDouble() < 0.2) {
+        if (config.bosses.enabled && config.bosses.types != null && !config.bosses.types.isEmpty() && random.nextDouble() < 0.2) {
             var bossConfig = config.bosses.types.get(random.nextInt(config.bosses.types.size()));
             if (bossConfig.enabled) {
                 Location bossLoc = block.getLocation().add(2, 1, 0);

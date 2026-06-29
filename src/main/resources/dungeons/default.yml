@@ -173,6 +173,17 @@ dungeons:
           weight: 3
           amount: 1
 
+    bosses:
+      enabled: true
+      types:
+        - entity: BLAZE
+          name: "<gold>Пылающий Король"
+          artifact: "fire_sword"
+          dropChance: 0.15
+          health: 150.0
+          equipment:
+            mainhand: BLAZE_ROD
+
   pillager_outpost:
     enabled: true
     loot:
@@ -235,6 +246,19 @@ dungeons:
         - recipeId: "basic_altar_craft_fire_sword"
           weight: 5
           amount: 1
+
+    bosses:
+      enabled: true
+      types:
+        - entity: PILLAGER
+          name: "<red>Капитан Разбойников"
+          artifact: "necronomicon"
+          blueprint: "basic_altar_craft_fire_sword"
+          dropChance: 0.20
+          health: 80.0
+          equipment:
+            mainhand: CROSSBOW
+            helmet: IRON_HELMET
 
   ruined_portal:
     enabled: true
@@ -299,6 +323,17 @@ dungeons:
           minCount: 2
           maxCount: 5
 
+    bosses:
+      enabled: true
+      types:
+        - entity: ZOMBIFIED_PIGLIN
+          name: "<dark_green>Страж Порога"
+          artifact: "axe_of_the_giants"
+          dropChance: 0.10
+          health: 100.0
+          equipment:
+            mainhand: GOLDEN_SWORD
+
   buried_treasure:
     enabled: true
     loot:
@@ -357,6 +392,18 @@ dungeons:
           weight: 12
           minCount: 1
           maxCount: 2
+
+    bosses:
+      enabled: true
+      types:
+        - entity: DROWNED
+          name: "<aqua>Капитан Утопленников"
+          artifact: "void_boots"
+          dropChance: 0.15
+          health: 120.0
+          equipment:
+            mainhand: TRIDENT
+            helmet: LEATHER_HELMET
 
   mineshaft:
     enabled: true
@@ -437,6 +484,17 @@ dungeons:
           weight: 3
           amount: 1
 
+    bosses:
+      enabled: true
+      types:
+        - entity: GIANT
+          name: "<dark_gray>Древний Шахтёр"
+          artifact: "axe_of_the_giants"
+          dropChance: 0.12
+          health: 200.0
+          equipment:
+            mainhand: IRON_PICKAXE
+
   ocean_ruins:
     enabled: true
     loot:
@@ -499,6 +557,18 @@ dungeons:
           weight: 8
           minCount: 1
           maxCount: 1
+
+    bosses:
+      enabled: true
+      types:
+        - entity: DROWNED
+          name: "<blue>Хранитель Глубин"
+          artifact: "staff_of_storms"
+          blueprint: "basic_altar_craft_fire_sword"
+          dropChance: 0.10
+          health: 100.0
+          equipment:
+            mainhand: TRIDENT
 
   trail_ruins:
     enabled: true
@@ -575,6 +645,23 @@ dungeons:
         - recipeId: "basic_altar_craft_shadow_cloak"
           weight: 5
           amount: 1
+
+    bosses:
+      enabled: true
+      types:
+        - entity: SKELETON
+          name: "<gray>Призрак Прошлого"
+          artifact: "shadow_cloak"
+          blueprint: "basic_altar_craft_shadow_cloak"
+          dropChance: 0.18
+          health: 90.0
+          equipment:
+            mainhand: BOW
+            helmet: CHAINMAIL_HELMET
+          potionEffects:
+            - effect: SPEED
+              amplifier: 1
+              duration: -1
 
   trial_chambers:
     enabled: true
@@ -776,6 +863,16 @@ dungeons:
           minCount: 1
           maxCount: 4
 
+    bosses:
+      enabled: true
+      types:
+        - entity: WARDEN
+          name: "<dark_green>Страж Пустоты"
+          artifact: "shadow_cloak"
+          blueprint: "advanced_altar_craft_ice_breaker"
+          dropChance: 0.30
+          health: 500.0
+
   bastion:
     enabled: true
     loot:
@@ -860,6 +957,20 @@ dungeons:
           minCount: 2
           maxCount: 6
 
+    bosses:
+      enabled: true
+      types:
+        - entity: PIGLIN_BRUTE
+          name: "<gold>Хранитель Сокровищницы"
+          artifact: "axe_of_the_giants"
+          blueprint: "basic_altar_craft_fire_sword"
+          dropChance: 0.20
+          health: 150.0
+          equipment:
+            mainhand: GOLDEN_AXE
+            helmet: GOLDEN_HELMET
+            chestplate: GOLDEN_CHESTPLATE
+
   mansion:
     enabled: true
     loot:
@@ -935,6 +1046,20 @@ dungeons:
           weight: 15
           minCount: 1
           maxCount: 2
+
+    bosses:
+      enabled: true
+      types:
+        - entity: EVOKER
+          name: "<light_purple>Тёмный Маг"
+          artifact: "necronomicon"
+          blueprint: "advanced_altar_craft_necronomicon"
+          dropChance: 0.22
+          health: 120.0
+          potionEffects:
+            - effect: INVISIBILITY
+              amplifier: 0
+              duration: -1
 
   end_city:
     enabled: true
@@ -1018,7 +1143,17 @@ dungeons:
         - id: "dragon_scales"
           weight: 5
           minCount: 1
-          maxCount: 2
+          maxCount: 1
+
+    bosses:
+      enabled: true
+      types:
+        - entity: SHULKER
+          name: "<light_purple>Страж Края"
+          artifact: "artifact_of_flight"
+          blueprint: "legendary_altar_craft_staff_of_storms"
+          dropChance: 0.20
+          health: 180.0
 
   # ─── ПРИМЕР: Кастомный данж через схематику ───
   # Скопируй .nbt файл в plugins/WastelandArtifacts/schematics/
@@ -1196,6 +1331,18 @@ dungeons:
           minCount: 1
           maxCount: 2
 
+    bosses:
+      enabled: true
+      types:
+        - entity: ZOMBIE
+          name: "<dark_green>Вожак Орды"
+          artifact: "shadow_cloak"
+          dropChance: 0.08
+          health: 60.0
+          equipment:
+            mainhand: IRON_SWORD
+            helmet: IRON_HELMET
+
   temple:
     enabled: true
     loot:
@@ -1263,6 +1410,17 @@ dungeons:
           weight: 5
           amount: 1
 
+    bosses:
+      enabled: true
+      types:
+        - entity: HUSK
+          name: "<yellow>Песчаный Фараон"
+          artifact: "fire_sword"
+          dropChance: 0.15
+          health: 100.0
+          equipment:
+            mainhand: STONE_SWORD
+
   jungle_temple:
     enabled: true
     loot:
@@ -1323,6 +1481,20 @@ dungeons:
           minCount: 1
           maxCount: 1
 
+    bosses:
+      enabled: true
+      types:
+        - entity: CAVE_SPIDER
+          name: "<dark_green>Храмовый Паук"
+          artifact: "shadow_cloak"
+          dropChance: 0.12
+          health: 80.0
+          potionEffects:
+            - effect: POISON
+              amplifier: 1
+              duration: -1
+
+
   igloo:
     enabled: true
     loot:
@@ -1365,6 +1537,17 @@ dungeons:
           weight: 15
           minCount: 1
           maxCount: 2
+
+    bosses:
+      enabled: true
+      types:
+        - entity: STRAY
+          name: "<aqua>Ледяной Странник"
+          artifact: "staff_of_storms"
+          dropChance: 0.10
+          health: 70.0
+          equipment:
+            mainhand: BOW
 
   shipwreck:
     enabled: true
@@ -1436,6 +1619,19 @@ dungeons:
         - recipeId: "basic_altar_craft_fire_sword"
           weight: 3
           amount: 1
+
+    bosses:
+      enabled: true
+      types:
+        - entity: DROWNED
+          name: "<blue>Проклятый Капитан"
+          artifact: "void_boots"
+          blueprint: "basic_altar_craft_fire_sword"
+          dropChance: 0.18
+          health: 130.0
+          equipment:
+            mainhand: IRON_SWORD
+            helmet: LEATHER_HELMET
 
   monument:
     enabled: true
@@ -1512,3 +1708,17 @@ dungeons:
         - recipeId: "advanced_altar_craft_necronomicon"
           weight: 3
           amount: 1
+
+    bosses:
+      enabled: true
+      types:
+        - entity: ELDER_GUARDIAN
+          name: "<dark_aqua>Древний Хранитель"
+          artifact: "staff_of_storms"
+          blueprint: "advanced_altar_craft_necronomicon"
+          dropChance: 0.30
+          health: 300.0
+          potionEffects:
+            - effect: MINING_FATIGUE
+              amplifier: 2
+              duration: -1
