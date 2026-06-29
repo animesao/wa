@@ -74,18 +74,6 @@ public class DungeonListener implements Listener {
                 " [" + (int)baseLoc.getX() + ", " + (int)baseLoc.getZ() + "]");
 
         Bukkit.getScheduler().runTask(plugin, () -> {
-            if (config.bosses.enabled && config.bosses.types != null && !config.bosses.types.isEmpty()) {
-                for (var bossConfig : config.bosses.types) {
-                    if (bossConfig.enabled && random.nextDouble() < 0.3) {
-                        Location bossLoc = baseLoc.clone().add(
-                                random.nextInt(10) - 5, 1, random.nextInt(10) - 5
-                        );
-                        bossLoc.setY(world.getHighestBlockYAt(bossLoc));
-                        dungeonManager.spawnBoss(bossLoc, bossConfig);
-                    }
-                }
-            }
-
             var bb = event.getBoundingBox();
             int minX = (int) Math.floor(bb.getMinX());
             int minY = (int) Math.floor(bb.getMinY());
@@ -172,46 +160,79 @@ public class DungeonListener implements Listener {
         Inventory inv = event.getInventory();
         if (inv.getType() != org.bukkit.event.inventory.InventoryType.CHEST
                 && inv.getType() != org.bukkit.event.inventory.InventoryType.BARREL
-                && inv.getType() != org.bukkit.event.inventory.InventoryType.SHULKER_BOX) return;
+                && inv.getType() != org.bukkit.event.inventory.InventoryType.SHULKER_BOX
+                && inv.getType() != org.bukkit.event.inventory.InventoryType.HOPPER) return;
 
         InventoryHolder holder = inv.getHolder();
-        if (!(holder instanceof org.bukkit.block.TileState tile)) return;
-        if (tile.getPersistentDataContainer().has(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN)) return;
+        if (holder == null) return;
 
-        // Используем верхний инвентарь (сам сундук), а не комбинированный вид
-        Inventory topInv = event.getView().getTopInventory();
-        if (topInv != inv) inv = topInv;
-        holder = inv.getHolder();
-        if (!(holder instanceof org.bukkit.block.TileState tile2)) return;
-        tile = tile2;
-        if (tile.getPersistentDataContainer().has(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN)) return;
+        // Определяем позицию для поиска данжа
+        boolean isMinecart = holder instanceof org.bukkit.entity.Entity entity
+                && (entity.getType() == org.bukkit.entity.EntityType.CHEST_MINECART
+                || entity.getType() == org.bukkit.entity.EntityType.HOPPER_MINECART);
+        Location chestLoc;
+        if (holder instanceof org.bukkit.block.TileState tile) {
+            if (tile.getPersistentDataContainer().has(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN)) return;
+            Inventory topInv = event.getView().getTopInventory();
+            if (topInv != inv) inv = topInv;
+            holder = inv.getHolder();
+            if (!(holder instanceof org.bukkit.block.TileState tile2)) return;
+            tile = tile2;
+            if (tile.getPersistentDataContainer().has(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN)) return;
+            chestLoc = ((org.bukkit.block.BlockState) holder).getBlock().getLocation();
+        } else if (isMinecart) {
+            var minecartEntity = (org.bukkit.entity.Entity) holder;
+            if (minecartEntity.getPersistentDataContainer().has(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN)) return;
+            chestLoc = minecartEntity.getLocation();
+        } else {
+            return;
+        }
 
-        Block block = ((org.bukkit.block.BlockState) holder).getBlock();
-        String dungeonId = findDungeonForChest(block.getWorld(), block.getLocation(), holder);
+        String dungeonId = findDungeonForChest(chestLoc.getWorld(), chestLoc, holder);
         if (dungeonId == null) return;
 
         DungeonManager.DungeonConfig config = dungeonManager.getConfig(dungeonId);
         if (config == null || !config.loot.enabled) return;
 
-        plugin.getComponentLogger().info("<aqua>InventoryOpen: данж=" + dungeonId + " в " + block.getLocation());
+        plugin.getComponentLogger().info("<aqua>InventoryOpen: данж=" + dungeonId + " в " + chestLoc);
 
-        // Схема: добавляем лут и форсим синхронизацию через тайк
-        Location chestLoc = block.getLocation().clone();
+        // Помечаем как обработанное (блокируем повторную генерацию)
+        if (holder instanceof org.bukkit.block.TileState tile) {
+            tile.getPersistentDataContainer().set(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN, true);
+            tile.update(true, false);
+        } else if (holder instanceof org.bukkit.entity.Entity entity) {
+            entity.getPersistentDataContainer().set(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN, true);
+        }
+
+        Location finalChestLoc = chestLoc.clone();
         String finalDungeonId = dungeonId;
 
-        tile.getPersistentDataContainer().set(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN, true);
-        tile.update(true, false);
-
         Bukkit.getScheduler().runTask(plugin, () -> {
-            Block currentBlock = chestLoc.getBlock();
-            if (!(currentBlock.getState() instanceof InventoryHolder currentHolder)) return;
-            if (!(currentHolder instanceof org.bukkit.block.TileState currentTile)) return;
-            Inventory chestInv = currentHolder.getInventory();
-            if (!currentTile.getPersistentDataContainer().has(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN)) return;
+            Inventory targetInv;
+            if (isMinecart) {
+                var entities = finalChestLoc.getWorld().getNearbyEntities(finalChestLoc, 0.5, 0.5, 0.5,
+                        e -> e instanceof org.bukkit.entity.Entity en
+                                && (en.getType() == org.bukkit.entity.EntityType.CHEST_MINECART
+                                || en.getType() == org.bukkit.entity.EntityType.HOPPER_MINECART)
+                                && en.getPersistentDataContainer().has(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN));
+                if (entities.isEmpty()) return;
+                var minecartEntity = entities.iterator().next();
+                if (minecartEntity instanceof org.bukkit.inventory.InventoryHolder ih) {
+                    targetInv = ih.getInventory();
+                } else {
+                    return;
+                }
+            } else {
+                Block b = finalChestLoc.getBlock();
+                if (!(b.getState() instanceof InventoryHolder h)) return;
+                if (h instanceof org.bukkit.block.TileState t
+                        && !t.getPersistentDataContainer().has(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN)) return;
+                targetInv = h.getInventory();
+            }
 
             List<ItemStack> loot = dungeonManager.generateLoot(finalDungeonId);
             boolean chestEmpty = true;
-            for (ItemStack item : chestInv.getContents()) {
+            for (ItemStack item : targetInv.getContents()) {
                 if (item != null && item.getType() != Material.AIR) {
                     chestEmpty = false;
                     break;
@@ -223,8 +244,8 @@ public class DungeonListener implements Listener {
 
             if (!loot.isEmpty()) {
                 List<Integer> slots = new ArrayList<>();
-                for (int i = 0; i < chestInv.getSize(); i++) {
-                    ItemStack content = chestInv.getItem(i);
+                for (int i = 0; i < targetInv.getSize(); i++) {
+                    ItemStack content = targetInv.getItem(i);
                     if (content == null || content.getType() == Material.AIR) {
                         slots.add(i);
                     }
@@ -233,26 +254,28 @@ public class DungeonListener implements Listener {
                 int idx = 0;
                 for (ItemStack item : loot) {
                     if (idx < slots.size()) {
-                        chestInv.setItem(slots.get(idx++), item);
+                        targetInv.setItem(slots.get(idx++), item);
                     } else {
-                        chestInv.addItem(item);
+                        targetInv.addItem(item);
                     }
                 }
                 plugin.getComponentLogger().info("<green>InventoryOpen: добавлено " + loot.size() + " предметов в " + finalDungeonId);
             }
 
-            // Форсим обновление для игрока
             if (event.getPlayer() instanceof org.bukkit.entity.Player player) {
                 player.updateInventory();
             }
         });
 
-        // Спавним босса
+        // Спавним босса рядом с контейнером
         if (config.bosses.enabled && config.bosses.types != null && !config.bosses.types.isEmpty() && random.nextDouble() < 0.2) {
             var bossConfig = config.bosses.types.get(random.nextInt(config.bosses.types.size()));
-            if (bossConfig.enabled && holder instanceof org.bukkit.block.BlockState state) {
-                Location bossLoc = state.getLocation().add(2, 1, 0);
+            if (bossConfig.enabled) {
+                Location bossLoc = chestLoc.clone().add(2, 1, 0);
                 dungeonManager.spawnBoss(bossLoc, bossConfig);
+                if (event.getPlayer() instanceof org.bukkit.entity.Player player) {
+                    player.sendMessage(plugin.getConfigManager().getLang("boss-spawned"));
+                }
             }
         }
     }

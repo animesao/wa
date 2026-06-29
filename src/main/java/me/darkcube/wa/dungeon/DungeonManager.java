@@ -158,7 +158,9 @@ public class DungeonManager {
 
         var entity = location.getWorld().spawnEntity(location, entityType);
         if (entity instanceof LivingEntity living) {
-            living.setCustomName(plugin.getConfigManager().getLang("boss-spawned"));
+            if (bossConfig.name != null && !bossConfig.name.isEmpty()) {
+                living.customName(me.darkcube.wa.util.ComponentUtil.fromMini(bossConfig.name));
+            }
             living.setCustomNameVisible(true);
 
             if (bossConfig.health > 0) {
