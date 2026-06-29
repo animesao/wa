@@ -179,6 +179,7 @@ dungeons:
         - entity: BLAZE
           name: "<gold>Пылающий Король"
           artifact: "fire_sword"
+          blueprint: "advanced_altar_craft_fire_sword"
           dropChance: 0.15
           health: 150.0
           equipment:
@@ -329,6 +330,7 @@ dungeons:
         - entity: ZOMBIFIED_PIGLIN
           name: "<dark_green>Страж Порога"
           artifact: "axe_of_the_giants"
+          blueprint: "basic_altar_craft_shadow_cloak"
           dropChance: 0.10
           health: 100.0
           equipment:
@@ -399,6 +401,7 @@ dungeons:
         - entity: DROWNED
           name: "<aqua>Капитан Утопленников"
           artifact: "void_boots"
+          blueprint: "basic_altar_craft_fire_sword"
           dropChance: 0.15
           health: 120.0
           equipment:
@@ -490,6 +493,7 @@ dungeons:
         - entity: GIANT
           name: "<dark_gray>Древний Шахтёр"
           artifact: "axe_of_the_giants"
+          blueprint: "basic_altar_craft_fire_sword"
           dropChance: 0.12
           health: 200.0
           equipment:
@@ -783,6 +787,7 @@ dungeons:
         - entity: BLAZE
           name: "<gold>Пылающий Лорд"
           artifact: "necronomicon"
+          blueprint: "advanced_altar_craft_necronomicon"
           dropChance: 0.10
           health: 100.0
 
@@ -1337,6 +1342,7 @@ dungeons:
         - entity: ZOMBIE
           name: "<dark_green>Вожак Орды"
           artifact: "shadow_cloak"
+          blueprint: "basic_altar_craft_shadow_cloak"
           dropChance: 0.08
           health: 60.0
           equipment:
@@ -1416,6 +1422,7 @@ dungeons:
         - entity: HUSK
           name: "<yellow>Песчаный Фараон"
           artifact: "fire_sword"
+          blueprint: "basic_altar_craft_fire_sword"
           dropChance: 0.15
           health: 100.0
           equipment:
@@ -1487,6 +1494,7 @@ dungeons:
         - entity: CAVE_SPIDER
           name: "<dark_green>Храмовый Паук"
           artifact: "shadow_cloak"
+          blueprint: "basic_altar_craft_shadow_cloak"
           dropChance: 0.12
           health: 80.0
           potionEffects:
@@ -1544,6 +1552,7 @@ dungeons:
         - entity: STRAY
           name: "<aqua>Ледяной Странник"
           artifact: "staff_of_storms"
+          blueprint: "basic_altar_craft_fire_sword"
           dropChance: 0.10
           health: 70.0
           equipment:

@@ -382,8 +382,14 @@ public class DungeonListener implements Listener {
             event.setDroppedExp(0);
         }
 
+        // Шансы из конфига (по умолчанию 0.25)
+        double artifactChance = pdc.getOrDefault(
+                new NamespacedKey(plugin, "boss_drop_chance"), PersistentDataType.DOUBLE, 0.25);
+        double blueprintChance = pdc.getOrDefault(
+                new NamespacedKey(plugin, "boss_bp_chance"), PersistentDataType.DOUBLE, 0.5);
+
         String artifactId = pdc.get(bossArtifactKey, PersistentDataType.STRING);
-        if (artifactId != null && random.nextDouble() < 0.25) {
+        if (artifactId != null && random.nextDouble() < artifactChance) {
             Artifact artifact = plugin.getArtifactRegistry().get(artifactId);
             if (artifact != null) {
                 ItemStack item = plugin.getArtifactManager().createItemStack(artifact);
@@ -394,7 +400,7 @@ public class DungeonListener implements Listener {
 
         String bpId = pdc.get(
                 new NamespacedKey(plugin, "boss_blueprint"), PersistentDataType.STRING);
-        if (bpId != null && random.nextDouble() < 0.5) {
+        if (bpId != null && random.nextDouble() < blueprintChance) {
             var recipe = plugin.getAltarManager().getCraftingManager().getRecipe(bpId);
             if (recipe != null) {
                 var art = plugin.getArtifactRegistry().get(recipe.getResultId());

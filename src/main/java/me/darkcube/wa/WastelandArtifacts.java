@@ -27,6 +27,7 @@ import me.darkcube.wa.listener.ArmorListener;
 import me.darkcube.wa.listener.ArtifactListener;
 import me.darkcube.wa.listener.CraftingListener;
 import me.darkcube.wa.listener.CraftingProtectionListener;
+import me.darkcube.wa.listener.CustomItemBlockListener;
 import me.darkcube.wa.listener.DungeonListener;
 import me.darkcube.wa.resourcepack.ResourcePackManager;
 import me.darkcube.wa.schematic.SchematicManager;
@@ -140,6 +141,7 @@ public final class WastelandArtifacts extends JavaPlugin {
         pm.registerEvents(new MobLootListener(this), this);
         pm.registerEvents(new ArtifactBagListener(this), this);
         pm.registerEvents(new CraftingProtectionListener(this), this);
+        pm.registerEvents(new CustomItemBlockListener(this), this);
     }
 
     private void registerCommands() {

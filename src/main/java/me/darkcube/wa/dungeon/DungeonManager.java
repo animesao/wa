@@ -204,11 +204,19 @@ public class DungeonManager {
                         new NamespacedKey(plugin, "boss_artifact"),
                         PersistentDataType.STRING, bossConfig.artifact
                 );
+                living.getPersistentDataContainer().set(
+                        new NamespacedKey(plugin, "boss_drop_chance"),
+                        PersistentDataType.DOUBLE, bossConfig.dropChance
+                );
             }
             if (bossConfig.blueprint != null) {
                 living.getPersistentDataContainer().set(
                         new NamespacedKey(plugin, "boss_blueprint"),
                         PersistentDataType.STRING, bossConfig.blueprint
+                );
+                living.getPersistentDataContainer().set(
+                        new NamespacedKey(plugin, "boss_bp_chance"),
+                        PersistentDataType.DOUBLE, bossConfig.dropChance * 2.0
                 );
             }
         }
