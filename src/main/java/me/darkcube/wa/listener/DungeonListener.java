@@ -18,9 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.generator.structure.Structure;
 import org.bukkit.event.world.AsyncStructureGenerateEvent;
 import org.bukkit.event.world.LootGenerateEvent;
@@ -167,99 +165,70 @@ public class DungeonListener implements Listener {
         }
     }
 
-    // ─── Путь 2: При открытии сундука (для существующих структур + кастомных схематик) ───
+    // ─── Путь 2: InventoryOpenEvent (после генерации лутейбла) ───
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void onChestOpen(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        Block block = event.getClickedBlock();
-        if (block == null || (block.getType() != Material.CHEST && block.getType() != Material.BARREL
-                && block.getType() != Material.SHULKER_BOX)) return;
+    public void onInventoryOpen(org.bukkit.event.inventory.InventoryOpenEvent event) {
+        Inventory inv = event.getInventory();
+        if (inv.getType() != org.bukkit.event.inventory.InventoryType.CHEST
+                && inv.getType() != org.bukkit.event.inventory.InventoryType.BARREL
+                && inv.getType() != org.bukkit.event.inventory.InventoryType.SHULKER_BOX) return;
 
-        if (!(block.getState() instanceof InventoryHolder holder)) return;
+        InventoryHolder holder = inv.getHolder();
         if (!(holder instanceof org.bukkit.block.TileState tile)) return;
-        Inventory inv = holder.getInventory();
-
         if (tile.getPersistentDataContainer().has(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN)) return;
 
-        // Определяем ID данжа
+        Block block = ((org.bukkit.block.BlockState) holder).getBlock();
         String dungeonId = findDungeonForChest(block.getWorld(), block.getLocation(), holder);
         if (dungeonId == null) return;
 
         DungeonManager.DungeonConfig config = dungeonManager.getConfig(dungeonId);
         if (config == null || !config.loot.enabled) return;
 
-        plugin.getComponentLogger().info("<aqua>ChestOpen: данж=" + dungeonId + " в " + block.getLocation());
+        plugin.getComponentLogger().info("<aqua>InventoryOpen: данж=" + dungeonId + " в " + block.getLocation());
 
-        // Проверяем — есть ли у сундука ванильный лутейбл
-        // Если есть — НЕ трогаем лут здесь, он сгенерируется через LootGenerateEvent
-        boolean hasLootTable = hasLootTable(tile);
-        if (hasLootTable) {
-            plugin.getComponentLogger().info("<aqua>ChestOpen: у сундука есть лутейбл, пропускаем (LootGenerateEvent добавит предметы)");
-            tile.getPersistentDataContainer().set(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN, true);
-            tile.update(true, false);
-            return;
-        }
-
-        // Сундук без лутейбла (кастомная схематика) — генерируем лут
-        List<ItemStack> pluginLoot = dungeonManager.generateLoot(dungeonId);
-
-        boolean chestHasItems = false;
+        List<ItemStack> loot = dungeonManager.generateLoot(dungeonId);
+        boolean chestEmpty = true;
         for (ItemStack item : inv.getContents()) {
             if (item != null && item.getType() != Material.AIR) {
-                chestHasItems = true;
+                chestEmpty = false;
                 break;
             }
         }
-        if (!chestHasItems) {
-            pluginLoot.addAll(0, dungeonManager.generateVanillaLoot(dungeonId));
+        if (chestEmpty) {
+            loot.addAll(0, dungeonManager.generateVanillaLoot(dungeonId));
         }
 
-        if (!pluginLoot.isEmpty()) {
-            List<Integer> emptySlots = new ArrayList<>();
+        if (!loot.isEmpty()) {
+            List<Integer> slots = new ArrayList<>();
             for (int i = 0; i < inv.getSize(); i++) {
                 ItemStack content = inv.getItem(i);
                 if (content == null || content.getType() == Material.AIR) {
-                    emptySlots.add(i);
+                    slots.add(i);
                 }
             }
-            Collections.shuffle(emptySlots, random);
-            int slotIndex = 0;
-            for (ItemStack lootItem : pluginLoot) {
-                if (slotIndex < emptySlots.size()) {
-                    inv.setItem(emptySlots.get(slotIndex++), lootItem);
+            Collections.shuffle(slots, random);
+            int idx = 0;
+            for (ItemStack item : loot) {
+                if (idx < slots.size()) {
+                    inv.setItem(slots.get(idx++), item);
                 } else {
-                    inv.addItem(lootItem);
+                    inv.addItem(item);
                 }
             }
-            plugin.getComponentLogger().info("<green>ChestOpen: добавлено " + pluginLoot.size() + " предметов в " + dungeonId);
+            plugin.getComponentLogger().info("<green>InventoryOpen: добавлено " + loot.size() + " предметов в " + dungeonId);
         }
 
         tile.getPersistentDataContainer().set(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN, true);
         tile.update(true, false);
 
+        // Спавним босса
         if (config.bosses.enabled && config.bosses.types != null && !config.bosses.types.isEmpty() && random.nextDouble() < 0.2) {
             var bossConfig = config.bosses.types.get(random.nextInt(config.bosses.types.size()));
-            if (bossConfig.enabled) {
-                Location bossLoc = block.getLocation().add(2, 1, 0);
+            if (bossConfig.enabled && holder instanceof org.bukkit.block.BlockState state) {
+                Location bossLoc = state.getLocation().add(2, 1, 0);
                 dungeonManager.spawnBoss(bossLoc, bossConfig);
-                Player player = event.getPlayer();
-                player.sendMessage(plugin.getConfigManager().getLang("boss-spawned"));
             }
-        }
-    }
-
-    // ─── Проверка наличия лутейбла на сундуке ───
-
-    private boolean hasLootTable(org.bukkit.block.TileState tile) {
-        try {
-            // В Paper 1.21.11 Container не имеет getLootTable(), используем рефлексию
-            java.lang.reflect.Method method = tile.getClass().getMethod("getLootTable");
-            Object result = method.invoke(tile);
-            return result != null;
-        } catch (Exception e) {
-            // Если метод не найден — предполагаем что лутейбла нет
-            return false;
         }
     }
 
