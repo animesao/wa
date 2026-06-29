@@ -278,8 +278,7 @@ public class DungeonListener implements Listener {
                 dungeonManager.spawnBoss(bossLoc, bossConfig);
                 if (event.getPlayer() instanceof org.bukkit.entity.Player player) {
                     String bossName = bossConfig.name != null ? bossConfig.name : "<red>Босс";
-                    player.sendMessage(me.darkcube.wa.util.ComponentUtil.fromMini(
-                            bossName + " <red>пробужден!"));
+                    player.sendMessage(plugin.getConfigManager().getLang("dungeon.boss-spawned", bossName));
                 }
             }
         }

@@ -185,7 +185,7 @@ dungeon.loot.lore-bosses: "<gray>Боссов: <white>%d"
 dungeon.loot.lore-replace-chance: "<gray>Шанс замены: <white>%d%%"
 dungeon.loot.lore-weight: "<gray>Вес: <white>%s"
 dungeon.loot.lore-amount: "<gray>Кол-во: %d-%d"
-dungeon.boss-spawned: "<red>Хранитель пробуждён!"
+dungeon.boss-spawned: "%s <red>awakened!"
 dungeon.artifact-found: "<gold>Вы нашли артефакт: %s"
 
 # ─── Предметы (item) ───
