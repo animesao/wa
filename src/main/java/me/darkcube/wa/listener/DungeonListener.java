@@ -191,39 +191,41 @@ public class DungeonListener implements Listener {
 
         plugin.getComponentLogger().info("<aqua>ChestOpen: данж=" + dungeonId + " в " + block.getLocation());
 
-        // Если в сундуке уже есть предметы — не трогаем
-        boolean hasExistingLoot = false;
+        // Генерируем предметы плагина (артефакты, чертежи, кастомные ингредиенты)
+        List<ItemStack> pluginLoot = dungeonManager.generateLoot(dungeonId);
+
+        // Если сундук пустой — добавляем ещё и базовые ванильные предметы
+        boolean chestHasItems = false;
         for (ItemStack item : inv.getContents()) {
             if (item != null && item.getType() != Material.AIR) {
-                hasExistingLoot = true;
+                chestHasItems = true;
                 break;
             }
         }
-        if (hasExistingLoot) return;
-
-        // Генерируем лут
-        List<ItemStack> chestLoot = new ArrayList<>();
-        chestLoot.addAll(dungeonManager.generateVanillaLoot(dungeonId));
-        chestLoot.addAll(dungeonManager.generateLoot(dungeonId));
-
-        List<Integer> emptySlots = new ArrayList<>();
-        for (int i = 0; i < inv.getSize(); i++) {
-            ItemStack content = inv.getItem(i);
-            if (content == null || content.getType() == Material.AIR) {
-                emptySlots.add(i);
-            }
-        }
-        Collections.shuffle(emptySlots, random);
-        int slotIndex = 0;
-        for (ItemStack lootItem : chestLoot) {
-            if (slotIndex < emptySlots.size()) {
-                inv.setItem(emptySlots.get(slotIndex++), lootItem);
-            } else {
-                inv.addItem(lootItem);
-            }
+        if (!chestHasItems) {
+            pluginLoot.addAll(0, dungeonManager.generateVanillaLoot(dungeonId));
         }
 
-        plugin.getComponentLogger().info("<green>ChestOpen: добавлено " + chestLoot.size() + " предметов в " + dungeonId);
+        // Раскладываем по случайным слотам
+        if (!pluginLoot.isEmpty()) {
+            List<Integer> emptySlots = new ArrayList<>();
+            for (int i = 0; i < inv.getSize(); i++) {
+                ItemStack content = inv.getItem(i);
+                if (content == null || content.getType() == Material.AIR) {
+                    emptySlots.add(i);
+                }
+            }
+            Collections.shuffle(emptySlots, random);
+            int slotIndex = 0;
+            for (ItemStack lootItem : pluginLoot) {
+                if (slotIndex < emptySlots.size()) {
+                    inv.setItem(emptySlots.get(slotIndex++), lootItem);
+                } else {
+                    inv.addItem(lootItem);
+                }
+            }
+            plugin.getComponentLogger().info("<green>ChestOpen: добавлено " + pluginLoot.size() + " предметов в " + dungeonId);
+        }
 
         tile.getPersistentDataContainer().set(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN, true);
         tile.update(true, false);
