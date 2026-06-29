@@ -1,5 +1,5 @@
 name: WastelandArtifacts
-version: 1.0.0
+version: ${version}
 main: me.darkcube.wa.WastelandArtifacts
 api-version: "1.21"
 

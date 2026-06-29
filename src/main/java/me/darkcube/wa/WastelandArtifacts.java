@@ -26,6 +26,7 @@ import me.darkcube.wa.gui.ChatInputManager;
 import me.darkcube.wa.listener.ArmorListener;
 import me.darkcube.wa.listener.ArtifactListener;
 import me.darkcube.wa.listener.CraftingListener;
+import me.darkcube.wa.listener.CraftingProtectionListener;
 import me.darkcube.wa.listener.DungeonListener;
 import me.darkcube.wa.resourcepack.ResourcePackManager;
 import me.darkcube.wa.schematic.SchematicManager;
@@ -138,6 +139,7 @@ public final class WastelandArtifacts extends JavaPlugin {
         pm.registerEvents(new ArmorListener(this), this);
         pm.registerEvents(new MobLootListener(this), this);
         pm.registerEvents(new ArtifactBagListener(this), this);
+        pm.registerEvents(new CraftingProtectionListener(this), this);
     }
 
     private void registerCommands() {
