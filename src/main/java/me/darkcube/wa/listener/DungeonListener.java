@@ -373,9 +373,16 @@ public class DungeonListener implements Listener {
         if (killer == null) return;
 
         var pdc = entity.getPersistentDataContainer();
+        var bossArtifactKey = new NamespacedKey(plugin, "boss_artifact");
 
-        String artifactId = pdc.get(
-                new NamespacedKey(plugin, "boss_artifact"), PersistentDataType.STRING);
+        // Если это босс плагина — очищаем ванильный дроп
+        if (pdc.has(bossArtifactKey, PersistentDataType.STRING)
+                || pdc.has(new NamespacedKey(plugin, "boss_blueprint"), PersistentDataType.STRING)) {
+            event.getDrops().clear();
+            event.setDroppedExp(0);
+        }
+
+        String artifactId = pdc.get(bossArtifactKey, PersistentDataType.STRING);
         if (artifactId != null && random.nextDouble() < 0.25) {
             Artifact artifact = plugin.getArtifactRegistry().get(artifactId);
             if (artifact != null) {
