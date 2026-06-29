@@ -582,3 +582,54 @@ items:
       - "<dark_gray>Верховный артефакт"
     customModelData: 6070
     rarity: VOID
+
+  # ── Добавленные для конфигов данжей ──
+
+  ancient_scrap:
+    material: NETHERITE_SCRAP
+    name: "<gold>Древний Лом"
+    lore:
+      - "<gray>Остатки древних машин"
+      - "<dark_gray>Встречается в руинах и шахтах"
+    customModelData: 6071
+    rarity: RARE
+
+  golden_feather:
+    material: FEATHER
+    name: "<gold>Золотое Перо"
+    lore:
+      - "<gray>Перо легендарной птицы"
+    customModelData: 6072
+    rarity: RARE
+
+  spider_fang:
+    material: BONE
+    name: "<dark_green>Паучий Клык"
+    lore:
+      - "<gray>Отравлен ядом древнего паука"
+    customModelData: 6073
+    rarity: UNCOMMON
+
+  echo_shard:
+    material: ECHO_SHARD
+    name: "<aqua>Осколок Эха"
+    lore:
+      - "<gray>Хранит отголоски прошлого"
+    customModelData: 6074
+    rarity: RARE
+
+  prismarine_core:
+    material: PRISMARINE_CRYSTALS
+    name: "<aqua>Призмариновый Стержень"
+    lore:
+      - "<gray>Пульсирует магией океана"
+    customModelData: 6075
+    rarity: UNCOMMON
+
+  obsidian_shard:
+    material: OBSIDIAN
+    name: "<dark_purple>Обсидиановый Осколок"
+    lore:
+      - "<gray>Тёмный осколок из Незера"
+    customModelData: 6076
+    rarity: UNCOMMON

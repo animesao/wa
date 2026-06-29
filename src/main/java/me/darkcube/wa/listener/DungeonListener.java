@@ -274,7 +274,15 @@ public class DungeonListener implements Listener {
             {"igloo", "igloo"},
             {"village_plains", "village"},
             {"shipwreck", "shipwreck"},
-            {"end_city", "end_city"}
+            {"end_city", "end_city"},
+            {"pillager_outpost", "pillager_outpost"},
+            {"ruined_portal", "ruined_portal"},
+            {"buried_treasure", "buried_treasure"},
+            {"mineshaft", "mineshaft"},
+            {"trail_ruins", "trail_ruins"},
+            {"trial_chambers", "trial_chambers"},
+            {"ocean_ruin_cold", "ocean_ruins"},
+            {"ocean_ruin_warm", "ocean_ruins"}
         };
         for (String[] pair : structureMap) {
             try {
@@ -335,13 +343,21 @@ public class DungeonListener implements Listener {
         if (key.contains("ancient_city")) return "ancient_city";
         if (key.contains("bastion")) return "bastion";
         if (key.contains("mansion")) return "mansion";
-        if (key.contains("underwater_ruin") || key.contains("monument")) return "monument";
+        if (key.contains("underwater_ruin_big") || key.contains("monument")) return "monument";
+        if (key.contains("underwater_ruin_small")) return "ocean_ruins";
         if (key.contains("desert_pyramid") || key.contains("temple")) return "temple";
         if (key.contains("jungle_pyramid") || key.contains("jungle_temple")) return "jungle_temple";
         if (key.contains("igloo")) return "igloo";
         if (key.contains("village")) return "village";
         if (key.contains("shipwreck")) return "shipwreck";
         if (key.contains("end_city")) return "end_city";
+        if (key.contains("pillager_outpost")) return "pillager_outpost";
+        if (key.contains("ruined_portal")) return "ruined_portal";
+        if (key.contains("buried_treasure")) return "buried_treasure";
+        if (key.contains("abandoned_mineshaft") || key.contains("mineshaft")) return "mineshaft";
+        if (key.contains("simple_dungeon") || key.contains("monster_room")) return "mineshaft";
+        if (key.contains("trail_ruins")) return "trail_ruins";
+        if (key.contains("trial_chambers")) return "trial_chambers";
 
         return null;
     }
@@ -363,6 +379,13 @@ public class DungeonListener implements Listener {
         if (structName.contains("igloo")) return "igloo";
         if (structName.contains("village")) return "village";
         if (structName.contains("shipwreck")) return "shipwreck";
+        if (structName.contains("pillager_outpost")) return "pillager_outpost";
+        if (structName.contains("ruined_portal")) return "ruined_portal";
+        if (structName.contains("buried_treasure")) return "buried_treasure";
+        if (structName.contains("mineshaft")) return "mineshaft";
+        if (structName.contains("trail_ruins")) return "trail_ruins";
+        if (structName.contains("trial_chambers") || structName.contains("trialchamber")) return "trial_chambers";
+        if (structName.contains("ocean_ruin")) return "ocean_ruins";
         return null;
     }
 
