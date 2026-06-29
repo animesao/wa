@@ -6,6 +6,7 @@ import me.darkcube.wa.dungeon.DungeonManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.World;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
@@ -112,17 +113,26 @@ public class DungeonListener implements Listener {
         });
     }
 
-    // ─── Ванильные структуры: LootGenerateEvent ───
+    // ─── Путь 1: LootGenerateEvent (для ванильных структур) ───
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onLootGenerate(LootGenerateEvent event) {
         if (!plugin.getConfigManager().getMainConfig().dungeons.lootInjection) return;
         if (event.isCancelled()) return;
 
-        // Определяем данж по лутейблу — это самый надёжный способ для ванильных структур
-        NamespacedKey lootTableKey = event.getLootTable().getKey();
+        var lootTable = event.getLootTable();
+        if (lootTable == null) {
+            plugin.getComponentLogger().warn("<yellow>LootGenerateEvent: lootTable = null");
+            return;
+        }
+        NamespacedKey lootTableKey = lootTable.getKey();
+        plugin.getComponentLogger().info("<aqua>LootGenerateEvent: " + lootTableKey);
+
         String dungeonId = mapLootTableToDungeon(lootTableKey);
-        if (dungeonId == null) return;
+        if (dungeonId == null) {
+            plugin.getComponentLogger().info("<yellow>LootGenerateEvent: не удалось определить данж для " + lootTableKey);
+            return;
+        }
 
         DungeonManager.DungeonConfig config = dungeonManager.getConfig(dungeonId);
         if (config == null || !config.loot.enabled) return;
@@ -133,6 +143,7 @@ public class DungeonListener implements Listener {
                 List<ItemStack> existingLoot = event.getLoot();
                 existingLoot.addAll(extraLoot);
                 event.setLoot(existingLoot);
+                plugin.getComponentLogger().info("<green>Добавлено " + extraLoot.size() + " предметов в " + dungeonId);
             }
         } else if ("REPLACE".equalsIgnoreCase(config.loot.mode)) {
             List<ItemStack> existingLoot = event.getLoot();
@@ -150,14 +161,13 @@ public class DungeonListener implements Listener {
             }
         }
 
-        // Помечаем контейнер
         InventoryHolder holder = event.getInventoryHolder();
         if (holder instanceof org.bukkit.block.TileState tile) {
             tile.getPersistentDataContainer().set(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN, true);
         }
     }
 
-    // ─── Кастомные схематики: открытие сундука ───
+    // ─── Путь 2: При открытии сундука (для существующих структур + кастомных схематик) ───
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onChestOpen(PlayerInteractEvent event) {
@@ -172,12 +182,14 @@ public class DungeonListener implements Listener {
 
         if (tile.getPersistentDataContainer().has(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN)) return;
 
-        // Для кастомных схематик: данж определяется ТОЛЬКО по PDC на сундуке
-        String dungeonId = tile.getPersistentDataContainer().get(DUNGEON_ID_KEY, PersistentDataType.STRING);
+        // Определяем ID данжа
+        String dungeonId = findDungeonForChest(block.getWorld(), block.getLocation(), holder);
         if (dungeonId == null) return;
 
         DungeonManager.DungeonConfig config = dungeonManager.getConfig(dungeonId);
         if (config == null || !config.loot.enabled) return;
+
+        plugin.getComponentLogger().info("<aqua>ChestOpen: данж=" + dungeonId + " в " + block.getLocation());
 
         // Если в сундуке уже есть предметы — не трогаем
         boolean hasExistingLoot = false;
@@ -189,6 +201,7 @@ public class DungeonListener implements Listener {
         }
         if (hasExistingLoot) return;
 
+        // Генерируем лут
         List<ItemStack> chestLoot = new ArrayList<>();
         chestLoot.addAll(dungeonManager.generateVanillaLoot(dungeonId));
         chestLoot.addAll(dungeonManager.generateLoot(dungeonId));
@@ -210,6 +223,8 @@ public class DungeonListener implements Listener {
             }
         }
 
+        plugin.getComponentLogger().info("<green>ChestOpen: добавлено " + chestLoot.size() + " предметов в " + dungeonId);
+
         tile.getPersistentDataContainer().set(LOOT_POPULATED_KEY, PersistentDataType.BOOLEAN, true);
         tile.update(true, false);
 
@@ -220,6 +235,89 @@ public class DungeonListener implements Listener {
                 dungeonManager.spawnBoss(bossLoc, bossConfig);
                 Player player = event.getPlayer();
                 player.sendMessage(plugin.getConfigManager().getLang("boss-spawned"));
+            }
+        }
+    }
+
+    // ─── Определение данжа для сундука ───
+
+    private String findDungeonForChest(World world, Location loc, InventoryHolder holder) {
+        // 1) PDC на сундуке (кастомные схематики)
+        if (holder instanceof org.bukkit.block.TileState tile) {
+            String fromPdc = tile.getPersistentDataContainer().get(DUNGEON_ID_KEY, PersistentDataType.STRING);
+            if (fromPdc != null) return fromPdc;
+        }
+
+        // 2) Поиск структуры рядом через Registry.STRUCTURE (для существующих структур)
+        String fromStructure = findDungeonByStructure(world, loc);
+        if (fromStructure != null) return fromStructure;
+
+        // 3) По отслеженным структурам (для новых структур)
+        return findDungeonAtLocation(world, loc);
+    }
+
+    private String findDungeonByStructure(World world, Location loc) {
+        var structureRegistry = Registry.STRUCTURE;
+        if (structureRegistry == null) return null;
+
+        String[][] structureMap = {
+            {"stronghold", "stronghold"},
+            {"fortress", "fortress"},
+            {"ancient_city", "ancient_city"},
+            {"bastion_remnant", "bastion"},
+            {"mansion", "mansion"},
+            {"monument", "monument"},
+            {"desert_pyramid", "temple"},
+            {"jungle_pyramid", "jungle_temple"},
+            {"igloo", "igloo"},
+            {"village_plains", "village"},
+            {"shipwreck", "shipwreck"},
+            {"end_city", "end_city"}
+        };
+        for (String[] pair : structureMap) {
+            try {
+                var structure = Registry.STRUCTURE.get(NamespacedKey.minecraft(pair[0]));
+                if (structure == null) continue;
+                var found = world.locateNearestStructure(loc, structure, 200, false);
+                if (found != null && found.getLocation().distanceSquared(loc) < 40000) {
+                    plugin.getComponentLogger().info("<aqua>Найдена структура " + pair[0] + " рядом с сундуком");
+                    return pair[1];
+                }
+            } catch (Exception ignored) {}
+        }
+        return null;
+    }
+
+    @EventHandler
+    public void onBossDeath(EntityDeathEvent event) {
+        LivingEntity entity = event.getEntity();
+        Player killer = entity.getKiller();
+        if (killer == null) return;
+
+        var pdc = entity.getPersistentDataContainer();
+
+        String artifactId = pdc.get(
+                new NamespacedKey(plugin, "boss_artifact"), PersistentDataType.STRING);
+        if (artifactId != null && random.nextDouble() < 0.25) {
+            Artifact artifact = plugin.getArtifactRegistry().get(artifactId);
+            if (artifact != null) {
+                ItemStack item = plugin.getArtifactManager().createItemStack(artifact);
+                entity.getWorld().dropItemNaturally(entity.getLocation(), item);
+                killer.sendMessage(plugin.getConfigManager().getLang("artifact-found"));
+            }
+        }
+
+        String bpId = pdc.get(
+                new NamespacedKey(plugin, "boss_blueprint"), PersistentDataType.STRING);
+        if (bpId != null && random.nextDouble() < 0.5) {
+            var recipe = plugin.getAltarManager().getCraftingManager().getRecipe(bpId);
+            if (recipe != null) {
+                var art = plugin.getArtifactRegistry().get(recipe.getResultId());
+                String name = art != null ? art.getDisplayName() : recipe.getResultId();
+                ItemStack bp = me.darkcube.wa.altar.AltarBlockTracker.createBlueprint(
+                        bpId, name, "PAPER", "<gold>📜 Чертёж: " + name, null, 5001);
+                entity.getWorld().dropItemNaturally(entity.getLocation(), bp);
+                killer.sendMessage(plugin.getConfigManager().getLang("artifact-found"));
             }
         }
     }
@@ -246,8 +344,6 @@ public class DungeonListener implements Listener {
         return null;
     }
 
-    // ─── Маппинг структуры по имени ───
-
     private String mapStructureToDungeon(String structName) {
         for (var entry : dungeonManager.getAllConfigs().entrySet()) {
             if (structName.contains(entry.getKey().toLowerCase())) {
@@ -265,6 +361,28 @@ public class DungeonListener implements Listener {
         if (structName.contains("igloo")) return "igloo";
         if (structName.contains("village")) return "village";
         if (structName.contains("shipwreck")) return "shipwreck";
+        return null;
+    }
+
+    private String findDungeonAtLocation(World world, Location loc) {
+        for (var entry : dungeonManager.getAllConfigs().entrySet()) {
+            String dungeonId = entry.getKey();
+            for (String trackKey : trackedStructures) {
+                if (trackKey.startsWith(world.getName() + ":")) {
+                    String[] parts = trackKey.split(":");
+                    if (parts.length >= 3) {
+                        try {
+                            double minX = Double.parseDouble(parts[2]);
+                            double minZ = Double.parseDouble(parts[3]);
+                            double dist = loc.distanceSquared(new Location(world, minX, loc.getY(), minZ));
+                            if (dist < 10000) {
+                                return dungeonId;
+                            }
+                        } catch (NumberFormatException ignored) {}
+                    }
+                }
+            }
+        }
         return null;
     }
 }
