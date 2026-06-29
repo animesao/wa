@@ -274,7 +274,7 @@ public class DungeonListener implements Listener {
                 Location bossLoc = chestLoc.clone().add(2, 1, 0);
                 dungeonManager.spawnBoss(bossLoc, bossConfig);
                 if (event.getPlayer() instanceof org.bukkit.entity.Player player) {
-                    player.sendMessage(plugin.getConfigManager().getLang("boss-spawned"));
+                    player.sendMessage(plugin.getConfigManager().getLang("dungeon.boss-spawned"));
                 }
             }
         }
@@ -352,7 +352,7 @@ public class DungeonListener implements Listener {
             if (artifact != null) {
                 ItemStack item = plugin.getArtifactManager().createItemStack(artifact);
                 entity.getWorld().dropItemNaturally(entity.getLocation(), item);
-                killer.sendMessage(plugin.getConfigManager().getLang("artifact-found"));
+                killer.sendMessage(plugin.getConfigManager().getLang("dungeon.artifact-found"));
             }
         }
 
@@ -366,7 +366,7 @@ public class DungeonListener implements Listener {
                 ItemStack bp = me.darkcube.wa.altar.AltarBlockTracker.createBlueprint(
                         bpId, name, "PAPER", "<gold>📜 Чертёж: " + name, null, 5001);
                 entity.getWorld().dropItemNaturally(entity.getLocation(), bp);
-                killer.sendMessage(plugin.getConfigManager().getLang("artifact-found"));
+                killer.sendMessage(plugin.getConfigManager().getLang("dungeon.artifact-found"));
             }
         }
     }
