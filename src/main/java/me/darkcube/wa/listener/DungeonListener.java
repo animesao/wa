@@ -218,12 +218,19 @@ public class DungeonListener implements Listener {
             // Предметы плагина: артефакты, чертежи, кастомные ингредиенты
             chestLoot.addAll(dungeonManager.generateLoot(dungeonId));
 
-            // Раскладываем по случайным слотам
+            // Раскладываем по случайным пустым слотам (вразноброс)
+            List<Integer> emptySlots = new ArrayList<>();
+            for (int i = 0; i < inv.getSize(); i++) {
+                ItemStack content = inv.getItem(i);
+                if (content == null || content.getType() == Material.AIR) {
+                    emptySlots.add(i);
+                }
+            }
+            Collections.shuffle(emptySlots, random);
+            int slotIndex = 0;
             for (ItemStack lootItem : chestLoot) {
-                int slot = random.nextInt(inv.getSize());
-                ItemStack existing = inv.getItem(slot);
-                if (existing == null || existing.getType() == Material.AIR) {
-                    inv.setItem(slot, lootItem);
+                if (slotIndex < emptySlots.size()) {
+                    inv.setItem(emptySlots.get(slotIndex++), lootItem);
                 } else {
                     inv.addItem(lootItem);
                 }
