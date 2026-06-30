@@ -41,10 +41,10 @@ public class AltarListener implements Listener {
             altarManager.getBlockTracker().collectItems(player, block);
         } else {
             // Обычный ПКМ → информация
-            player.sendMessage(mm.deserialize("<gray>[" + tier.displayName + "<gray>] <white>" + tier.description));
-            player.sendMessage(mm.deserialize("<gray>■ Брось ингредиенты (Q) на блоки алтаря"));
-            player.sendMessage(mm.deserialize("<gray>■ Shift+ПКМ — забрать все предметы"));
-            player.sendMessage(mm.deserialize("<gray>■ Разрушь алтарь — предметы выпадут"));
+            player.sendMessage(mm.deserialize(plugin.msg("altar.interact-info", tier.displayName, tier.description)));
+            player.sendMessage(mm.deserialize(plugin.msg("altar.howto-drop")));
+            player.sendMessage(mm.deserialize(plugin.msg("altar.howto-collect")));
+            player.sendMessage(mm.deserialize(plugin.msg("altar.howto-destroy")));
         }
     }
 

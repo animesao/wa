@@ -40,7 +40,7 @@ public class AltarBlockListener implements Listener {
         tracker.removeAltar(event.getBlock());
         var tier = plugin.getAltarManager().detectAltar(event.getBlock());
         if (tier != null) {
-            event.getPlayer().sendMessage(mm.deserialize("<red>Алтарь разрушен! Ингредиенты пропали."));
+            event.getPlayer().sendMessage(mm.deserialize(plugin.msg("altar.destroyed")));
         }
     }
 

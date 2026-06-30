@@ -108,6 +108,7 @@ altar.tracker.need-blueprint: "<red>Сначала брось чертёж (сх
 altar.tracker.no-altar-nearby: "<red>Рядом нет алтаря! Построй его через /altar build"
 altar.tracker.wrong-blueprint: "<red>Этот чертёж не подходит для этого алтаря!"
 altar.tracker.blueprint-accepted: "<gold>📜 Чертёж <yellow>%s <gold>принят!"
+altar.tracker.catalyst-accepted: "<green>✅ Катализатор принят!"
 altar.tracker.drop-ingredients: "<gray>Брось ингредиенты на алтарь:"
 altar.tracker.ingredient-slot: "  <gray>- %s x%d <white>→ слот %d"
 altar.tracker.no-match: "<red>❌ Ничего не подошло для: %s"
@@ -228,6 +229,7 @@ editor.component-selector-title: "<dark_gray>Выберите компонент
 resourcepack.pack-description: "§6Wasteland Artifacts §7- §eКастомные артефакты"
 
 # ─── Features ───
+collection.players-only: "<red>Только для игроков!"
 collection.title: "<dark_gray>📚 Коллекция артефактов"
 collection.found: "<green>✔ Найден"
 collection.not-found: "<red>✘ Не найден"
@@ -246,6 +248,8 @@ upgrade.lore-kills: "<gray>Убийств: <white>%d"
 
 fishing.caught: "<aqua>🐟 Вы выловили %s!"
 
+arena.players-only: "<red>Только для игроков!"
+arena.not-configured: "<red>Арена не настроена!"
 arena.title: "<dark_red>⚔ Арена Боссов"
 arena.start: "<green>⚔ Арена началась! Готовься к битве!"
 arena.wave: "<gold>⚔ Волна <white>%d<gold>/<white>%d"

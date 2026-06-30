@@ -60,7 +60,7 @@ public class AltarBlockTracker {
             }
             if (activator == null) continue;
 
-            player.sendMessage(mm.deserialize("<gray>🔍 Найден алтарь: <white>" + tier.displayName));
+            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.found", tier.displayName)));
             Location actLoc = activator.getLocation().clone();
             String tierId = entry.getKey();
             String altarKey = key(actLoc);
@@ -74,7 +74,7 @@ public class AltarBlockTracker {
 
             if (state.activeRecipe == null) {
                 if (isRelevant) {
-                    player.sendMessage(mm.deserialize("<red>Сначала брось чертёж!"));
+                    player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.need-blueprint")));
                 }
                 return false;
             }
@@ -83,7 +83,7 @@ public class AltarBlockTracker {
         }
 
         if (isRelevant) {
-            player.sendMessage(mm.deserialize("<red>Рядом нет алтаря!"));
+            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.no-altar-nearby")));
         }
         return false;
     }
@@ -93,7 +93,7 @@ public class AltarBlockTracker {
                                      AltarConfig.AltarTier tier, String recipeId) {
         AltarRecipe recipe = plugin.getAltarManager().getCraftingManager().getRecipe(recipeId);
         if (recipe == null || recipe.getTier() > tier.tier) {
-            player.sendMessage(mm.deserialize("<red>Этот чертёж не подходит для этого алтаря!"));
+            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.wrong-blueprint")));
             return false;
         }
 
@@ -126,13 +126,12 @@ public class AltarBlockTracker {
 
         var resultArtifact = plugin.getArtifactRegistry().get(recipe.getResultId());
         String artDisplayName = resultArtifact != null ? resultArtifact.getDisplayName() : recipe.getResultId();
-        player.sendMessage(mm.deserialize("<gold>📜 Чертёж <yellow>" + artDisplayName + " <gold>принят!"));
-        player.sendMessage(mm.deserialize("<gray>Брось ингредиенты на алтарь:"));
+        player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.blueprint-accepted", artDisplayName)));
+        player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.drop-ingredients")));
 
         for (var ing : recipe.getIngredients()) {
             String itemName = getIngredientDisplayName(ing);
-            player.sendMessage(mm.deserialize("  <gray>- " + itemName + " x" + ing.getAmount()
-                    + " <white>→ слот " + ing.getSlot()));
+            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.ingredient-slot", itemName, ing.getAmount(), ing.getSlot())));
         }
 
         updateHologram(altarKey, activator.getLocation(), state);
@@ -156,7 +155,7 @@ public class AltarBlockTracker {
         Location pedLoc = getPedestalLocation(activator.getLocation(), 0);
         if (pedLoc != null) droppedItem.teleport(pedLoc.clone().add(1, 0, 0));
         state.catalyst = droppedItem;
-        player.sendMessage(mm.deserialize("<green>✅ Катализатор принят!"));
+        player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.catalyst-accepted")));
         updateHologram(altarKey, activator.getLocation(), state);
     }
 
@@ -210,15 +209,15 @@ public class AltarBlockTracker {
         }
 
         if (matching.isEmpty()) {
-            player.sendMessage(mm.deserialize("<red>❌ Ничего не подошло для: " + getItemDisplayName(dropStack)));
-            player.sendMessage(mm.deserialize("<gray>В рецепте есть: "
-                    + recipe.getIngredients().stream()
+            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.no-match", getItemDisplayName(dropStack))));
+            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.recipe-has",
+                    recipe.getIngredients().stream()
                         .map(i -> getIngredientDisplayName(i))
                         .distinct()
-                        .collect(java.util.stream.Collectors.joining(", "))));
+                        .collect(java.util.stream.Collectors.joining(", ")))));
             return false;
         } else {
-            player.sendMessage(mm.deserialize("<gray>Найдено " + matching.size() + " подходящих слотов"));
+            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.slots-found", matching.size())));
         }
 
         matching.sort(Comparator.comparingInt(ing -> {
@@ -260,14 +259,13 @@ public class AltarBlockTracker {
                     item.setMetadata("wa_altar_slot", new FixedMetadataValue(plugin, slot));
                 });
                 state.items[slot] = newItem;
-                player.sendMessage(mm.deserialize("<green>✅ " + getItemName(ing) + " x" + toPlace + " → слот " + slot));
+                player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.item-placed", getItemName(ing), toPlace, slot)));
             } else {
                 ItemStack exStack = existing.getItemStack();
                 exStack.setAmount(has + toPlace);
                 existing.setItemStack(exStack);
                 String n = getItemName(ing);
-                player.sendMessage(mm.deserialize("<green>+" + toPlace + " " + n + " → слот " + slot
-                        + " <gray>(всего " + (has + toPlace) + ")"));
+                player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.item-added", toPlace, n, slot, has + toPlace)));
             }
             remaining -= toPlace;
         }
@@ -279,9 +277,9 @@ public class AltarBlockTracker {
             leftover.setAmount(remaining);
             activator.getWorld().dropItemNaturally(droppedItem.getLocation(), leftover);
             droppedItem.remove();
-            player.sendMessage(mm.deserialize("<yellow>Остаток x" + remaining + " возвращён"));
+            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.remainder", remaining)));
         } else {
-            player.sendMessage(mm.deserialize("<red>Все подходящие слоты уже заполнены!"));
+            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.slots-full")));
             return false;
         }
 
@@ -599,7 +597,7 @@ public class AltarBlockTracker {
         String k = key(activatorBlock.getLocation());
         AltarState state = altars.get(k);
         if (state == null) {
-            player.sendMessage(mm.deserialize("<gray>На алтаре нет предметов"));
+            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.no-items")));
             return;
         }
 
@@ -639,9 +637,9 @@ public class AltarBlockTracker {
         hologram.remove(k);
 
         if (count > 0) {
-            player.sendMessage(mm.deserialize("<green>✅ Забрано " + count + " предметов с алтаря"));
+            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.collected", count)));
         } else {
-            player.sendMessage(mm.deserialize("<gray>На алтаре нет предметов"));
+            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.no-items")));
         }
     }
 

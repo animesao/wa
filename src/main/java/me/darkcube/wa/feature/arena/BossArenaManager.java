@@ -2,6 +2,7 @@ package me.darkcube.wa.feature.arena;
 
 import me.darkcube.wa.WastelandArtifacts;
 import me.darkcube.wa.database.DatabaseManager;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -10,6 +11,7 @@ import java.util.*;
 
 public class BossArenaManager {
     private final WastelandArtifacts plugin;
+    private final MiniMessage mm = MiniMessage.miniMessage();
     private final DatabaseManager db;
     private Location arenaSpawn;
     private Location bossSpawn;
@@ -41,7 +43,7 @@ public class BossArenaManager {
     public void setBossSpawn(Location loc) { this.bossSpawn = loc; }
 
     public void startArena(Player player) {
-        if (arenaSpawn == null) { player.sendMessage("§cАрена не настроена!"); return; }
+        if (arenaSpawn == null) { player.sendMessage(mm.deserialize(plugin.msg("arena.not-configured"))); return; }
         ArenaSession session = new ArenaSession(player.getUniqueId());
         session.currentWave = 0;
         sessions.put(player.getUniqueId(), session);
@@ -68,7 +70,7 @@ public class BossArenaManager {
                 spawnMob(player.getWorld(), mobType);
             }
         }
-        player.sendMessage("§6Волна " + (waveIndex + 1) + "/" + waves.size());
+        player.sendMessage(mm.deserialize(plugin.msg("arena.wave", waveIndex + 1, waves.size())));
     }
 
     private void spawnMob(World world, String type) {
@@ -96,7 +98,7 @@ public class BossArenaManager {
         sessions.remove(player.getUniqueId());
         db.execute("UPDATE wa_arena_stats SET waves_cleared = waves_cleared + 1, bosses_killed = bosses_killed + 1 WHERE player_uuid=?",
                 player.getUniqueId().toString());
-        player.sendMessage("§a§lАрена пройдена!");
+        player.sendMessage(mm.deserialize(plugin.msg("arena.complete")));
         giveRewards(player);
     }
 

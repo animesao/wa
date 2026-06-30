@@ -44,7 +44,7 @@ public class ArtifactBagGUI extends GUIBase {
     private ItemStack makeBg(int index) {
         ItemStack bg = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
         ItemMeta m = bg.getItemMeta();
-        m.displayName(mm.deserialize("<dark_aqua>Слот " + (index + 1)));
+        m.displayName(mm.deserialize(plugin.msg("bag.gui.slot-name", index + 1)));
         bg.setItemMeta(m);
         return bg;
     }
@@ -57,7 +57,7 @@ public class ArtifactBagGUI extends GUIBase {
 
         if (cursor != null && cursor.getType() != Material.AIR) {
             if (!plugin.getArtifactManager().isArtifact(cursor)) {
-                player.sendMessage(mm.deserialize("<red>В сумку только артефакты!"));
+                player.sendMessage(mm.deserialize(plugin.msg("bag.gui.artifacts-only")));
                 return;
             }
             ItemStack toPlace = cursor.clone();
@@ -70,12 +70,12 @@ public class ArtifactBagGUI extends GUIBase {
                 cursor.setAmount(cursor.getAmount() - 1);
                 event.getView().setCursor(cursor);
             }
-            player.sendMessage(mm.deserialize("<green>✅ Артефакт в сумке!"));
+            player.sendMessage(mm.deserialize(plugin.msg("bag.gui.artifact-placed")));
         } else if (current != null && !current.getType().isAir()) {
             bagManager.setSlot(player, slot, null);
             event.getView().setCursor(current);
             inventory.setItem(slot, makeBg(slot));
-            player.sendMessage(mm.deserialize("<yellow>Артефакт убран."));
+            player.sendMessage(mm.deserialize(plugin.msg("bag.gui.artifact-removed")));
         }
     }
 

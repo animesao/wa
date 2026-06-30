@@ -27,13 +27,13 @@ public class ItemCommand extends Command {
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(mm.deserialize("<red>Только для игроков!"));
+            sender.sendMessage(mm.deserialize(plugin.msg("item.players-only")));
             return true;
         }
 
         if (args.length == 0) {
-            player.sendMessage(mm.deserialize("<gold>/item encode <gray>- получить Base64 предмета в руке"));
-            player.sendMessage(mm.deserialize("<gold>/item decode <base64> <gray>- создать предмет из Base64"));
+            player.sendMessage(mm.deserialize(plugin.msg("item.help.encode")));
+            player.sendMessage(mm.deserialize(plugin.msg("item.help.decode")));
             return true;
         }
 
@@ -41,7 +41,7 @@ public class ItemCommand extends Command {
             case "encode" -> handleEncode(player);
             case "decode" -> handleDecode(player, args);
             default -> {
-                player.sendMessage(mm.deserialize("<red>Неизвестная команда. Используй /item encode или /item decode"));
+                player.sendMessage(mm.deserialize(plugin.msg("item.unknown-subcommand")));
                 yield true;
             }
         };
@@ -50,33 +50,33 @@ public class ItemCommand extends Command {
     private boolean handleEncode(Player player) {
         ItemStack hand = player.getInventory().getItemInMainHand();
         if (hand.getType().isAir()) {
-            player.sendMessage(mm.deserialize("<red>Возьми предмет в руку!"));
+            player.sendMessage(mm.deserialize(plugin.msg("item.hold-item")));
             return true;
         }
         String b64 = MojangItemCodec.encode(hand);
-        player.sendMessage(mm.deserialize("<green>Base64 (Mojang NBT):"));
-        player.sendMessage(mm.deserialize("<white>" + b64));
-        player.sendMessage(mm.deserialize("<dark_gray>Скопируй строку выше"));
+        player.sendMessage(mm.deserialize(plugin.msg("item.encode-result-title")));
+        player.sendMessage(mm.deserialize(plugin.msg("item.encode-result", b64)));
+        player.sendMessage(mm.deserialize(plugin.msg("item.encode-copy-hint")));
         return true;
     }
 
     private boolean handleDecode(Player player, String[] args) {
         if (args.length < 2) {
-            player.sendMessage(mm.deserialize("<red>Использование: /item decode <base64>"));
+            player.sendMessage(mm.deserialize(plugin.msg("item.usage.decode")));
             return true;
         }
         String b64 = args[1];
         if (!MojangItemCodec.isValid(b64)) {
-            player.sendMessage(mm.deserialize("<red>Невалидная Base64 строка!"));
+            player.sendMessage(mm.deserialize(plugin.msg("item.decode-invalid")));
             return true;
         }
         ItemStack item = MojangItemCodec.decode(b64);
         if (item == null) {
-            player.sendMessage(mm.deserialize("<red>Не удалось декодировать предмет!"));
+            player.sendMessage(mm.deserialize(plugin.msg("item.decode-failed")));
             return true;
         }
         player.getInventory().addItem(item);
-        player.sendMessage(mm.deserialize("<green>Предмет создан!"));
+        player.sendMessage(mm.deserialize(plugin.msg("item.decode-success")));
         return true;
     }
 

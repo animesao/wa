@@ -3,6 +3,7 @@ package me.darkcube.wa.commands;
 import me.darkcube.wa.WastelandArtifacts;
 import me.darkcube.wa.feature.arena.ArenaGUI;
 import me.darkcube.wa.feature.arena.BossArenaManager;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,6 +14,7 @@ import java.util.List;
 public class ArenaCommand extends Command {
 
     private final WastelandArtifacts plugin;
+    private final MiniMessage mm = MiniMessage.miniMessage();
     private final BossArenaManager arenaManager;
     private final ArenaGUI arenaGUI;
 
@@ -26,7 +28,7 @@ public class ArenaCommand extends Command {
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cТолько для игроков!");
+            sender.sendMessage(mm.deserialize(plugin.msg("arena.players-only")));
             return true;
         }
         if (args.length > 0 && args[0].equalsIgnoreCase("start")) {
