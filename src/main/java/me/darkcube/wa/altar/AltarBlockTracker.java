@@ -169,17 +169,24 @@ public class AltarBlockTracker {
         Material dropType = dropStack.getType();
         int totalAmount = dropStack.getAmount();
 
-        // Сначала проверяем — может это катализатор?
+        // Сначала проверяем — может это катализатор? (только если не совпадает ни с одним ингредиентом)
         if (recipe.getCatalyst() != null && (state.catalyst == null || !state.catalyst.isValid())) {
-            boolean matchesCat = false;
-            if (recipe.getCatalyst().getTemplate() != null) {
-                matchesCat = itemsMatch(dropStack, recipe.getCatalyst().getTemplate());
-            } else {
-                matchesCat = dropType == recipe.getCatalyst().getItem();
+            boolean isIngredient = false;
+            for (var ing : recipe.getIngredients()) {
+                if (dropType == ing.getType()) { isIngredient = true; break; }
+                if (ing.getTemplate() != null && itemsMatch(dropStack, ing.getTemplate())) { isIngredient = true; break; }
             }
-            if (matchesCat) {
-                acceptCatalyst(player, droppedItem, activator, altarKey, state, recipe);
-                return true;
+            if (!isIngredient) {
+                boolean matchesCat = false;
+                if (recipe.getCatalyst().getTemplate() != null) {
+                    matchesCat = itemsMatch(dropStack, recipe.getCatalyst().getTemplate());
+                } else {
+                    matchesCat = dropType == recipe.getCatalyst().getItem();
+                }
+                if (matchesCat) {
+                    acceptCatalyst(player, droppedItem, activator, altarKey, state, recipe);
+                    return true;
+                }
             }
         }
 
