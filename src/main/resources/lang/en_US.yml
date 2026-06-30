@@ -108,6 +108,7 @@ altar.tracker.need-blueprint: "<red>Сначала брось чертёж (сх
 altar.tracker.no-altar-nearby: "<red>Рядом нет алтаря! Построй его через /altar build"
 altar.tracker.wrong-blueprint: "<red>Этот чертёж не подходит для этого алтаря!"
 altar.tracker.blueprint-accepted: "<gold>📜 Чертёж <yellow>%s <gold>принят!"
+altar.tracker.catalyst-accepted: "<green>✅ Catalyst accepted!"
 altar.tracker.drop-ingredients: "<gray>Брось ингредиенты на алтарь:"
 altar.tracker.ingredient-slot: "  <gray>- %s x%d <white>→ слот %d"
 altar.tracker.no-match: "<red>❌ Ничего не подошло для: %s"
@@ -228,6 +229,7 @@ editor.component-selector-title: "<dark_gray>Выберите компонент
 resourcepack.pack-description: "§6Wasteland Artifacts §7- §eКастомные артефакты"
 
 # ─── Features ───
+collection.players-only: "<red>Players only!"
 collection.title: "<dark_gray>📚 Artifact Collection"
 collection.found: "<green>✔ Found"
 collection.not-found: "<red>✘ Not Found"
@@ -246,6 +248,8 @@ upgrade.lore-kills: "<gray>Kills: <white>%d"
 
 fishing.caught: "<aqua>🐟 You caught %s!"
 
+arena.players-only: "<red>Players only!"
+arena.not-configured: "<red>Arena not configured!"
 arena.title: "<dark_red>⚔ Boss Arena"
 arena.start: "<green>⚔ Arena started! Prepare for battle!"
 arena.wave: "<gold>⚔ Wave <white>%d<gold>/<white>%d"
