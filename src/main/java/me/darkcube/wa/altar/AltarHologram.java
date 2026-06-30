@@ -4,6 +4,7 @@ import me.darkcube.wa.WastelandArtifacts;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.inventory.ItemStack;
@@ -58,8 +59,14 @@ public class AltarHologram {
 
         if (recipe.getCatalyst() != null) {
             allReady = false;
-            sb.append("<red>❌ <white>").append(recipe.getCatalyst().getItem().name())
-              .append(" <gray>(брось как чертёж в центр)\n");
+            String catName = recipe.getCatalyst().getTemplate() != null
+                    && recipe.getCatalyst().getTemplate().hasItemMeta()
+                    && recipe.getCatalyst().getTemplate().getItemMeta().hasDisplayName()
+                    ? net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
+                            .serialize(recipe.getCatalyst().getTemplate().getItemMeta().displayName())
+                    : me.darkcube.wa.util.ItemNameUtil.getRussianName(recipe.getCatalyst().getItem());
+            sb.append("<red>❌ <white>").append(catName)
+              .append(" <gray>(катализатор, брось на алтарь)\n");
         }
 
         sb.append("\n");

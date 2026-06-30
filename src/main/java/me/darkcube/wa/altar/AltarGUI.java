@@ -144,8 +144,13 @@ public class AltarGUI extends GUIBase {
             List<String> lore = new ArrayList<>();
             for (var ing : recipe.getIngredients()) {
                 boolean ok = slots[ing.getSlot()] != null && slots[ing.getSlot()].getAmount() >= ing.getAmount();
+                String ingName = ing.getTemplate() != null && ing.getTemplate().hasItemMeta()
+                        && ing.getTemplate().getItemMeta().hasDisplayName()
+                        ? net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
+                                .serialize(ing.getTemplate().getItemMeta().displayName())
+                        : me.darkcube.wa.util.ItemNameUtil.getRussianName(ing.getType());
                 lore.add((ok ? "<green>✅" : "<red>❌") + " <gray>"
-                        + ing.getType().name() + " x" + ing.getAmount());
+                        + ingName + " x" + ing.getAmount());
             }
             m.lore(lore.stream().map(mm::deserialize).toList());
             btn.setItemMeta(m);
