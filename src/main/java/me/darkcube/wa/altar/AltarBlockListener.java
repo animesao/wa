@@ -29,12 +29,9 @@ public class AltarBlockListener implements Listener {
         Player player = event.getPlayer();
         Item dropped = event.getItemDrop();
 
-        // Пробуем принять на алтарь через 2 тика (чтобы предмет упал на землю)
+        // Пробуем принять на алтарь через 2 тика
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            boolean accepted = tracker.tryAcceptDrop(player, dropped);
-            if (!accepted && dropped.isValid()) {
-                dropped.setPickupDelay(0);
-            }
+            tracker.tryAcceptDrop(player, dropped);
         }, 2L);
     }
 
