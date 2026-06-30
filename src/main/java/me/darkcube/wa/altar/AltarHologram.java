@@ -16,8 +16,11 @@ public class AltarHologram {
 
     private final Map<String, TextDisplay> displays = new HashMap<>();
     private final MiniMessage mm = MiniMessage.miniMessage();
+    private final WastelandArtifacts plugin;
 
-    public AltarHologram(WastelandArtifacts plugin) {}
+    public AltarHologram(WastelandArtifacts plugin) {
+        this.plugin = plugin;
+    }
 
     public void update(@NotNull String altarKey, @NotNull Location activatorLoc,
                         @Nullable AltarRecipe recipe, @NotNull ItemStack[] slots) {
@@ -26,8 +29,10 @@ public class AltarHologram {
 
         Location hololoc = activatorLoc.clone().add(0.5, 3.5, 0.5);
 
+        var art = plugin.getArtifactRegistry().get(recipe.getResultId());
+        String artName = art != null ? art.getDisplayName() : recipe.getResultId();
         StringBuilder sb = new StringBuilder();
-        sb.append("<gold>═══ ").append(recipe.getResultId()).append(" ═══\n\n");
+        sb.append("<gold>═══ ").append(artName).append(" ═══\n\n");
 
         boolean allReady = true;
         for (var ing : recipe.getIngredients()) {

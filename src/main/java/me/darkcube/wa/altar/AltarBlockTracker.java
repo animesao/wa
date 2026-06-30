@@ -120,7 +120,9 @@ public class AltarBlockTracker {
         if (pedLoc != null) droppedItem.teleport(pedLoc);
         state.items[0] = droppedItem;
 
-        player.sendMessage(mm.deserialize("<gold>📜 Чертёж <yellow>" + recipe.getResultId() + " <gold>принят!"));
+        var resultArtifact = plugin.getArtifactRegistry().get(recipe.getResultId());
+        String artDisplayName = resultArtifact != null ? resultArtifact.getDisplayName() : recipe.getResultId();
+        player.sendMessage(mm.deserialize("<gold>📜 Чертёж <yellow>" + artDisplayName + " <gold>принят!"));
         player.sendMessage(mm.deserialize("<gray>Брось ингредиенты на алтарь:"));
 
         for (var ing : recipe.getIngredients()) {

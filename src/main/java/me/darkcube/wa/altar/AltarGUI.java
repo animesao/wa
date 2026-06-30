@@ -139,7 +139,8 @@ public class AltarGUI extends GUIBase {
             }
             ItemStack btn = new ItemStack(Material.ANVIL);
             ItemMeta m = btn.getItemMeta();
-            m.displayName(mm.deserialize("<green>⚡ Создать: " + recipe.getResultId()));
+            String resName = artifact != null ? artifact.getDisplayName() : recipe.getResultId();
+            m.displayName(mm.deserialize("<green>⚡ Создать: " + resName));
             List<String> lore = new ArrayList<>();
             for (var ing : recipe.getIngredients()) {
                 boolean ok = slots[ing.getSlot()] != null && slots[ing.getSlot()].getAmount() >= ing.getAmount();
