@@ -10,6 +10,7 @@ import me.darkcube.wa.artifact.Artifact;
 import me.darkcube.wa.artifact.ArtifactSerializer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -130,19 +131,21 @@ public class ConfigManager {
         return mainConfig;
     }
 
-    public String getLang(String key, Object... args) {
+    public @Nullable String getLang(String key, Object... args) {
         return getLangFor(null, key, args);
     }
 
-    public String getLangFor(Player player, String key, Object... args) {
+    public @Nullable String getLangFor(@Nullable Player player, String key, Object... args) {
         Map<String, String> locale = lang;
         if (player != null) {
             String playerLocale = player.getLocale();
             locale = allLocales.getOrDefault(playerLocale, lang);
         }
         String template = locale.getOrDefault(key, lang.getOrDefault(key, key));
+        if (template == null || template.isBlank()) return null;
         try {
-            return String.format(template, args);
+            String result = String.format(template, args);
+            return result.isBlank() ? null : result;
         } catch (IllegalFormatException e) {
             return template;
         }

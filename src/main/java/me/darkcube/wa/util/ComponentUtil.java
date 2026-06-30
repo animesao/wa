@@ -5,6 +5,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,8 +14,10 @@ public class ComponentUtil {
 
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
     private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacySection();
+    private static final Component EMPTY = Component.empty();
 
-    public static @NotNull Component fromMini(@NotNull String mini) {
+    public static @NotNull Component fromMini(@Nullable String mini) {
+        if (mini == null || mini.isBlank()) return EMPTY;
         return MINI_MESSAGE.deserialize(mini);
     }
 
