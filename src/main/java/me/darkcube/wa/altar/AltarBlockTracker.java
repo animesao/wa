@@ -126,10 +126,22 @@ public class AltarBlockTracker {
         player.sendMessage(mm.deserialize("<gray>Брось ингредиенты на алтарь:"));
 
         for (var ing : recipe.getIngredients()) {
-            String itemName = ing.getTemplate() != null && ing.getTemplate().hasItemMeta()
-                    && ing.getTemplate().getItemMeta().hasDisplayName()
-                    ? mm.serialize(ing.getTemplate().getItemMeta().displayName())
-                    : me.darkcube.wa.util.ItemNameUtil.getRussianName(ing.getType());
+            String itemName = null;
+            if (ing.getTemplate() != null && ing.getTemplate().hasItemMeta()
+                    && ing.getTemplate().getItemMeta().hasDisplayName()) {
+                itemName = mm.serialize(ing.getTemplate().getItemMeta().displayName());
+            } else {
+                // Пробуем найти кастомный предмет с таким материалом
+                for (var def : plugin.getCustomItemRegistry().getAll().entrySet()) {
+                    if (def.getValue().material == ing.getType()) {
+                        itemName = def.getValue().name;
+                        break;
+                    }
+                }
+                if (itemName == null) {
+                    itemName = me.darkcube.wa.util.ItemNameUtil.getRussianName(ing.getType());
+                }
+            }
             player.sendMessage(mm.deserialize("  <gray>- " + itemName + " x" + ing.getAmount()
                     + " <white>→ слот " + ing.getSlot()));
         }
