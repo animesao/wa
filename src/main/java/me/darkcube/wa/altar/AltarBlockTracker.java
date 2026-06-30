@@ -50,7 +50,11 @@ public class AltarBlockTracker {
 
         Block dropBlock = droppedItem.getLocation().getBlock();
 
-        for (var entry : plugin.getAltarManager().getAllTiers().entrySet()) {
+        // Ищем сначала по highest tier, чтобы легендарный не определялся как продвинутый
+        var tiers = new ArrayList<>(plugin.getAltarManager().getAllTiers().entrySet());
+        tiers.sort((a, b) -> Integer.compare(b.getValue().tier, a.getValue().tier));
+
+        for (var entry : tiers) {
             AltarConfig.AltarTier tier = entry.getValue();
             if (!tier.enabled) continue;
 

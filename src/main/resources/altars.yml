@@ -196,7 +196,7 @@ altars:
             customModelData: 6008
           - type: GHAST_TEAR
             amount: 4
-            slot: 8
+            slot: 2
 
       # ─── Пример с кастомными предметами (по name/lore) ───
       - id: craft_custom_sword

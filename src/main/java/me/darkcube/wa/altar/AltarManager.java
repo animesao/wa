@@ -59,7 +59,9 @@ public class AltarManager {
 
     public @Nullable AltarConfig.AltarTier detectAltar(@NotNull Block activatorBlock) {
         if (config == null) return null;
-        for (var entry : config.altars.entrySet()) {
+        var entries = new ArrayList<>(config.altars.entrySet());
+        entries.sort((a, b) -> Integer.compare(b.getValue().tier, a.getValue().tier));
+        for (var entry : entries) {
             AltarConfig.AltarTier tier = entry.getValue();
             if (!tier.enabled) continue;
             if (activatorBlock.getType() != tier.activatorBlock) continue;
