@@ -15,7 +15,8 @@ import java.util.function.Consumer;
 
 public class AdminItemsGUI extends GUIBase {
 
-    private static final int ITEMS_PER_PAGE = 45;
+    private static final int ITEMS_PER_PAGE = 36;
+    private static final int ITEMS_START = 9;
     private static final int PREV_BTN = 45;
     private static final int NEXT_BTN = 53;
     private static final int INFO_SLOT = 49;
@@ -125,7 +126,7 @@ public class AdminItemsGUI extends GUIBase {
         // Предметы текущей страницы
         int start = currentPage * ITEMS_PER_PAGE;
         int end = Math.min(start + ITEMS_PER_PAGE, allItems.size());
-        int slot = 0;
+        int slot = ITEMS_START;
         for (int i = start; i < end; i++) {
             ItemStack display = allItems.get(i).clone();
             ItemMeta meta = display.getItemMeta();
