@@ -2,6 +2,7 @@ package me.darkcube.wa.commands;
 
 import me.darkcube.wa.WastelandArtifacts;
 import me.darkcube.wa.bag.ArtifactBagGUI;
+import me.darkcube.wa.util.ComponentUtil;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -28,11 +29,11 @@ public class BagCommand extends Command {
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(mm.deserialize(plugin.msg("bag.players-only")));
+            ComponentUtil.sendMsg(sender, plugin.msg("bag.players-only"));
             return true;
         }
         if (!player.hasPermission("wastelandartifacts.player.bag")) {
-            player.sendMessage(mm.deserialize(plugin.msg("bag.no-permission")));
+            ComponentUtil.sendMsg(player, plugin.msg("bag.no-permission"));
             return true;
         }
 
@@ -49,9 +50,9 @@ public class BagCommand extends Command {
         }
 
         if (!hasBag) {
-            player.sendMessage(mm.deserialize(plugin.msg("bag.no-bag")));
-            player.sendMessage(mm.deserialize(plugin.msg("bag.craft-hint")));
-            player.sendMessage(mm.deserialize(plugin.msg("bag.recipe-hint")));
+            ComponentUtil.sendMsg(player, plugin.msg("bag.no-bag"));
+            ComponentUtil.sendMsg(player, plugin.msg("bag.craft-hint"));
+            ComponentUtil.sendMsg(player, plugin.msg("bag.recipe-hint"));
             return true;
         }
 

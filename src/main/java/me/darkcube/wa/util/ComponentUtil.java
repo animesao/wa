@@ -1,9 +1,12 @@
 package me.darkcube.wa.util;
 
+import me.darkcube.wa.WastelandArtifacts;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,5 +53,18 @@ public class ComponentUtil {
     public static @NotNull Component fromLang(@Nullable String msg) {
         if (msg == null || msg.isBlank()) return EMPTY;
         return MINI_MESSAGE.deserialize(msg);
+    }
+
+    /** Безопасно отправляет игроку/консоли сообщение из MiniMessage строки. Если строка пустая — игнорирует. */
+    public static void sendMsg(@NotNull CommandSender target, @Nullable String msg) {
+        if (msg == null || msg.isBlank()) return;
+        target.sendMessage(MINI_MESSAGE.deserialize(msg));
+    }
+
+    /** Безопасно отправляет локализованное сообщение. Если ключ пустой — игнорирует. */
+    public static void sendLangMsg(@NotNull CommandSender target, WastelandArtifacts plugin, @NotNull String key, Object... args) {
+        String msg = plugin.msg(key, args);
+        if (msg == null || msg.isBlank()) return;
+        target.sendMessage(MINI_MESSAGE.deserialize(msg));
     }
 }

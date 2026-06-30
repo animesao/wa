@@ -1,6 +1,7 @@
 package me.darkcube.wa.altar;
 
 import me.darkcube.wa.WastelandArtifacts;
+import me.darkcube.wa.util.ComponentUtil;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Item;
@@ -40,7 +41,7 @@ public class AltarBlockListener implements Listener {
         tracker.removeAltar(event.getBlock());
         var tier = plugin.getAltarManager().detectAltar(event.getBlock());
         if (tier != null) {
-            event.getPlayer().sendMessage(mm.deserialize(plugin.msg("altar.destroyed")));
+            ComponentUtil.sendMsg(event.getPlayer(), plugin.msg("altar.destroyed"));
         }
     }
 

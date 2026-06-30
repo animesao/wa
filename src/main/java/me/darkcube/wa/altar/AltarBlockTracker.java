@@ -28,6 +28,13 @@ public class AltarBlockTracker {
     private final AltarHologram hologram;
     private final MiniMessage mm = MiniMessage.miniMessage();
     private static final int SEARCH_RADIUS = 4;
+
+    /** Безопасная отправка сообщения из lang. Если строка пустая/пробельная — не отправляет ничего */
+    private void sendLang(Player player, String key, Object... args) {
+        String msg = plugin.msg(key, args);
+        if (msg == null || msg.isBlank()) return;
+        player.sendMessage(mm.deserialize(msg));
+    }
     private static final NamespacedKey BP_KEY = new NamespacedKey("wastelandartifacts", "blueprint_recipe");
 
 
@@ -64,7 +71,7 @@ public class AltarBlockTracker {
             }
             if (activator == null) continue;
 
-            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.found", tier.displayName)));
+            sendLang(player, "altar.tracker.found", tier.displayName);
             Location actLoc = activator.getLocation().clone();
             String tierId = entry.getKey();
             String altarKey = key(actLoc);
@@ -78,7 +85,7 @@ public class AltarBlockTracker {
 
             if (state.activeRecipe == null) {
                 if (isRelevant) {
-                    player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.need-blueprint")));
+                    sendLang(player, "altar.tracker.need-blueprint");
                 }
                 return false;
             }
@@ -87,7 +94,7 @@ public class AltarBlockTracker {
         }
 
         if (isRelevant) {
-            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.no-altar-nearby")));
+            sendLang(player, "altar.tracker.no-altar-nearby");
         }
         return false;
     }
@@ -97,7 +104,7 @@ public class AltarBlockTracker {
                                      AltarConfig.AltarTier tier, String recipeId) {
         AltarRecipe recipe = plugin.getAltarManager().getCraftingManager().getRecipe(recipeId);
         if (recipe == null || recipe.getTier() > tier.tier) {
-            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.wrong-blueprint")));
+            sendLang(player, "altar.tracker.wrong-blueprint");
             return false;
         }
 
@@ -130,12 +137,12 @@ public class AltarBlockTracker {
 
         var resultArtifact = plugin.getArtifactRegistry().get(recipe.getResultId());
         String artDisplayName = resultArtifact != null ? resultArtifact.getDisplayName() : recipe.getResultId();
-        player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.blueprint-accepted", artDisplayName)));
-        player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.drop-ingredients")));
+        sendLang(player, "altar.tracker.blueprint-accepted", artDisplayName);
+        sendLang(player, "altar.tracker.drop-ingredients");
 
         for (var ing : recipe.getIngredients()) {
             String itemName = getIngredientDisplayName(ing);
-            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.ingredient-slot", itemName, ing.getAmount(), ing.getSlot())));
+            sendLang(player, "altar.tracker.ingredient-slot", itemName, ing.getAmount(), ing.getSlot());
         }
 
         updateHologram(altarKey, activator.getLocation(), state);
@@ -159,7 +166,7 @@ public class AltarBlockTracker {
         Location pedLoc = getPedestalLocation(activator.getLocation(), 0);
         if (pedLoc != null) droppedItem.teleport(pedLoc.clone().add(1, 0, 0));
         state.catalyst = droppedItem;
-        player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.catalyst-accepted")));
+        sendLang(player, "altar.tracker.catalyst-accepted");
         updateHologram(altarKey, activator.getLocation(), state);
     }
 
@@ -214,15 +221,15 @@ public class AltarBlockTracker {
         }
 
         if (matching.isEmpty()) {
-            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.no-match", getItemDisplayName(dropStack))));
-            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.recipe-has",
+            sendLang(player, "altar.tracker.no-match", getItemDisplayName(dropStack));
+            sendLang(player, "altar.tracker.recipe-has",
                     recipe.getIngredients().stream()
                         .map(i -> getIngredientDisplayName(i))
                         .distinct()
-                        .collect(java.util.stream.Collectors.joining(", ")))));
+                        .collect(java.util.stream.Collectors.joining(", ")));
             return false;
         } else {
-            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.slots-found", matching.size())));
+            sendLang(player, "altar.tracker.slots-found", matching.size());
         }
 
         matching.sort(Comparator.comparingInt(ing -> {
@@ -264,13 +271,13 @@ public class AltarBlockTracker {
                     item.setMetadata("wa_altar_slot", new FixedMetadataValue(plugin, slot));
                 });
                 state.items[slot] = newItem;
-                player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.item-placed", getItemName(ing), toPlace, slot)));
+                sendLang(player, "altar.tracker.item-placed", getItemName(ing), toPlace, slot);
             } else {
                 ItemStack exStack = existing.getItemStack();
                 exStack.setAmount(has + toPlace);
                 existing.setItemStack(exStack);
                 String n = getItemName(ing);
-                player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.item-added", toPlace, n, slot, has + toPlace)));
+                sendLang(player, "altar.tracker.item-added", toPlace, n, slot, has + toPlace);
             }
             remaining -= toPlace;
         }
@@ -282,7 +289,7 @@ public class AltarBlockTracker {
             leftover.setAmount(remaining);
             activator.getWorld().dropItemNaturally(droppedItem.getLocation(), leftover);
             droppedItem.remove();
-            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.remainder", remaining)));
+            sendLang(player, "altar.tracker.remainder", remaining);
         } else {
             // Показываем, что ещё нужно
             StringBuilder missing = new StringBuilder("<red>❌ Слоты заняты. Нужно ещё: ");
@@ -301,7 +308,7 @@ public class AltarBlockTracker {
             if (!first) {
                 player.sendMessage(mm.deserialize(missing.toString()));
             } else {
-                player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.slots-full")));
+                sendLang(player, "altar.tracker.slots-full");
             }
             return false;
         }
@@ -620,7 +627,7 @@ public class AltarBlockTracker {
         String k = key(activatorBlock.getLocation());
         AltarState state = altars.get(k);
         if (state == null) {
-            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.no-items")));
+            sendLang(player, "altar.tracker.no-items");
             return;
         }
 
@@ -660,9 +667,9 @@ public class AltarBlockTracker {
         hologram.remove(k);
 
         if (count > 0) {
-            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.collected", count)));
+            sendLang(player, "altar.tracker.collected", count);
         } else {
-            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.no-items")));
+            sendLang(player, "altar.tracker.no-items");
         }
     }
 

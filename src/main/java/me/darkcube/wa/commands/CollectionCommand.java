@@ -3,6 +3,7 @@ package me.darkcube.wa.commands;
 import me.darkcube.wa.WastelandArtifacts;
 import me.darkcube.wa.feature.collection.CollectionGUI;
 import me.darkcube.wa.feature.collection.CollectionManager;
+import me.darkcube.wa.util.ComponentUtil;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -28,13 +29,13 @@ public class CollectionCommand extends Command {
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(mm.deserialize(plugin.msg("collection.players-only")));
+            ComponentUtil.sendMsg(sender, plugin.msg("collection.players-only"));
             return true;
         }
         if (args.length > 0 && args[0].equalsIgnoreCase("collection")) {
             int found = collectionManager.getFoundCount(player);
             int total = collectionManager.getAllArtifactIds().size();
-            player.sendMessage(mm.deserialize(plugin.msg("collection.progress", found, total)));
+            ComponentUtil.sendMsg(player, plugin.msg("collection.progress", found, total));
         } else {
             collectionGUI.open(player);
         }

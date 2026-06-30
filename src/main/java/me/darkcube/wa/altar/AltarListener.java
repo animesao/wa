@@ -1,6 +1,7 @@
 package me.darkcube.wa.altar;
 
 import me.darkcube.wa.WastelandArtifacts;
+import me.darkcube.wa.util.ComponentUtil;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -41,10 +42,10 @@ public class AltarListener implements Listener {
             altarManager.getBlockTracker().collectItems(player, block);
         } else {
             // Обычный ПКМ → информация
-            player.sendMessage(mm.deserialize(plugin.msg("altar.interact-info", tier.displayName, tier.description)));
-            player.sendMessage(mm.deserialize(plugin.msg("altar.howto-drop")));
-            player.sendMessage(mm.deserialize(plugin.msg("altar.howto-collect")));
-            player.sendMessage(mm.deserialize(plugin.msg("altar.howto-destroy")));
+            ComponentUtil.sendMsg(player, plugin.msg("altar.interact-info", tier.displayName, tier.description));
+            ComponentUtil.sendMsg(player, plugin.msg("altar.howto-drop"));
+            ComponentUtil.sendMsg(player, plugin.msg("altar.howto-collect"));
+            ComponentUtil.sendMsg(player, plugin.msg("altar.howto-destroy"));
         }
     }
 

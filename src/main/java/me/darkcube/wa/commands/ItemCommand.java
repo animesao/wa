@@ -1,6 +1,7 @@
 package me.darkcube.wa.commands;
 
 import me.darkcube.wa.WastelandArtifacts;
+import me.darkcube.wa.util.ComponentUtil;
 import me.darkcube.wa.util.MojangItemCodec;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;
@@ -27,13 +28,13 @@ public class ItemCommand extends Command {
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(mm.deserialize(plugin.msg("item.players-only")));
+            ComponentUtil.sendMsg(sender, plugin.msg("item.players-only"));
             return true;
         }
 
         if (args.length == 0) {
-            player.sendMessage(mm.deserialize(plugin.msg("item.help.encode")));
-            player.sendMessage(mm.deserialize(plugin.msg("item.help.decode")));
+            ComponentUtil.sendMsg(player, plugin.msg("item.help.encode"));
+            ComponentUtil.sendMsg(player, plugin.msg("item.help.decode"));
             return true;
         }
 
@@ -41,7 +42,7 @@ public class ItemCommand extends Command {
             case "encode" -> handleEncode(player);
             case "decode" -> handleDecode(player, args);
             default -> {
-                player.sendMessage(mm.deserialize(plugin.msg("item.unknown-subcommand")));
+                ComponentUtil.sendMsg(player, plugin.msg("item.unknown-subcommand"));
                 yield true;
             }
         };
@@ -50,33 +51,33 @@ public class ItemCommand extends Command {
     private boolean handleEncode(Player player) {
         ItemStack hand = player.getInventory().getItemInMainHand();
         if (hand.getType().isAir()) {
-            player.sendMessage(mm.deserialize(plugin.msg("item.hold-item")));
+            ComponentUtil.sendMsg(player, plugin.msg("item.hold-item"));
             return true;
         }
         String b64 = MojangItemCodec.encode(hand);
-        player.sendMessage(mm.deserialize(plugin.msg("item.encode-result-title")));
-        player.sendMessage(mm.deserialize(plugin.msg("item.encode-result", b64)));
-        player.sendMessage(mm.deserialize(plugin.msg("item.encode-copy-hint")));
+        ComponentUtil.sendMsg(player, plugin.msg("item.encode-result-title"));
+        ComponentUtil.sendMsg(player, plugin.msg("item.encode-result", b64));
+        ComponentUtil.sendMsg(player, plugin.msg("item.encode-copy-hint"));
         return true;
     }
 
     private boolean handleDecode(Player player, String[] args) {
         if (args.length < 2) {
-            player.sendMessage(mm.deserialize(plugin.msg("item.usage.decode")));
+            ComponentUtil.sendMsg(player, plugin.msg("item.usage.decode"));
             return true;
         }
         String b64 = args[1];
         if (!MojangItemCodec.isValid(b64)) {
-            player.sendMessage(mm.deserialize(plugin.msg("item.decode-invalid")));
+            ComponentUtil.sendMsg(player, plugin.msg("item.decode-invalid"));
             return true;
         }
         ItemStack item = MojangItemCodec.decode(b64);
         if (item == null) {
-            player.sendMessage(mm.deserialize(plugin.msg("item.decode-failed")));
+            ComponentUtil.sendMsg(player, plugin.msg("item.decode-failed"));
             return true;
         }
         player.getInventory().addItem(item);
-        player.sendMessage(mm.deserialize(plugin.msg("item.decode-success")));
+        ComponentUtil.sendMsg(player, plugin.msg("item.decode-success"));
         return true;
     }
 

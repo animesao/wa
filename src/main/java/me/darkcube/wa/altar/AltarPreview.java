@@ -1,6 +1,7 @@
 package me.darkcube.wa.altar;
 
 import me.darkcube.wa.WastelandArtifacts;
+import me.darkcube.wa.util.ComponentUtil;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -91,7 +92,7 @@ public class AltarPreview {
         previewCooldowns.put(player.getUniqueId(), System.currentTimeMillis() + 60000);
         activePreviews.put(player.getUniqueId(), displays);
 
-        player.sendMessage(mm.deserialize(plugin.msg("altar.preview-activated", tier.displayName)));
+        ComponentUtil.sendMsg(player, plugin.msg("altar.preview-activated", tier.displayName));
 
         // Показываем список блоков для постройки
         int w = layers.get(0).length();
@@ -117,13 +118,13 @@ public class AltarPreview {
             }
         }
 
-        player.sendMessage(mm.deserialize(plugin.msg("altar.preview.blocks-title")));
+        ComponentUtil.sendMsg(player, plugin.msg("altar.preview.blocks-title"));
         for (var e : needed.entrySet()) {
-            player.sendMessage(mm.deserialize(plugin.msg("altar.preview.block-entry", me.darkcube.wa.util.ItemNameUtil.getRussianName(e.getKey()), e.getValue())));
+            ComponentUtil.sendMsg(player, plugin.msg("altar.preview.block-entry", me.darkcube.wa.util.ItemNameUtil.getRussianName(e.getKey()), e.getValue()));
         }
-        player.sendMessage(mm.deserialize(plugin.msg("altar.preview.build-hint")));
+        ComponentUtil.sendMsg(player, plugin.msg("altar.preview.build-hint"));
         if (player.hasPermission("wastelandartifacts.admin.altar")) {
-            player.sendMessage(mm.deserialize(plugin.msg("altar.preview.admin-hint", findTierKey(tier))));
+            ComponentUtil.sendMsg(player, plugin.msg("altar.preview.admin-hint", findTierKey(tier)));
         }
         return true;
     }
@@ -147,7 +148,7 @@ public class AltarPreview {
         AltarConfig.AltarStructure struct = tier.structures.get(variantIndex);
         Block target = player.getTargetBlockExact(10);
         if (target == null) {
-            player.sendMessage(mm.deserialize(plugin.msg("altar.preview.look-at-block")));
+            ComponentUtil.sendMsg(player, plugin.msg("altar.preview.look-at-block"));
             return false;
         }
 
@@ -195,9 +196,9 @@ public class AltarPreview {
             }
 
             if (!missing.isEmpty()) {
-                player.sendMessage(mm.deserialize(plugin.msg("altar.build.missing-blocks")));
+                ComponentUtil.sendMsg(player, plugin.msg("altar.build.missing-blocks"));
                 for (String m : missing) {
-                    player.sendMessage(mm.deserialize(plugin.msg("altar.build.missing-entry", m)));
+                    ComponentUtil.sendMsg(player, plugin.msg("altar.build.missing-entry", m));
                 }
                 return false;
             }
@@ -226,7 +227,7 @@ public class AltarPreview {
             }
         }
 
-        player.sendMessage(mm.deserialize(plugin.msg("altar.build.success", tier.displayName)));
+        ComponentUtil.sendMsg(player, plugin.msg("altar.build.success", tier.displayName));
         return true;
     }
 

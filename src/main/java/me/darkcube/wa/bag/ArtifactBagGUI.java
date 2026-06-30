@@ -3,6 +3,7 @@ package me.darkcube.wa.bag;
 import me.darkcube.wa.WastelandArtifacts;
 import me.darkcube.wa.artifact.Artifact;
 import me.darkcube.wa.gui.GUIBase;
+import me.darkcube.wa.util.ComponentUtil;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -57,7 +58,7 @@ public class ArtifactBagGUI extends GUIBase {
 
         if (cursor != null && cursor.getType() != Material.AIR) {
             if (!plugin.getArtifactManager().isArtifact(cursor)) {
-                player.sendMessage(mm.deserialize(plugin.msg("bag.gui.artifacts-only")));
+                ComponentUtil.sendMsg(player, plugin.msg("bag.gui.artifacts-only"));
                 return;
             }
             ItemStack toPlace = cursor.clone();
@@ -70,12 +71,12 @@ public class ArtifactBagGUI extends GUIBase {
                 cursor.setAmount(cursor.getAmount() - 1);
                 event.getView().setCursor(cursor);
             }
-            player.sendMessage(mm.deserialize(plugin.msg("bag.gui.artifact-placed")));
+            ComponentUtil.sendMsg(player, plugin.msg("bag.gui.artifact-placed"));
         } else if (current != null && !current.getType().isAir()) {
             bagManager.setSlot(player, slot, null);
             event.getView().setCursor(current);
             inventory.setItem(slot, makeBg(slot));
-            player.sendMessage(mm.deserialize(plugin.msg("bag.gui.artifact-removed")));
+            ComponentUtil.sendMsg(player, plugin.msg("bag.gui.artifact-removed"));
         }
     }
 
