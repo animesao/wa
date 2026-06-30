@@ -196,14 +196,17 @@ public class AltarBlockTracker {
 
         List<AltarRecipe.Ingredient> matching = new ArrayList<>();
 
-        // Один проход: сначала точные совпадения по шаблону, потом по типу (для одинаковых материалов)
+        // Если предмет плагина (артефакт/кастомный) — ищем только по шаблону, не по материалу
+        boolean isPluginItem = plugin.getArtifactManager().isArtifact(dropStack)
+                || plugin.getCustomItemRegistry().getId(dropStack) != null;
+
         for (var ing : recipe.getIngredients()) {
             int slot = ing.getSlot();
             if (slot < 1 || slot >= getMaxSlots()) continue;
             boolean matched = false;
             if (ing.getTemplate() != null && itemsMatch(dropStack, ing.getTemplate())) {
                 matched = true;
-            } else if (dropType == ing.getType()) {
+            } else if (!isPluginItem && dropType == ing.getType()) {
                 matched = true;
             }
             if (matched) {
