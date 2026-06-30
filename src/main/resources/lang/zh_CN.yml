@@ -104,7 +104,7 @@ altar.schematic-list: "<gold>祭坛原理图：<white>%s"
 # ─── 祭坛 — 追踪 ───
 altar.tracker.found: "<gray>🔍 发现祭坛：<white>%s"
 altar.tracker.need-blueprint: "<red>请先丢出蓝图（合成图纸）！"
-altar.tracker.no-altar-nearby: "<red>附近没有祭坛！使用 /altar build 建造一个"
+altar.tracker.no-altar-nearby: " " #"<red>附近没有祭坛！使用 /altar build 建造一个"
 altar.tracker.wrong-blueprint: "<red>此蓝图不适用于此祭坛！"
 altar.tracker.catalyst-accepted: "<green>✅ 催化剂已接受！"
 altar.tracker.blueprint-accepted: "<gold>📜 蓝图 <yellow>%s <gold>已接受！"

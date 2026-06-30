@@ -104,7 +104,7 @@ altar.schematic-list: "<gold>Schémas d'autels : <white>%s"
 # ─── Autel — Suivi ───
 altar.tracker.found: "<gray>🔍 Autel trouvé : <white>%s"
 altar.tracker.need-blueprint: "<red>Jette d'abord un plan (schéma de craft) !"
-altar.tracker.no-altar-nearby: "<red>Aucun autel à proximité ! Construis-en un avec /altar build"
+altar.tracker.no-altar-nearby: " " #"<red>Aucun autel à proximité ! Construis-en un avec /altar build"
 altar.tracker.wrong-blueprint: "<red>Ce plan ne correspond pas à cet autel !"
 altar.tracker.catalyst-accepted: "<green>✅ Catalyseur accepté !"
 altar.tracker.blueprint-accepted: "<gold>📜 Plan <yellow>%s <gold>accepté !"

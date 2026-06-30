@@ -105,7 +105,7 @@ altar.schematic-list: "<gold>Схемы алтарей: <white>%s"
 # ─── Алтарь — трекер ───
 altar.tracker.found: "<gray>🔍 Найден алтарь: <white>%s"
 altar.tracker.need-blueprint: "<red>Сначала брось чертёж (схему крафта)!"
-altar.tracker.no-altar-nearby: "<red>Рядом нет алтаря! Построй его через /altar build"
+altar.tracker.no-altar-nearby: " " #"<red>Рядом нет алтаря! Построй его через /altar build"
 altar.tracker.wrong-blueprint: "<red>Этот чертёж не подходит для этого алтаря!"
 altar.tracker.blueprint-accepted: "<gold>📜 Чертёж <yellow>%s <gold>принят!"
 altar.tracker.catalyst-accepted: "<green>✅ Catalyst accepted!"

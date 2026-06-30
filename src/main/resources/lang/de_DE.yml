@@ -104,7 +104,7 @@ altar.schematic-list: "<gold>Altar-Schaltpläne: <white>%s"
 # ─── Altar — Verfolgung ───
 altar.tracker.found: "<gray>🔍 Altar gefunden: <white>%s"
 altar.tracker.need-blueprint: "<red>Wirf zuerst einen Bauplan (Crafting-Schema)!"
-altar.tracker.no-altar-nearby: "<red>Kein Altar in der Nähe! Baue einen mit /altar build"
+altar.tracker.no-altar-nearby: " " #"<red>Kein Altar in der Nähe! Baue einen mit /altar build"
 altar.tracker.wrong-blueprint: "<red>Dieser Bauplan passt nicht zu diesem Altar!"
 altar.tracker.catalyst-accepted: "<green>✅ Katalysator angenommen!"
 altar.tracker.blueprint-accepted: "<gold>📜 Bauplan <yellow>%s <gold>angenommen!"
