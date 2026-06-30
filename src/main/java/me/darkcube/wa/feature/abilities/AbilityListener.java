@@ -21,8 +21,13 @@ public class AbilityListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         Player player = event.getPlayer();
-        ItemStack item = player.getInventory().getItemInMainHand();
-        if (item == null) return;
+
+        // Проверяем обе руки
+        ItemStack item = event.getItem();
+        if (item == null || !item.hasItemMeta()) {
+            item = player.getInventory().getItemInOffHand();
+        }
+        if (item == null || !item.hasItemMeta()) return;
 
         var artifact = plugin.getArtifactManager().getArtifactFromItem(item);
         if (artifact == null) return;

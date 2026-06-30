@@ -160,14 +160,27 @@ public class ArtifactListener implements Listener {
     @EventHandler
     public void onPlayerSwapHands(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
-        ItemStack offhand = event.getOffHandItem();
-        Artifact artifact = plugin.getArtifactManager().getArtifactFromItem(offhand);
-        if (artifact != null) {
-            for (var comp : artifact.getComponents()) {
+
+        // Снимаем эффекты с предмета который уходит из off-hand
+        ItemStack oldOffhand = event.getOffHandItem();
+        Artifact oldArtifact = plugin.getArtifactManager().getArtifactFromItem(oldOffhand);
+        if (oldArtifact != null) {
+            for (var comp : oldArtifact.getComponents()) {
+                comp.onUnequip(player);
+            }
+            fireTriggers(oldArtifact, player, oldArtifact, oldOffhand, TriggerType.ON_UNEQUIP, null, null);
+        }
+
+        // Надеваем эффекты на предмет кото��ый приходит в off-hand
+        ItemStack newOffhand = event.getMainHandItem();
+        Artifact newArtifact = plugin.getArtifactManager().getArtifactFromItem(newOffhand);
+        if (newArtifact != null) {
+            for (var comp : newArtifact.getComponents()) {
                 comp.onEquip(player);
             }
+            fireTriggers(newArtifact, player, newArtifact, newOffhand, TriggerType.ON_EQUIP, null, null);
         }
-        // Пересчитываем эффекты в сумке (оффхенд будет учтён)
+
         plugin.getArtifactBagManager().recalcEffects(player);
     }
 
@@ -175,8 +188,13 @@ public class ArtifactListener implements Listener {
     public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
         if (!event.isSneaking()) return;
         Player player = event.getPlayer();
+
         ItemStack item = player.getInventory().getItemInMainHand();
         Artifact artifact = plugin.getArtifactManager().getArtifactFromItem(item);
+        if (artifact == null) {
+            item = player.getInventory().getItemInOffHand();
+            artifact = plugin.getArtifactManager().getArtifactFromItem(item);
+        }
         if (artifact != null) {
             fireTriggers(artifact, player, artifact, item, TriggerType.ON_SNEAK, event, null);
         }
@@ -186,8 +204,13 @@ public class ArtifactListener implements Listener {
     public void onEntityDeath(EntityDeathEvent event) {
         if (event.getEntity().getKiller() == null) return;
         Player killer = event.getEntity().getKiller();
+
         ItemStack weapon = killer.getInventory().getItemInMainHand();
         Artifact artifact = plugin.getArtifactManager().getArtifactFromItem(weapon);
+        if (artifact == null) {
+            weapon = killer.getInventory().getItemInOffHand();
+            artifact = plugin.getArtifactManager().getArtifactFromItem(weapon);
+        }
         if (artifact != null) {
             fireTriggers(artifact, killer, artifact, weapon, TriggerType.ON_KILL, event, event.getEntity());
         }
@@ -196,8 +219,13 @@ public class ArtifactListener implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
+
         ItemStack item = player.getInventory().getItemInMainHand();
         Artifact artifact = plugin.getArtifactManager().getArtifactFromItem(item);
+        if (artifact == null) {
+            item = player.getInventory().getItemInOffHand();
+            artifact = plugin.getArtifactManager().getArtifactFromItem(item);
+        }
         if (artifact != null) {
             fireTriggers(artifact, player, artifact, item, TriggerType.ON_DEATH, event, player.getKiller());
         }
