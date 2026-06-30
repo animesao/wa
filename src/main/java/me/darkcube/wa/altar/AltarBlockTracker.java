@@ -195,27 +195,19 @@ public class AltarBlockTracker {
         }
 
         List<AltarRecipe.Ingredient> matching = new ArrayList<>();
-        boolean hasCustomName = dropStack.hasItemMeta() && dropStack.getItemMeta().hasDisplayName();
 
-        // Этап 1: точные совпадения по шаблону
-        if (hasCustomName) {
-            for (var ing : recipe.getIngredients()) {
-                int slot = ing.getSlot();
-                if (slot < 1 || slot >= getMaxSlots()) continue;
-                if (ing.getTemplate() != null && itemsMatch(dropStack, ing.getTemplate())) {
-                    matching.add(ing);
-                }
+        // Один проход: сначала точные совпадения по шаблону, потом по типу (для одинаковых материалов)
+        for (var ing : recipe.getIngredients()) {
+            int slot = ing.getSlot();
+            if (slot < 1 || slot >= getMaxSlots()) continue;
+            boolean matched = false;
+            if (ing.getTemplate() != null && itemsMatch(dropStack, ing.getTemplate())) {
+                matched = true;
+            } else if (dropType == ing.getType()) {
+                matched = true;
             }
-        }
-
-        // Этап 2: если ничего не нашли — совпадение по типу
-        if (matching.isEmpty()) {
-            for (var ing : recipe.getIngredients()) {
-                int slot = ing.getSlot();
-                if (slot < 1 || slot >= getMaxSlots()) continue;
-                if (dropType == ing.getType()) {
-                    matching.add(ing);
-                }
+            if (matched) {
+                matching.add(ing);
             }
         }
 
