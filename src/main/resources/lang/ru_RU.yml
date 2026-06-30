@@ -226,3 +226,34 @@ editor.component-selector-title: "<dark_gray>Выберите компонент
 
 # ─── Ресурс-пак ───
 resourcepack.pack-description: "§6Wasteland Artifacts §7- §eКастомные артефакты"
+
+# ─── Features ───
+collection.title: "<dark_gray>📚 Коллекция артефактов"
+collection.found: "<green>✔ Найден"
+collection.not-found: "<red>✘ Не найден"
+collection.progress: "<gold>Коллекция: <white>%d<gold>/<white>%d"
+collection.reward: "<gold>🏆 Награда за коллекцию: %s"
+
+ability.cooldown: "<gray>Кулдаун: <white>%dс"
+ability.activated: "<green>⚡ Активировано: %s"
+
+upgrade.success: "<green>⬆ Улучшен до %d уровня!"
+upgrade.max-level: "<red>Макс. уровень!"
+upgrade.not-enough: "<red>Нужно ещё %d одинаковых артефакта!"
+upgrade.lore-level: "<gray>Уровень: <green>%d"
+upgrade.lore-xp: "<gray>XP: <white>%d<gray>/<white>%d"
+upgrade.lore-kills: "<gray>Убийств: <white>%d"
+
+fishing.caught: "<aqua>🐟 Вы выловили %s!"
+
+arena.title: "<dark_red>⚔ Арена Боссов"
+arena.start: "<green>⚔ Арена началась! Готовься к битве!"
+arena.wave: "<gold>⚔ Волна <white>%d<gold>/<white>%d"
+arena.complete: "<green>🏆 Арена пройдена! Награды получены!"
+arena.cooldown: "<red>Арена перезаряжается: %dс"
+
+xp.level-up: "<green>⬆ Артефакт <gold>%s <green>достиг <yellow>%d <green>уровня!"
+xp.progress: "<gray>XP: <white>%d<gray>/<white>%d"
+
+elite.spawned: "<red>☠ %s появился!"
+elite.killed: "<gold>🏆 Элитный %s повержен!"

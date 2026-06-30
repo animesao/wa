@@ -225,3 +225,34 @@ editor.component-selector-title: "<dark_gray>选择组件"
 
 # ─── 资源包 ───
 resourcepack.pack-description: "§6Wasteland Artifacts §7- §e自定义神器"
+
+# ─── Features ───
+collection.title: "<dark_gray>📚 神器收藏"
+collection.found: "<green>✔ 已发现"
+collection.not-found: "<red>✘ 未发现"
+collection.progress: "<gold>收藏: <white>%d<gold>/<white>%d"
+collection.reward: "<gold>🏆 收藏奖励: %s"
+
+ability.cooldown: "<gray>冷却: <white>%d秒"
+ability.activated: "<green>⚡ 已激活: %s"
+
+upgrade.success: "<green>⬆ 已升级至 %d 级!"
+upgrade.max-level: "<red>已达最高等级!"
+upgrade.not-enough: "<red>还需要 %d 个相同的神器!"
+upgrade.lore-level: "<gray>等级: <green>%d"
+upgrade.lore-xp: "<gray>经验: <white>%d<gray>/<white>%d"
+upgrade.lore-kills: "<gray>击杀: <white>%d"
+
+fishing.caught: "<aqua>🐟 你钓到了 %s!"
+
+arena.title: "<dark_red>⚔  Boss 竞技场"
+arena.start: "<green>⚔ 竞技场开始!准备战斗!"
+arena.wave: "<gold>⚔ 第 <white>%d<gold>/<white>%d 波"
+arena.complete: "<green>🏆 竞技场完成!已获得奖励!"
+arena.cooldown: "<red>竞技场冷却中: %d秒"
+
+xp.level-up: "<green>⬆ 神器 <gold>%s <green>已达到 <yellow>%d <green>级!"
+xp.progress: "<gray>经验: <white>%d<gray>/<white>%d"
+
+elite.spawned: "<red>☠ %s 出现了!"
+elite.killed: "<gold>🏆 精英 %s 已被击败!"

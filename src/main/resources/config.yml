@@ -1,5 +1,19 @@
 # ─── Wasteland Artifacts — Главный конфиг ───
 
+features:
+  placeholderAPI: true
+  mythicmobs: true
+  nexo: true
+  oraxen: true
+  collection: true
+  artifactSets: true
+  activeAbilities: true
+  upgrades: true
+  fishing: true
+  customMobs: true
+  artifactXP: true
+  bossArena: true
+
 resource-pack:
   mode: AUTO
   autoHost: true
@@ -31,9 +45,10 @@ database:
   type: SQLITE
   host: localhost
   port: 3306
-  database: artifacts
+  database: wasteland_artifacts
   user: root
   password: ""
+  poolSize: 10
 
 gui:
   rows: 6

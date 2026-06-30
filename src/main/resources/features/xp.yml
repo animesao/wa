@@ -1,0 +1,11 @@
+# ═══ Опыт артефактов ═══
+# Артефакты получают XP за убийства мобов
+
+xp:
+  enabled: true
+  xpPerKill: 10
+  xpPerLevel: 100
+  maxLevel: 50
+  damagePerLevel: 0.05
+  levelUpSound: ENTITY_PLAYER_LEVELUP
+  levelUpMessage: "<green>⬆ Артефакт <gold>%artifact% <green>достиг уровня <yellow>%level%!"

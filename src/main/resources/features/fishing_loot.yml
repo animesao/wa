@@ -1,0 +1,31 @@
+# ═══ Рыболовный лут ═══
+# Шанс выловить предметы плагина при рыбалке
+
+fishing:
+  enabled: true
+  entries:
+    - item: "water_pearl"
+      weight: 10
+      minCount: 1
+      maxCount: 2
+      message: "<aqua>🐟 Вы выловили Водную Жемчужину!"
+    - item: "ancient_coin"
+      weight: 20
+      minCount: 1
+      maxCount: 5
+      message: "<gold>🐟 Вы выловили Монету Древних!"
+    - item: "frozen_shard"
+      weight: 8
+      minCount: 1
+      maxCount: 1
+      message: "<aqua>🐟 Вы выловили Ледяной Осколок!"
+    - item: "siren_tear"
+      weight: 3
+      minCount: 1
+      maxCount: 1
+      message: "<aqua>🐟 Вы выловили Слезу Сирены!"
+    - item: "kraken_tentacle"
+      weight: 1
+      minCount: 1
+      maxCount: 1
+      message: "<red>🐟 Вы выловили Щупальце Кракена!"

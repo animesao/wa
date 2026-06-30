@@ -1,0 +1,14 @@
+# ═══ Улучшение артефактов ═══
+# Объединение одинаковых артефактов для повышения уровня
+
+upgrades:
+  enabled: true
+  maxLevel: 10
+  itemsPerUpgrade: 3
+  damageMultiplier: 1.15
+  healthMultiplier: 1.10
+  keepOnDeath: false
+  lore-format:
+    - ""
+    - "<gray>Уровень: <green>%level%"
+    - "<gray>Множитель урона: <gold>x%damage_mult%"

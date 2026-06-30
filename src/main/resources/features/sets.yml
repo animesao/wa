@@ -1,0 +1,23 @@
+# ═══ Сеты артефактов ═══
+# При надевании нескольких артефактов из одного сета — бонусы
+
+sets:
+  fiery_set:
+    enabled: true
+    name: "<red>Огненный набор"
+    artifacts:
+      - "fire_sword"
+      - "shadow_cloak"
+      - "staff_of_storms"
+    bonuses:
+      - pieces: 2
+        description: "<red>Огненная аура"
+        effects:
+          - "POTION:FIRE_RESISTANCE:0:999999"
+          - "ATTRIBUTE:GENERIC_ATTACK_DAMAGE:2:0"
+      - pieces: 3
+        description: "<gold>Пылающий гнев"
+        effects:
+          - "POTION:STRENGTH:1:999999"
+          - "POTION:SPEED:1:999999"
+          - "ATTRIBUTE:GENERIC_MAX_HEALTH:10:0"

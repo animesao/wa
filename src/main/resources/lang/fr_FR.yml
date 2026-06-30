@@ -225,3 +225,34 @@ editor.component-selector-title: "<dark_gray>Choisis un composant"
 
 # ─── Pack de ressources ───
 resourcepack.pack-description: "§6Wasteland Artifacts §7- §eArtefacts personnalisés"
+
+# ─── Features ───
+collection.title: "<dark_gray>📚 Collection d'artefacts"
+collection.found: "<green>✔ Trouvé"
+collection.not-found: "<red>✘ Non trouvé"
+collection.progress: "<gold>Collection: <white>%d<gold>/<white>%d"
+collection.reward: "<gold>🏆 Récompense de collection: %s"
+
+ability.cooldown: "<gray>Recharge: <white>%ds"
+ability.activated: "<green>⚡ Activé: %s"
+
+upgrade.success: "<green>⬆ Amélioré au niveau %d!"
+upgrade.max-level: "<red>Niveau max atteint!"
+upgrade.not-enough: "<red>Encore %d artefacts identiques nécessaires!"
+upgrade.lore-level: "<gray>Niveau: <green>%d"
+upgrade.lore-xp: "<gray>XP: <white>%d<gray>/<white>%d"
+upgrade.lore-kills: "<gray>Tués: <white>%d"
+
+fishing.caught: "<aqua>🐟 Vous avez pêché %s!"
+
+arena.title: "<dark_red>⚔ Arène des Boss"
+arena.start: "<green>⚔ Arène commencée! Prépare-toi au combat!"
+arena.wave: "<gold>⚔ Vague <white>%d<gold>/<white>%d"
+arena.complete: "<green>🏆 Arène terminée! Récompenses obtenues!"
+arena.cooldown: "<red>Arène en recharge: %ds"
+
+xp.level-up: "<green>⬆ Artefact <gold>%s <green>a atteint le niveau <yellow>%d!"
+xp.progress: "<gray>XP: <white>%d<gray>/<white>%d"
+
+elite.spawned: "<red>☠ %s est apparu!"
+elite.killed: "<gold>🏆 Élite %s vaincu!"

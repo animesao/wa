@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "me.darkcube"
-version = "1.3.0"
+version = "2.0.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -23,6 +23,10 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
     implementation("net.kyori:adventure-api:4.17.0")
     implementation("net.kyori:adventure-text-minimessage:4.17.0")
+
+    implementation("com.zaxxer:HikariCP:5.1.0")
+    implementation("org.xerial:sqlite-jdbc:3.45.3.0")
+    implementation("com.mysql:mysql-connector-j:8.3.0")
 
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.10")
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit:2.10.0")

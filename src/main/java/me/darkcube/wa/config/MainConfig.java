@@ -1,11 +1,11 @@
 package me.darkcube.wa.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
+import me.darkcube.wa.feature.FeatureConfig;
 
 public class MainConfig {
 
+    public FeatureConfig features = new FeatureConfig();
     public ResourcePackConfig resourcePack = new ResourcePackConfig();
     public DungeonsConfig dungeons = new DungeonsConfig();
     public CraftingConfig crafting = new CraftingConfig();
@@ -49,10 +49,11 @@ public class MainConfig {
         public String type = "SQLITE";
         public String host = "localhost";
         public int port = 3306;
-        public String database = "artifacts";
+        public String database = "wasteland_artifacts";
         public String user = "root";
         @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         public String password = "";
+        public int poolSize = 10;
     }
 
     public static class GUIConfig {

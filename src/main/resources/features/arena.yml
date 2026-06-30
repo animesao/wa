@@ -1,0 +1,49 @@
+# ═══ Арена Боссов ═══
+# Многоуровневая арена с боссами
+
+arena:
+  enabled: true
+  cooldown: 300
+  arenaWorld: "arena"
+  spawn:
+    x: 0
+    y: 64
+    z: 0
+  bossSpawn:
+    x: 0
+    y: 64
+    z: 20
+  waves:
+    - wave: 1
+      mobs: ["ZOMBIE", "SKELETON"]
+      count: 5
+    - wave: 2
+      mobs: ["SPIDER", "ZOMBIE"]
+      count: 8
+    - wave: 3
+      mobs: ["CREEPER", "SKELETON"]
+      count: 6
+    - wave: 4
+      mobs: ["BLAZE"]
+      count: 4
+      boss: "WITHER_SKELETON"
+    - wave: 5
+      mobs: ["PIGLIN_BRUTE", "HOGLIN"]
+      count: 8
+    - wave: 6
+      mobs: ["BLAZE", "MAGMA_CUBE"]
+      count: 10
+    - wave: 7
+      mobs: []
+      count: 1
+      boss: "WITHER"
+  rewards:
+    - wave: 3
+      command: "give %player% diamond 2"
+      message: "<gold>🏆 +2 алмаза!"
+    - wave: 5
+      command: "give %player% netherite_scrap 1"
+      message: "<gold>🏆 +1 незерит-скрап!"
+    - wave: 7
+      command: "give %player% nether_star 1"
+      message: "<gold>🏆 Босс побеждён! +1 звезда Незера!"

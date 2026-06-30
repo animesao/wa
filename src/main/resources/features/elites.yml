@@ -1,0 +1,39 @@
+# ═══ Элитные мобы ═══
+# Мобы с повышенными статами и особым дропом
+
+elites:
+  enabled: true
+  spawnChance: 0.1
+  types:
+    - entity: ZOMBIE
+      name: "<red>☠ Элитный Зомби"
+      healthMultiplier: 3.0
+      damageMultiplier: 2.0
+      dropChance: 0.5
+      drops:
+        - "soul_fragment"
+        - "ancient_bone"
+    - entity: SKELETON
+      name: "<yellow>☠ Костяной Страж"
+      healthMultiplier: 2.5
+      damageMultiplier: 2.5
+      dropChance: 0.5
+      drops:
+        - "ancient_bone"
+        - "wither_skull"
+    - entity: SPIDER
+      name: "<dark_green>☠ Паук-Мутант"
+      healthMultiplier: 2.0
+      damageMultiplier: 1.8
+      dropChance: 0.4
+      drops:
+        - "spider_fang"
+        - "toxic_slime"
+    - entity: CREEPER
+      name: "<green>☠ Радиоактивный Крипер"
+      healthMultiplier: 1.5
+      damageMultiplier: 3.0
+      dropChance: 0.4
+      drops:
+        - "chaos_crystal"
+        - "spectral_dust"

@@ -1,0 +1,147 @@
+# ═══ Активные способности ═══
+# Полная кастомизация способностей для артефактов
+
+abilities:
+  fireball:
+    enabled: true
+    name: "<red>Огненный шар"
+    cooldown: 10
+    type: PROJECTILE
+    projectile: SMALL_FIREBALL
+    damage: 8
+    radius: 0
+    distance: 0
+    duration: 0
+    heal: 0
+    knockback: 0
+    command: ""
+    effects:
+      - type: FIRE
+        amplifier: 0
+        duration: 100
+    attributes: []
+    particle: FLAME
+    sound: ENTITY_BLAZE_SHOOT
+    lore:
+      - "<gray>Запускает огненный шар"
+      - "<gray>Урон: <red>8"
+      - "<gray>Кулдаун: <white>10с"
+
+  dash:
+    enabled: true
+    name: "<aqua>Рывок"
+    cooldown: 5
+    type: DASH
+    distance: 10
+    damage: 0
+    radius: 0
+    duration: 0
+    heal: 0
+    knockback: 0
+    projectile: ""
+    command: ""
+    effects: []
+    attributes: []
+    particle: CLOUD
+    sound: ENTITY_ENDERMAN_TELEPORT
+    lore:
+      - "<gray>Рывок вперёд"
+      - "<gray>Кулдаун: <white>5с"
+
+  heal:
+    enabled: true
+    name: "<green>Исцеление"
+    cooldown: 20
+    type: HEAL
+    heal: 8
+    damage: 0
+    radius: 0
+    distance: 0
+    duration: 0
+    knockback: 0
+    projectile: ""
+    command: ""
+    effects:
+      - type: REGENERATION
+        amplifier: 1
+        duration: 100
+    attributes: []
+    particle: HEART
+    sound: ENTITY_PLAYER_LEVELUP
+    lore:
+      - "<gray>Восстанавливает <green>4❤"
+      - "<gray>Кулдаун: <white>20с"
+
+  meteor:
+    enabled: true
+    name: "<gold>Метеоритный дождь"
+    cooldown: 30
+    type: AOE
+    damage: 12
+    radius: 6
+    distance: 0
+    duration: 0
+    heal: 0
+    knockback: 2
+    projectile: ""
+    command: ""
+    effects:
+      - type: SLOW
+        amplifier: 2
+        duration: 60
+      - type: WEAKNESS
+        amplifier: 1
+        duration: 60
+    attributes: []
+    particle: EXPLOSION_NORMAL
+    sound: ENTITY_GENERIC_EXPLODE
+    lore:
+      - "<gray>Наносит урон вокруг"
+      - "<gray>Урон: <red>12"
+      - "<gray>Радиус: <aqua>6"
+      - "<gray>Отбрасывание: <yellow>2"
+      - "<gray>Кулдаун: <white>30с"
+
+  shield:
+    enabled: true
+    name: "<light_purple>Щит"
+    cooldown: 25
+    type: SHIELD
+    duration: 200
+    damage: 0
+    radius: 0
+    distance: 0
+    heal: 0
+    knockback: 0
+    projectile: ""
+    command: ""
+    effects: []
+    attributes: []
+    particle: SPELL_MOB
+    sound: ENTITY_IRON_GOLEM_HURT
+    lore:
+      - "<gray>Даёт поглощение и сопротивление"
+      - "<gray>Длительность: <white>10с"
+      - "<gray>Кулдаун: <white>25с"
+
+  teleport:
+    enabled: true
+    name: "<light_purple>Телепорт"
+    cooldown: 15
+    type: TELEPORT
+    distance: 20
+    damage: 0
+    radius: 0
+    duration: 0
+    heal: 0
+    knockback: 0
+    projectile: ""
+    command: ""
+    effects: []
+    attributes: []
+    particle: PORTAL
+    sound: ENTITY_ENDERMAN_TELEPORT
+    lore:
+      - "<gray>Телепортация вперёд"
+      - "<gray>Дальность: <white>20"
+      - "<gray>Кулдаун: <white>15с"
