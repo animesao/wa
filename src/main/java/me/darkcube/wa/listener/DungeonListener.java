@@ -61,10 +61,12 @@ public class DungeonListener implements Listener {
         DungeonManager.DungeonConfig config = dungeonManager.getConfig(dungeonId);
         if (config == null || !config.enabled) return;
 
-        String trackKey = world.getName() + ":" + structName + ":" +
-                event.getBoundingBox().getMinX() + ":" +
-                event.getBoundingBox().getMinZ();
-        trackedStructures.add(trackKey);
+        // Дедупликация: только одна запись на чанк (для mineshaft сотни кусков не логим)
+        int chunkX = (int) Math.floor(event.getBoundingBox().getMinX()) >> 4;
+        int chunkZ = (int) Math.floor(event.getBoundingBox().getMinZ()) >> 4;
+        String chunkKey = world.getName() + ":" + chunkX + ":" + chunkZ;
+        if (trackedStructures.contains(chunkKey)) return;
+        trackedStructures.add(chunkKey);
 
         Location baseLoc = new Location(world,
                 event.getBoundingBox().getMinX(),
@@ -72,9 +74,13 @@ public class DungeonListener implements Listener {
                 event.getBoundingBox().getMinZ()
         );
 
+        // Логим только первые вхождения (не спамим mineshaft × 100)
         plugin.getComponentLogger().info("<aqua>Структура " + structName +
                 " сгенерирована в " + world.getName() +
                 " [" + (int)baseLoc.getX() + ", " + (int)baseLoc.getZ() + "]");
+
+        // Сканируем только для структур где есть сундуки (не mineshaft куски)
+        if (structName.equals("mineshaft")) return;
 
         Bukkit.getScheduler().runTask(plugin, () -> {
             var bb = event.getBoundingBox();
@@ -472,23 +478,10 @@ public class DungeonListener implements Listener {
     }
 
     private String findDungeonAtLocation(World world, Location loc) {
-        for (var entry : dungeonManager.getAllConfigs().entrySet()) {
-            String dungeonId = entry.getKey();
-            for (String trackKey : trackedStructures) {
-                if (trackKey.startsWith(world.getName() + ":")) {
-                    String[] parts = trackKey.split(":");
-                    if (parts.length >= 3) {
-                        try {
-                            double minX = Double.parseDouble(parts[2]);
-                            double minZ = Double.parseDouble(parts[3]);
-                            double dist = loc.distanceSquared(new Location(world, minX, loc.getY(), minZ));
-                            if (dist < 10000) {
-                                return dungeonId;
-                            }
-                        } catch (NumberFormatException ignored) {}
-                    }
-                }
-            }
+        String chunkKey = world.getName() + ":" + (loc.getBlockX() >> 4) + ":" + (loc.getBlockZ() >> 4);
+        if (trackedStructures.contains(chunkKey)) {
+            // Определяем dungeonId по ближайшей структуре
+            return findDungeonByStructure(world, loc);
         }
         return null;
     }
