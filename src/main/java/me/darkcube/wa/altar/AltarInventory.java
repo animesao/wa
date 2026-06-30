@@ -26,7 +26,7 @@ public class AltarInventory {
 
     public AltarData getOrCreate(Location loc) {
         String key = makeKey(loc);
-        return storage.computeIfAbsent(key, k -> new AltarData(loc));
+        return storage.computeIfAbsent(key, k -> new AltarData(loc, getMaxSlots()));
     }
 
     public AltarData get(Location loc) {
@@ -53,7 +53,7 @@ public class AltarInventory {
 
     public ItemStack[] getAllSlots(Location loc) {
         AltarData data = get(loc);
-        return data != null ? data.getAllSlots() : new ItemStack[9];
+        return data != null ? data.getAllSlots() : new ItemStack[getMaxSlots()];
     }
 
     public int countItems(Location loc) {
@@ -98,7 +98,7 @@ public class AltarInventory {
             if (list != null) {
                 storage.clear();
                 for (Map<String, Object> map : list) {
-                    AltarData data = AltarData.deserialize(map);
+                    AltarData data = AltarData.deserialize(map, getMaxSlots());
                     storage.put(data.getLocationKey(), data);
                 }
             }
@@ -109,5 +109,9 @@ public class AltarInventory {
 
     private String makeKey(Location loc) {
         return loc.getWorld().getName() + ":" + loc.getBlockX() + ":" + loc.getBlockY() + ":" + loc.getBlockZ();
+    }
+
+    private int getMaxSlots() {
+        return plugin.getAltarManager().getConfig().settings.maxSlots;
     }
 }

@@ -1215,3 +1215,162 @@ artifacts:
         N: "artifact:necronomicon"
         E: "artifact:staff_of_storms"
         C: "custom:celestial_star"
+
+  # ─── v2.0.0 новые артефакты ───
+
+  - id: "crystal_sword"
+    displayName: "<aqua>Кристальный Меч"
+    baseItem: DIAMOND_SWORD
+    rarity: LEGENDARY
+    customModelData: 6101
+    unbreakable: true
+    lore:
+      - "<gray>Меч из чистого кристалла"
+      - "<gray>Светится в темноте"
+    components:
+      - type: DAMAGE
+        damage: 10
+        slot: MAIN_HAND
+      - type: SOUND_ON_HIT
+        sound: BLOCK_AMETHYST_BLOCK_CHIME
+      - type: PARTICLE_ON_HIT
+        particle: END_ROD
+        count: 15
+
+  - id: "staff_of_thunder"
+    displayName: "<yellow>Посох Грома"
+    baseItem: BLAZE_ROD
+    rarity: LEGENDARY
+    customModelData: 6102
+    lore:
+      - "<gray>Призывает молнии с небес"
+    components:
+      - type: LIGHTNING
+        chance: 0.4
+      - type: SOUND_ON_HIT
+        sound: ENTITY_LIGHTNING_BOLT_THUNDER
+      - type: PARTICLE_ON_HIT
+        particle: ELECTRIC_SPARK
+        count: 20
+
+  - id: "shadow_armor"
+    displayName: "<dark_purple>Теневой Доспех"
+    baseItem: NETHERITE_CHESTPLATE
+    rarity: LEGENDARY
+    customModelData: 6103
+    unbreakable: true
+    lore:
+      - "<gray>Броня из тьмы"
+    components:
+      - type: ATTRIBUTE
+        attribute: GENERIC_MAX_HEALTH
+        amount: 10
+        slot: CHEST
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR
+        amount: 8
+        slot: CHEST
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: NIGHT_VISION
+        amplifier: 0
+
+  - id: "phoenix_bow"
+    displayName: "<red>Лук Феникса"
+    baseItem: BOW
+    rarity: LEGENDARY
+    customModelData: 6104
+    lore:
+      - "<gray>Стрелы воспламеняются в полёте"
+    components:
+      - type: FIRE_ASPECT
+        level: 2
+      - type: SOUND_ON_HIT
+        sound: ENTITY_BLAZE_SHOOT
+      - type: PARTICLE_ON_HIT
+        particle: FLAME
+        count: 10
+
+  - id: "angel_wings"
+    displayName: "<white>Крылья Ангела"
+    baseItem: ELYTRA
+    rarity: MYTHIC
+    customModelData: 6105
+    unbreakable: true
+    lore:
+      - "<gray>Даруют полёт"
+      - "<gray>Светятся в темноте"
+    components:
+      - type: ATTRIBUTE
+        attribute: GENERIC_MOVEMENT_SPEED
+        amount: 0.15
+        slot: CHEST
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: SLOW_FALLING
+        amplifier: 0
+      - type: PARTICLE_AMBIENT
+        particle: END_ROD
+        count: 3
+
+  - id: "void_hammer"
+    displayName: "<dark_purple>Молот Бездны"
+    baseItem: NETHERITE_AXE
+    rarity: MYTHIC
+    customModelData: 6106
+    unbreakable: true
+    lore:
+      - "<gray>Сокрушает всё на своём пути"
+    components:
+      - type: DAMAGE
+        damage: 15
+        slot: MAIN_HAND
+      - type: LIGHTNING
+        chance: 0.3
+      - type: EXPLOSION
+        chance: 0.15
+        power: 2
+        destroyBlocks: false
+      - type: SOUND_ON_HIT
+        sound: ENTITY_GENERIC_EXPLODE
+
+  - id: "titan_armor"
+    displayName: "<dark_gray>Броня Титана"
+    baseItem: NETHERITE_CHESTPLATE
+    rarity: MYTHIC
+    customModelData: 6107
+    unbreakable: true
+    lore:
+      - "<gray>Несокрушимая броня"
+    components:
+      - type: ATTRIBUTE
+        attribute: GENERIC_MAX_HEALTH
+        amount: 20
+        slot: CHEST
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR
+        amount: 12
+        slot: CHEST
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR_TOUGHNESS
+        amount: 6
+        slot: CHEST
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: RESISTANCE
+        amplifier: 1
+
+  - id: "shadow_blade"
+    displayName: "<dark_purple>Клинок Тени"
+    baseItem: DIAMOND_SWORD
+    rarity: EPIC
+    customModelData: 6108
+    unbreakable: true
+    lore:
+      - "<gray>Клинок из чистой тьмы"
+    components:
+      - type: DAMAGE
+        damage: 8
+        slot: MAIN_HAND
+      - type: LIFE_STEAL
+        chance: 0.3
+        multiplier: 0.5
+      - type: SOUND_ON_HIT
+        sound: ENTITY_WITHER_HURT

@@ -69,7 +69,7 @@ public class AltarBlockTracker {
             String tierId = entry.getKey();
             String altarKey = key(actLoc);
             AltarState state = altars.computeIfAbsent(altarKey,
-                    k -> new AltarState(actLoc, tierId, tier));
+                    k -> new AltarState(actLoc, tierId, tier, getMaxSlots()));
 
             String recipeId = getBlueprintRecipe(droppedItem);
             if (recipeId != null) {
@@ -102,7 +102,7 @@ public class AltarBlockTracker {
         }
 
         // Очищаем старые предметы и катализатор
-        for (int i = 1; i < 9; i++) {
+        for (int i = 1; i < getMaxSlots(); i++) {
             if (state.items[i] != null && state.items[i].isValid()) {
                 state.items[i].remove();
                 state.items[i] = null;
@@ -155,7 +155,7 @@ public class AltarBlockTracker {
         droppedItem.setInvulnerable(true);
         droppedItem.setMetadata("wa_altar_item", new FixedMetadataValue(plugin, true));
         droppedItem.setMetadata("wa_altar_key", new FixedMetadataValue(plugin, altarKey));
-        droppedItem.setMetadata("wa_altar_slot", new FixedMetadataValue(plugin, 9));
+        droppedItem.setMetadata("wa_altar_slot", new FixedMetadataValue(plugin, -1));
         Location pedLoc = getPedestalLocation(activator.getLocation(), 0);
         if (pedLoc != null) droppedItem.teleport(pedLoc.clone().add(1, 0, 0));
         state.catalyst = droppedItem;
@@ -201,7 +201,7 @@ public class AltarBlockTracker {
         if (hasCustomName) {
             for (var ing : recipe.getIngredients()) {
                 int slot = ing.getSlot();
-                if (slot < 1 || slot > 8) continue;
+                if (slot < 1 || slot >= getMaxSlots()) continue;
                 if (ing.getTemplate() != null && itemsMatch(dropStack, ing.getTemplate())) {
                     matching.add(ing);
                 }
@@ -212,7 +212,7 @@ public class AltarBlockTracker {
         if (matching.isEmpty()) {
             for (var ing : recipe.getIngredients()) {
                 int slot = ing.getSlot();
-                if (slot < 1 || slot > 8) continue;
+                if (slot < 1 || slot >= getMaxSlots()) continue;
                 if (dropType == ing.getType()) {
                     matching.add(ing);
                 }
@@ -445,9 +445,9 @@ public class AltarBlockTracker {
     }
 
     private @Nullable Location getPedestalLocation(Location activator, int slot) {
-        // 9 слотов по кругу, радиус 3.2 блока
+        // Равномерное распределение слотов по кругу, радиус 3.2 блока
         // ВЫСОТА: всегда на Y = activatorY + 2.5 (выше любой структуры)
-        double angle = slot * 40.0 * Math.PI / 180.0;
+        double angle = slot * (360.0 / getMaxSlots()) * Math.PI / 180.0;
         double px = activator.getX() + 0.5 + Math.sin(angle) * 3.2;
         double pz = activator.getZ() + 0.5 + Math.cos(angle) * 3.2;
         double py = activator.getY() + 2.5;
@@ -461,8 +461,8 @@ public class AltarBlockTracker {
     }
 
     private ItemStack[] buildSlotSnapshot(AltarState state) {
-        ItemStack[] slots = new ItemStack[9];
-        for (int i = 0; i < 9; i++) {
+        ItemStack[] slots = new ItemStack[getMaxSlots()];
+        for (int i = 0; i < getMaxSlots(); i++) {
             if (state.items[i] != null && state.items[i].isValid()) {
                 slots[i] = state.items[i].getItemStack().clone();
             }
@@ -473,7 +473,7 @@ public class AltarBlockTracker {
     private void checkAndCraft(AltarState state) {
         if (state.activeRecipe == null) return;
         boolean hasItems = false;
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < getMaxSlots(); i++) {
             if (state.items[i] != null && state.items[i].isValid()) {
                 hasItems = true;
                 break;
@@ -573,7 +573,7 @@ public class AltarBlockTracker {
             for (var entry : altars.entrySet()) {
                 AltarState state = entry.getValue();
                 checkAndCraft(state);
-                for (int i = 0; i < 9; i++) {
+                for (int i = 0; i < getMaxSlots(); i++) {
                     if (state.items[i] != null && !state.items[i].isValid()) {
                         state.items[i] = null;
                     }
@@ -613,7 +613,7 @@ public class AltarBlockTracker {
         }
 
         int count = 0;
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < getMaxSlots(); i++) {
             Item item = state.items[i];
             if (item != null && item.isValid()) {
                 ItemStack stack = item.getItemStack();
@@ -679,14 +679,15 @@ public class AltarBlockTracker {
         public final Location activator;
         public final String tierId;
         public final AltarConfig.AltarTier config;
-        public final Item[] items = new Item[9];
+        public final Item[] items;
         public Item catalyst; // отдельный предмет-катализатор
         public AltarRecipe activeRecipe;
 
-        public AltarState(Location activator, String tierId, AltarConfig.AltarTier config) {
+        public AltarState(Location activator, String tierId, AltarConfig.AltarTier config, int maxSlots) {
             this.activator = activator.clone();
             this.tierId = tierId;
             this.config = config;
+            this.items = new Item[maxSlots];
         }
 
         public boolean hasItems() {
@@ -695,6 +696,10 @@ public class AltarBlockTracker {
             }
             return (catalyst != null && catalyst.isValid());
         }
+    }
+
+    private int getMaxSlots() {
+        return plugin.getAltarManager().getConfig().settings.maxSlots;
     }
 
     private String getItemDisplayName(ItemStack item) {

@@ -416,6 +416,42 @@ altars:
             amount: 4
             slot: 7
 
+      # ─── КРИСТАЛЬНЫЙ МЕЧ — новый артефакт v2.0.0 ───
+      - id: craft_crystal_sword
+        result: crystal_sword
+        experience: 40
+        cooldown: 45
+        catalyst:
+          item: NETHER_STAR
+          consume: true
+        blueprintName: "<aqua>📖 Чертёж: Кристальный Меч"
+        blueprintCustomModelData: 5101
+        ingredients:
+          - type: DIAMOND_SWORD
+            amount: 1
+            slot: 5
+          - type: DIAMOND
+            amount: 8
+            slot: 1
+          - type: AMETHYST_SHARD
+            amount: 8
+            slot: 3
+            name: "<gold>Кристалл Бури"
+            customModelData: 6004
+          - type: AMETHYST_SHARD
+            amount: 4
+            slot: 7
+          - type: GLOWSTONE_DUST
+            amount: 4
+            slot: 2
+            name: "<yellow>Осколок Света"
+            customModelData: 6019
+          - type: DIAMOND
+            amount: 4
+            slot: 6
+            name: "<aqua>Кристальное Сердце"
+            customModelData: 6077
+
 # ─── НАСТРОЙКИ ───
 settings:
   maxAltarsPerChunk: 1
@@ -426,3 +462,4 @@ settings:
   titleGUI: "<dark_gray>Алтарь Артефактов"
   guiRows: 6
   previewMaxDistance: 10.0
+  maxSlots: 16

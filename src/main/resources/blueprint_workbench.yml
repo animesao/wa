@@ -105,3 +105,69 @@ recipes:
     ingredients:
       A: "artifact:unknown_relic"
       B: "artifact:unknown_eye"
+---
+crystal_sword:
+  type: direct_artifact
+  enabled: true
+  pattern:
+    - "ADA"
+    - "DBD"
+    - "ADA"
+  ingredients:
+    A: "custom:crystal_heart"
+    B: "custom:storm_crystal"
+    D: DIAMOND_BLOCK
+  result: crystal_sword
+---
+staff_of_thunder:
+  type: direct_artifact
+  enabled: true
+  pattern:
+    - " F "
+    - "SBS"
+    - " S "
+  ingredients:
+    F: "custom:thunder_feather"
+    S: "custom:storm_crystal"
+    B: BLAZE_ROD
+  result: staff_of_thunder
+---
+shadow_armor:
+  type: direct_artifact
+  enabled: true
+  pattern:
+    - "SCS"
+    - "SPS"
+    - "SSS"
+  ingredients:
+    S: "custom:shadow_fragment"
+    C: "custom:crystal_heart"
+    P: NETHERITE_CHESTPLATE
+  result: shadow_armor
+---
+phoenix_bow:
+  type: direct_artifact
+  enabled: true
+  pattern:
+    - " PF"
+    - "P S"
+    - " PF"
+  ingredients:
+    P: "custom:phoenix_ashes"
+    F: "custom:thunder_feather"
+    S: STRING
+  result: phoenix_bow
+---
+void_hammer:
+  type: direct_artifact
+  enabled: true
+  pattern:
+    - "VT "
+    - " SH"
+    - " S "
+  ingredients:
+    V: "custom:void_tentacle"
+    T: "custom:titan_armor_plate"
+    S: STICK
+    H: NETHERITE_AXE
+  result: void_hammer

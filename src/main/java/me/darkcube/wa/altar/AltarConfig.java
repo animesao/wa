@@ -141,5 +141,6 @@ public class AltarConfig {
         public String titleGUI = "<dark_gray>Алтарь Артефактов";
         public int guiRows = 6;
         public double previewMaxDistance = 10.0;
+        public int maxSlots = 16;
     }
 }

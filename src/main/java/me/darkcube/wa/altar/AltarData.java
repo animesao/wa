@@ -15,22 +15,24 @@ public class AltarData {
 
     private final String world;
     private final int x, y, z;
-    private final ItemStack[] slots = new ItemStack[9];
+    private final ItemStack[] slots;
     private long lastActivity;
 
-    public AltarData(Location loc) {
+    public AltarData(Location loc, int maxSlots) {
         this.world = loc.getWorld().getName();
         this.x = loc.getBlockX();
         this.y = loc.getBlockY();
         this.z = loc.getBlockZ();
+        this.slots = new ItemStack[maxSlots];
         this.lastActivity = System.currentTimeMillis();
     }
 
-    public AltarData(String world, int x, int y, int z) {
+    public AltarData(String world, int x, int y, int z, int maxSlots) {
         this.world = world;
         this.x = x;
         this.y = y;
         this.z = z;
+        this.slots = new ItemStack[maxSlots];
         this.lastActivity = System.currentTimeMillis();
     }
 
@@ -46,12 +48,12 @@ public class AltarData {
     public void setLastActivity(long t) { this.lastActivity = t; }
 
     public ItemStack getSlot(int slot) {
-        if (slot < 0 || slot >= 9) return null;
+        if (slot < 0 || slot >= slots.length) return null;
         return slots[slot];
     }
 
     public void setSlot(int slot, ItemStack item) {
-        if (slot < 0 || slot >= 9) return;
+        if (slot < 0 || slot >= slots.length) return;
         slots[slot] = (item != null && item.getType().isAir()) ? null : item;
         lastActivity = System.currentTimeMillis();
     }
@@ -75,7 +77,7 @@ public class AltarData {
     }
 
     public ItemStack[] getAllSlots() {
-        return Arrays.copyOf(slots, 9);
+        return Arrays.copyOf(slots, slots.length);
     }
 
     public Map<String, Object> serialize() {
@@ -94,7 +96,7 @@ public class AltarData {
     }
 
     @SuppressWarnings("unchecked")
-    public static AltarData deserialize(Map<String, Object> map) {
+    public static AltarData deserialize(Map<String, Object> map, int maxSlots) {
         if (map == null) return null;
         Object worldObj = map.get("world");
         Object xObj = map.get("x");
@@ -108,13 +110,14 @@ public class AltarData {
                 (String) worldObj,
                 ((Number) xObj).intValue(),
                 ((Number) yObj).intValue(),
-                ((Number) zObj).intValue()
+                ((Number) zObj).intValue(),
+                maxSlots
         );
         data.lastActivity = map.containsKey("time") ? ((Number) map.get("time")).longValue() : System.currentTimeMillis();
         Object slotsObj = map.get("slots");
         if (slotsObj instanceof List) {
             List<String> items = (List<String>) slotsObj;
-            for (int i = 0; i < Math.min(items.size(), 9); i++) {
+            for (int i = 0; i < Math.min(items.size(), data.slots.length); i++) {
                 data.slots[i] = itemFromBase64(items.get(i));
             }
         }

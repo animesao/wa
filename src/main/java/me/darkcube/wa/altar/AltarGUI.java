@@ -43,6 +43,10 @@ public class AltarGUI extends GUIBase {
         this.itemSlots = SLOT_MAP;
     }
 
+    private int getDisplaySlots() {
+        return Math.min(plugin.getAltarManager().getConfig().settings.maxSlots, SLOT_MAP.length);
+    }
+
     @Override
     protected void build() {
         clickHandlers.clear();
@@ -50,7 +54,8 @@ public class AltarGUI extends GUIBase {
 
         ItemStack[] saved = altarStorage.getAllSlots(loc);
 
-        for (int i = 0; i < 9; i++) {
+        int displaySlots = getDisplaySlots();
+        for (int i = 0; i < displaySlots; i++) {
             int guiSlot = SLOT_MAP[i];
             if (saved[i] != null) {
                 inventory.setItem(guiSlot, saved[i]);
@@ -95,7 +100,7 @@ public class AltarGUI extends GUIBase {
     }
 
     private void syncFromInventory() {
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < getDisplaySlots(); i++) {
             int guiSlot = SLOT_MAP[i];
             ItemStack inInv = inventory.getItem(guiSlot);
             if (inInv != null && inInv.getType() != Material.AIR && !isGlass(inInv)) {
@@ -110,7 +115,7 @@ public class AltarGUI extends GUIBase {
         String[] names = {"левый верх", "верх", "правый верх",
                 "левый центр", "★ центр", "правый центр",
                 "левый низ", "низ", "правый низ"};
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < getDisplaySlots(); i++) {
             int guiSlot = SLOT_MAP[i];
             ItemStack inv = inventory.getItem(guiSlot);
             if (inv == null || inv.getType().isAir() || isGlass(inv)) {
@@ -168,7 +173,7 @@ public class AltarGUI extends GUIBase {
     }
 
     private void collectAll() {
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < getDisplaySlots(); i++) {
             ItemStack s = altarStorage.removeSlot(loc, i);
             if (s != null) {
                 player.getInventory().addItem(s).values().forEach(drop ->

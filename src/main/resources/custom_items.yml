@@ -633,3 +633,85 @@ items:
       - "<gray>Тёмный осколок из Незера"
     customModelData: 6076
     rarity: UNCOMMON
+
+  # ── Добавленные элементы (v2.0.0) ──
+
+  crystal_heart:
+    material: DIAMOND
+    name: "<aqua>Кристальное Сердце"
+    lore:
+      - "<gray>Пульсирует чистой энергией"
+    customModelData: 6077
+    rarity: LEGENDARY
+
+  demon_blood:
+    material: RED_DYE
+    name: "<dark_red>Кровь Демона"
+    lore:
+      - "<gray>Горячая кровь из Преисподней"
+    customModelData: 6078
+    rarity: EPIC
+
+  star_dust:
+    material: GLOW_BERRIES
+    name: "<gold>Звёздная Пыль"
+    lore:
+      - "<gray>Мерцает светом далёких звёзд"
+    customModelData: 6079
+    rarity: RARE
+
+  frozen_heart:
+    material: ICE
+    name: "<aqua>Застывшее Сердце"
+    lore:
+      - "<gray>Холод вечной мерзлоты"
+    customModelData: 6080
+    rarity: EPIC
+
+  thunder_feather:
+    material: FEATHER
+    name: "<yellow>Перо Грома"
+    lore:
+      - "<gray>Искрит молниями"
+    customModelData: 6081
+    rarity: RARE
+
+  shadow_fragment:
+    material: BLACK_DYE
+    name: "<dark_purple>Осколок Тьмы"
+    lore:
+      - "<gray>Частица чистой тьмы"
+    customModelData: 6082
+    rarity: EPIC
+
+  phoenix_ashes:
+    material: GUNPOWDER
+    name: "<red>Пепел Феникса"
+    lore:
+      - "<gray>В нём тлеет искра жизни"
+    customModelData: 6083
+    rarity: LEGENDARY
+
+  titan_armor_plate:
+    material: NETHERITE_SCRAP
+    name: "<dark_gray>Пластина Титана"
+    lore:
+      - "<gray>Несокрушимая броня древних"
+    customModelData: 6084
+    rarity: LEGENDARY
+
+  void_tentacle:
+    material: PRISMARINE_CRYSTALS
+    name: "<dark_purple>Щупальце Бездны"
+    lore:
+      - "<gray>Извивается в руках"
+    customModelData: 6085
+    rarity: EPIC
+
+  angel_feather:
+    material: FEATHER
+    name: "<white>Перо Ангела"
+    lore:
+      - "<gray>Чистейший свет"
+    customModelData: 6086
+    rarity: LEGENDARY
