@@ -2,6 +2,7 @@ package me.darkcube.wa.commands;
 
 import me.darkcube.wa.WastelandArtifacts;
 import me.darkcube.wa.altar.AltarBlockTracker;
+import me.darkcube.wa.gui.AdminItemsGUI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -33,6 +34,7 @@ public class AdminCommand extends Command {
         }
 
         if (args.length == 0) {
+            sender.sendMessage(miniMessage.deserialize("<gold>/waadmin gui - GUI всех предметов"));
             sender.sendMessage(miniMessage.deserialize("<gold>/waadmin rp build - собрать RP"));
             sender.sendMessage(miniMessage.deserialize("<gold>/waadmin rp send - раздать RP"));
             sender.sendMessage(miniMessage.deserialize("<gold>/waadmin debug - режим отладки"));
@@ -44,6 +46,7 @@ public class AdminCommand extends Command {
             case "blueprint" -> handleBlueprint(sender, args);
             case "customitem" -> handleCustomItem(sender, args);
             case "debug" -> handleDebug(sender);
+            case "gui" -> handleGUI(sender);
             default -> {
                 sender.sendMessage(miniMessage.deserialize(plugin.msg("admin.unknown-subcommand")));
                 yield true;
@@ -155,12 +158,21 @@ public class AdminCommand extends Command {
         return true;
     }
 
+    private boolean handleGUI(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(miniMessage.deserialize(plugin.msg("admin.players-only")));
+            return true;
+        }
+        new AdminItemsGUI(plugin, player).open();
+        return true;
+    }
+
     @Override
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias,
                                               @NotNull String[] args) throws IllegalArgumentException {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            completions.addAll(List.of("rp", "blueprint", "customitem", "debug"));
+            completions.addAll(List.of("rp", "blueprint", "customitem", "debug", "gui"));
         } else if (args.length == 2 && "rp".equals(args[0])) {
             completions.addAll(List.of("build", "send"));
         } else if (args.length == 2 && "blueprint".equals(args[0])) {

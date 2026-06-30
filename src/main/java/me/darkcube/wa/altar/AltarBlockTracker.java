@@ -126,22 +126,7 @@ public class AltarBlockTracker {
         player.sendMessage(mm.deserialize("<gray>Брось ингредиенты на алтарь:"));
 
         for (var ing : recipe.getIngredients()) {
-            String itemName = null;
-            if (ing.getTemplate() != null && ing.getTemplate().hasItemMeta()
-                    && ing.getTemplate().getItemMeta().hasDisplayName()) {
-                itemName = mm.serialize(ing.getTemplate().getItemMeta().displayName());
-            } else {
-                // Пробуем найти кастомный предмет с таким материалом
-                for (var def : plugin.getCustomItemRegistry().getAll().entrySet()) {
-                    if (def.getValue().material == ing.getType()) {
-                        itemName = def.getValue().name;
-                        break;
-                    }
-                }
-                if (itemName == null) {
-                    itemName = me.darkcube.wa.util.ItemNameUtil.getRussianName(ing.getType());
-                }
-            }
+            String itemName = getIngredientDisplayName(ing);
             player.sendMessage(mm.deserialize("  <gray>- " + itemName + " x" + ing.getAmount()
                     + " <white>→ слот " + ing.getSlot()));
         }
@@ -187,10 +172,10 @@ public class AltarBlockTracker {
         }
 
         if (matching.isEmpty()) {
-            player.sendMessage(mm.deserialize("<red>❌ Ничего не подошло для: " + me.darkcube.wa.util.ItemNameUtil.getRussianName(dropType)));
+            player.sendMessage(mm.deserialize("<red>❌ Ничего не подошло для: " + getItemDisplayName(dropStack)));
             player.sendMessage(mm.deserialize("<gray>В рецепте есть: "
                     + recipe.getIngredients().stream()
-                        .map(i -> me.darkcube.wa.util.ItemNameUtil.getRussianName(i.getType()))
+                        .map(i -> getIngredientDisplayName(i))
                         .distinct()
                         .collect(java.util.stream.Collectors.joining(", "))));
             return false;
@@ -637,5 +622,31 @@ public class AltarBlockTracker {
             }
             return false;
         }
+    }
+
+    private String getItemDisplayName(ItemStack item) {
+        if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
+            return mm.serialize(item.getItemMeta().displayName());
+        }
+        String customId = plugin.getCustomItemRegistry().getId(item);
+        if (customId != null) {
+            var def = plugin.getCustomItemRegistry().getDef(customId);
+            if (def != null && def.name != null) return def.name;
+        }
+        return me.darkcube.wa.util.ItemNameUtil.getRussianName(item.getType());
+    }
+
+    private String getIngredientDisplayName(AltarRecipe.Ingredient ing) {
+        if (ing.getTemplate() != null && ing.getTemplate().hasItemMeta()
+                && ing.getTemplate().getItemMeta().hasDisplayName()) {
+            return mm.serialize(ing.getTemplate().getItemMeta().displayName());
+        }
+        for (var def : plugin.getCustomItemRegistry().getAll().entrySet()) {
+            if (def.getValue().material == ing.getType()
+                    && def.getValue().name != null && !def.getValue().name.isEmpty()) {
+                return def.getValue().name;
+            }
+        }
+        return me.darkcube.wa.util.ItemNameUtil.getRussianName(ing.getType());
     }
 }

@@ -44,12 +44,7 @@ public class AltarHologram {
             if (!hasItem) allReady = false;
 
             sb.append(hasItem ? "<green>✅" : "<red>❌");
-            if (ing.getTemplate() != null && ing.getTemplate().hasItemMeta()
-                    && ing.getTemplate().getItemMeta().hasDisplayName()) {
-                sb.append(" <white>").append(mm.serialize(ing.getTemplate().getItemMeta().displayName()));
-            } else {
-                sb.append(" <white>").append(me.darkcube.wa.util.ItemNameUtil.getRussianName(ing.getType()));
-            }
+            sb.append(" <white>").append(getIngredientName(ing));
             int current = (slotItem != null && slotItem.getType() == ing.getType())
                     ? slotItem.getAmount() : 0;
             sb.append(" <gray>x").append(ing.getAmount())
@@ -59,12 +54,7 @@ public class AltarHologram {
 
         if (recipe.getCatalyst() != null) {
             allReady = false;
-            String catName = recipe.getCatalyst().getTemplate() != null
-                    && recipe.getCatalyst().getTemplate().hasItemMeta()
-                    && recipe.getCatalyst().getTemplate().getItemMeta().hasDisplayName()
-                    ? net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
-                            .serialize(recipe.getCatalyst().getTemplate().getItemMeta().displayName())
-                    : me.darkcube.wa.util.ItemNameUtil.getRussianName(recipe.getCatalyst().getItem());
+            String catName = getCatalystName(recipe.getCatalyst());
             sb.append("<red>❌ <white>").append(catName)
               .append(" <gray>(катализатор, брось на алтарь)\n");
         }
@@ -102,5 +92,33 @@ public class AltarHologram {
             if (td.isValid()) td.remove();
         }
         displays.clear();
+    }
+
+    private String getIngredientName(AltarRecipe.Ingredient ing) {
+        if (ing.getTemplate() != null && ing.getTemplate().hasItemMeta()
+                && ing.getTemplate().getItemMeta().hasDisplayName()) {
+            return mm.serialize(ing.getTemplate().getItemMeta().displayName());
+        }
+        for (var def : plugin.getCustomItemRegistry().getAll().entrySet()) {
+            if (def.getValue().material == ing.getType()
+                    && def.getValue().name != null && !def.getValue().name.isEmpty()) {
+                return def.getValue().name;
+            }
+        }
+        return me.darkcube.wa.util.ItemNameUtil.getRussianName(ing.getType());
+    }
+
+    private String getCatalystName(AltarRecipe.CatalystConfig cat) {
+        if (cat.getTemplate() != null && cat.getTemplate().hasItemMeta()
+                && cat.getTemplate().getItemMeta().hasDisplayName()) {
+            return mm.serialize(cat.getTemplate().getItemMeta().displayName());
+        }
+        for (var def : plugin.getCustomItemRegistry().getAll().entrySet()) {
+            if (def.getValue().material == cat.getItem()
+                    && def.getValue().name != null && !def.getValue().name.isEmpty()) {
+                return def.getValue().name;
+            }
+        }
+        return me.darkcube.wa.util.ItemNameUtil.getRussianName(cat.getItem());
     }
 }
