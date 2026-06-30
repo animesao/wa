@@ -42,27 +42,30 @@ public class AltarBlockTracker {
     }
 
     public boolean tryAcceptDrop(@NotNull Player player, @NotNull Item droppedItem) {
+        ItemStack stack = droppedItem.getItemStack();
+        boolean isRelevant = getBlueprintRecipe(droppedItem) != null
+                || plugin.getArtifactManager().isArtifact(stack)
+                || plugin.getCustomItemRegistry().getId(stack) != null
+                || stack.getType() == Material.PAPER || stack.getType() == Material.MAP;
+
         Block dropBlock = droppedItem.getLocation().getBlock();
 
-        // Пробуем найти алтарь рядом с местом дропа И рядом с игроком
         for (var entry : plugin.getAltarManager().getAllTiers().entrySet()) {
             AltarConfig.AltarTier tier = entry.getValue();
             if (!tier.enabled) continue;
 
             Block activator = findNearestActvator(tier, dropBlock);
             if (activator == null) {
-                // Пробуем от позиции игрока
                 activator = findNearestActvator(tier, player.getLocation().getBlock());
             }
             if (activator == null) continue;
 
             player.sendMessage(mm.deserialize("<gray>🔍 Найден алтарь: <white>" + tier.displayName));
-            Block finalActivator = activator;
-            String altarKey = key(finalActivator.getLocation());
+            Location actLoc = activator.getLocation().clone();
             String tierId = entry.getKey();
-            AltarConfig.AltarTier finalTier = tier;
+            String altarKey = key(actLoc);
             AltarState state = altars.computeIfAbsent(altarKey,
-                    k -> new AltarState(finalActivator.getLocation(), tierId, finalTier));
+                    k -> new AltarState(actLoc, tierId, tier));
 
             String recipeId = getBlueprintRecipe(droppedItem);
             if (recipeId != null) {
@@ -70,14 +73,18 @@ public class AltarBlockTracker {
             }
 
             if (state.activeRecipe == null) {
-                player.sendMessage(mm.deserialize("<red>Сначала брось чертёж (схему крафта)!"));
+                if (isRelevant) {
+                    player.sendMessage(mm.deserialize("<red>Сначала брось чертёж!"));
+                }
                 return false;
             }
 
             return acceptIngredient(player, droppedItem, activator, altarKey, state, tier);
         }
 
-        player.sendMessage(mm.deserialize("<red>Рядом нет алтаря! Построй его через /altar build"));
+        if (isRelevant) {
+            player.sendMessage(mm.deserialize("<red>Рядом нет алтаря!"));
+        }
         return false;
     }
 

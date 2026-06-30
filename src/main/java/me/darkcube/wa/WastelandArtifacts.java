@@ -374,8 +374,9 @@ public final class WastelandArtifacts extends JavaPlugin {
             if (featureManager.isEnabled("xp") && artifactXPManager != null) {
                 pm.registerEvents(new XPListener(this, artifactXPManager), this);
             }
-            if (featureManager.isEnabled("arena") && bossArenaManager != null) {
+            if (featureManager.isEnabled("arena") && bossArenaManager != null && arenaGUI != null) {
                 pm.registerEvents(new ArenaListener(bossArenaManager), this);
+                pm.registerEvents(arenaGUI, this);
             }
         }
     }

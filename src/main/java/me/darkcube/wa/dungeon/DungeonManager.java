@@ -134,8 +134,8 @@ public class DungeonManager {
         if (recipe == null) return null;
         var artifact = plugin.getArtifactRegistry().get(recipe.getResultId());
         String name = artifact != null ? artifact.getDisplayName() : recipe.getResultId();
-        return AltarBlockTracker.createBlueprint(recipeId, name, "PAPER",
-                "<gold>📜 Чертёж: " + name, null, 5001);
+        String displayName = "<gold>📜 Чертёж: " + name;
+        return AltarBlockTracker.createBlueprint(recipeId, name, "PAPER", displayName, null, 5001);
     }
 
     public void injectLoot(@NotNull Chest chest, @NotNull String dungeonId) {
