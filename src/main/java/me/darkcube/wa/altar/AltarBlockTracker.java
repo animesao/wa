@@ -196,9 +196,8 @@ public class AltarBlockTracker {
 
         List<AltarRecipe.Ingredient> matching = new ArrayList<>();
 
-        // Если предмет плагина (артефакт/кастомный) — ищем только по шаблону, не по материалу
-        boolean isPluginItem = plugin.getArtifactManager().isArtifact(dropStack)
-                || plugin.getCustomItemRegistry().getId(dropStack) != null;
+        // Артефакты матчатся только по шаблону (не должны заменять ванильные материалы)
+        boolean isArtifact = plugin.getArtifactManager().isArtifact(dropStack);
 
         for (var ing : recipe.getIngredients()) {
             int slot = ing.getSlot();
@@ -206,7 +205,7 @@ public class AltarBlockTracker {
             boolean matched = false;
             if (ing.getTemplate() != null && itemsMatch(dropStack, ing.getTemplate())) {
                 matched = true;
-            } else if (!isPluginItem && dropType == ing.getType()) {
+            } else if (!isArtifact && dropType == ing.getType()) {
                 matched = true;
             }
             if (matched) {
@@ -285,7 +284,25 @@ public class AltarBlockTracker {
             droppedItem.remove();
             player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.remainder", remaining)));
         } else {
-            player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.slots-full")));
+            // Показываем, что ещё нужно
+            StringBuilder missing = new StringBuilder("<red>❌ Слоты заняты. Нужно ещё: ");
+            boolean first = true;
+            for (var ing : recipe.getIngredients()) {
+                int slot = ing.getSlot();
+                if (slot < 1 || slot >= getMaxSlots()) continue;
+                Item ex = state.items[slot];
+                int has = (ex != null && ex.isValid()) ? ex.getItemStack().getAmount() : 0;
+                if (has < ing.getAmount()) {
+                    if (!first) missing.append(", ");
+                    missing.append(getIngredientDisplayName(ing)).append(" x").append(ing.getAmount() - has);
+                    first = false;
+                }
+            }
+            if (!first) {
+                player.sendMessage(mm.deserialize(missing.toString()));
+            } else {
+                player.sendMessage(mm.deserialize(plugin.msg("altar.tracker.slots-full")));
+            }
             return false;
         }
 
@@ -694,7 +711,9 @@ public class AltarBlockTracker {
     }
 
     private int getMaxSlots() {
-        return plugin.getAltarManager().getConfig().settings.maxSlots;
+        var config = plugin.getAltarManager().getConfig();
+        if (config == null || config.settings == null) return 16;
+        return Math.max(9, config.settings.maxSlots);
     }
 
     private String getItemDisplayName(ItemStack item) {
