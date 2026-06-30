@@ -11,6 +11,8 @@ dependencies:
     required: false
   - name: FastAsyncWorldEdit
     required: false
+  - name: ItemsAdder
+    required: false
 
 permissions:
   wastelandartifacts.*:

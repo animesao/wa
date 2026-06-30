@@ -21,6 +21,7 @@ import me.darkcube.wa.crafting.CraftingManager;
 import me.darkcube.wa.dungeon.DungeonManager;
 import me.darkcube.wa.dungeon.MobLootListener;
 import me.darkcube.wa.gui.ArtifactEditorGUI;
+import me.darkcube.wa.integration.ItemsAdderIntegration;
 import me.darkcube.wa.item.CustomItemRegistry;
 import me.darkcube.wa.gui.ChatInputManager;
 import me.darkcube.wa.listener.ArmorListener;
@@ -96,6 +97,10 @@ public final class WastelandArtifacts extends JavaPlugin {
         this.api = new WastelandArtifactsAPI(this);
 
         registerComponents();
+        ItemsAdderIntegration.init();
+        if (ItemsAdderIntegration.isEnabled()) {
+            getComponentLogger().info("<green>Интеграция с ItemsAdder активна");
+        }
         rarityManager.loadConfig();
         configManager.loadAll();
         customItemRegistry.loadConfig();

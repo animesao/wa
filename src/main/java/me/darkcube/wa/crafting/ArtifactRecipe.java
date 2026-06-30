@@ -60,6 +60,10 @@ public class ArtifactRecipe {
             if (type.startsWith("custom:")) {
                 return null; // обрабатывается отдельно
             }
+            // ItemsAdder предмет
+            if (type.startsWith("itemsadder:")) {
+                return null; // обрабатывается отдельно
+            }
             // Обычный материал
             Material mat = Material.matchMaterial(type);
             if (mat != null) {

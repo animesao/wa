@@ -155,6 +155,11 @@ public class CraftingManager {
             ItemStack customItem = plugin.getCustomItemRegistry().create(customId);
             if (customItem != null) return new RecipeChoice.ExactChoice(customItem);
         }
+        if (value.startsWith("itemsadder:")) {
+            String iaId = value.substring(11);
+            ItemStack iaItem = plugin.getCustomItemRegistry().create("itemsadder:" + iaId);
+            if (iaItem != null) return new RecipeChoice.ExactChoice(iaItem);
+        }
         Material mat = Material.matchMaterial(value);
         if (mat != null) return new RecipeChoice.MaterialChoice(mat);
         return new RecipeChoice.MaterialChoice(Material.STONE);
@@ -163,7 +168,6 @@ public class CraftingManager {
     private @NotNull RecipeChoice parseIngredient(IngredientDef def) {
         if (def == null) return new RecipeChoice.MaterialChoice(Material.STONE);
 
-        // Сначала пытаемся как artifact:/custom:
         String type = def.type;
         if (type == null) return new RecipeChoice.MaterialChoice(Material.STONE);
 
@@ -179,14 +183,17 @@ public class CraftingManager {
             ItemStack customItem = plugin.getCustomItemRegistry().create(customId);
             if (customItem != null) return new RecipeChoice.ExactChoice(customItem);
         }
+        if (type.startsWith("itemsadder:")) {
+            String iaId = type.substring(11);
+            ItemStack iaItem = plugin.getCustomItemRegistry().create("itemsadder:" + iaId);
+            if (iaItem != null) return new RecipeChoice.ExactChoice(iaItem);
+        }
 
-        // Если есть name/lore/CMD — используем ExactChoice с шаблоном
         ItemStack template = def.buildTemplate();
         if (template != null && (def.name != null || def.customModelData > 0)) {
             return new RecipeChoice.ExactChoice(template);
         }
 
-        // Обычный материал
         Material mat = Material.matchMaterial(type);
         if (mat != null) return new RecipeChoice.MaterialChoice(mat);
         return new RecipeChoice.MaterialChoice(Material.STONE);

@@ -1,6 +1,7 @@
 package me.darkcube.wa.item;
 
 import me.darkcube.wa.WastelandArtifacts;
+import me.darkcube.wa.integration.ItemsAdderIntegration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -13,6 +14,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class CustomItemRegistry {
+
+    private static final String ITEMSADDER_PREFIX = "itemsadder:";
 
     private final WastelandArtifacts plugin;
     private final Map<String, CustomItemDef> items = new LinkedHashMap<>();
@@ -34,7 +37,6 @@ public class CustomItemRegistry {
             items.clear();
 
             if (itemsRaw instanceof List) {
-                // List format: - { id: ..., material: ... }
                 List<Map<String, Object>> itemsList = (List<Map<String, Object>>) itemsRaw;
                 for (Map<String, Object> def : itemsList) {
                     String id = (String) def.get("id");
@@ -49,7 +51,6 @@ public class CustomItemRegistry {
                     ));
                 }
             } else if (itemsRaw instanceof Map) {
-                // Map format: id: { material: ..., name: ... }
                 Map<String, Object> itemsMap = (Map<String, Object>) itemsRaw;
                 for (var entry : itemsMap.entrySet()) {
                     Map<String, Object> def = (Map<String, Object>) entry.getValue();
@@ -72,6 +73,9 @@ public class CustomItemRegistry {
     }
 
     public @Nullable ItemStack create(@NotNull String id) {
+        if (id.startsWith(ITEMSADDER_PREFIX)) {
+            return ItemsAdderIntegration.createItem(id.substring(ITEMSADDER_PREFIX.length()));
+        }
         CustomItemDef def = items.get(id);
         if (def == null) return null;
         return def.build();
@@ -84,6 +88,7 @@ public class CustomItemRegistry {
     }
 
     public @Nullable CustomItemDef getDef(@NotNull String id) {
+        if (id.startsWith(ITEMSADDER_PREFIX)) return null;
         return items.get(id);
     }
 
@@ -92,6 +97,7 @@ public class CustomItemRegistry {
     }
 
     public boolean isCustomItem(@NotNull ItemStack item) {
+        if (ItemsAdderIntegration.isCustomItem(item)) return true;
         if (!item.hasItemMeta()) return false;
         for (CustomItemDef def : items.values()) {
             if (item.isSimilar(def.build())) return true;
@@ -100,6 +106,10 @@ public class CustomItemRegistry {
     }
 
     public @Nullable String getId(@NotNull ItemStack item) {
+        if (ItemsAdderIntegration.isEnabled()) {
+            String iaId = ItemsAdderIntegration.getItemId(item);
+            if (iaId != null) return ITEMSADDER_PREFIX + iaId;
+        }
         if (!item.hasItemMeta()) return null;
         for (var entry : items.entrySet()) {
             if (item.isSimilar(entry.getValue().build())) return entry.getKey();
