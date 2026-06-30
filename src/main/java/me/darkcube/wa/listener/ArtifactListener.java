@@ -15,8 +15,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
@@ -29,9 +27,16 @@ public class ArtifactListener implements Listener {
 
     private final WastelandArtifacts plugin;
     private final Map<UUID, Long> cooldownTracker = new HashMap<>();
+    private final Map<UUID, String> lastOffhandArtifact = new HashMap<>();
 
     public ArtifactListener(WastelandArtifacts plugin) {
         this.plugin = plugin;
+        // Проверяем off-hand у всех игроков каждые 2 секунды
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                checkOffhandArtifact(p);
+            }
+        }, 40L, 40L);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -187,54 +192,40 @@ public class ArtifactListener implements Listener {
         plugin.getArtifactBagManager().recalcEffects(player);
     }
 
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getSlotType() != InventoryType.SlotType.QUICKBAR
-                && event.getSlotType() != InventoryType.SlotType.CONTAINER) return;
-        if (!(event.getWhoClicked() instanceof Player player)) return;
-
-        // Проверяем off-hand слот (40 в дефолтном выживании, слот 8 в комбинированном виде)
-        int rawSlot = event.getRawSlot();
-        int slot = event.getSlot();
-        boolean isOffhand = false;
-        if (rawSlot == 40) isOffhand = true;
-        if (event.getView().getBottomInventory().equals(event.getClickedInventory())
-                && slot == 8 && event.getView().getTopInventory().getSize() <= 40) {
-            isOffhand = true;
+    private void checkOffhandArtifact(Player player) {
+        UUID uuid = player.getUniqueId();
+        ItemStack offhand = player.getInventory().getItemInOffHand();
+        String currentId = null;
+        if (offhand != null && offhand.hasItemMeta()) {
+            Artifact art = plugin.getArtifactManager().getArtifactFromItem(offhand);
+            if (art != null) currentId = art.getId();
         }
-        if (!isOffhand) return;
 
-        ItemStack cursor = event.getCursor();
-        ItemStack current = event.getCurrentItem();
+        String previousId = lastOffhandArtifact.get(uuid);
 
-        // Если убираем артефакт из off-hand → снимаем эффекты
-        if (current != null) {
-            Artifact oldArt = plugin.getArtifactManager().getArtifactFromItem(current);
+        // Если убрали артефакт из off-hand
+        if (previousId != null && !previousId.equals(currentId)) {
+            Artifact oldArt = plugin.getArtifactRegistry().get(previousId);
             if (oldArt != null) {
                 for (var comp : oldArt.getComponents()) {
                     comp.onUnequip(player);
                 }
-                fireTriggers(oldArt, player, oldArt, current, TriggerType.ON_UNEQUIP, null, null);
             }
+            player.removePotionEffect(org.bukkit.potion.PotionEffectType.ABSORPTION);
+            lastOffhandArtifact.remove(uuid);
         }
 
-        // Если кладём артефакт в off-hand → надеваем эффекты
-        if (cursor != null) {
-            Artifact newArt = plugin.getArtifactManager().getArtifactFromItem(cursor);
+        // Если надели новый артефакт в off-hand
+        if (currentId != null && !currentId.equals(previousId)) {
+            Artifact newArt = plugin.getArtifactRegistry().get(currentId);
             if (newArt != null) {
-                // Надеваем через тайк, чтобы предмет уже был в слоте
-                Bukkit.getScheduler().runTask(plugin, () -> {
-                    ItemStack offhand = player.getInventory().getItemInOffHand();
-                    Artifact equipped = plugin.getArtifactManager().getArtifactFromItem(offhand);
-                    if (equipped != null && equipped.getId().equals(newArt.getId())) {
-                        for (var comp : equipped.getComponents()) {
-                            comp.onEquip(player);
-                        }
-                        fireTriggers(equipped, player, equipped, offhand, TriggerType.ON_EQUIP, null, null);
-                        plugin.getArtifactBagManager().recalcEffects(player);
-                    }
-                });
+                for (var comp : newArt.getComponents()) {
+                    comp.onEquip(player);
+                }
+                fireTriggers(newArt, player, newArt, offhand, TriggerType.ON_EQUIP, null, null);
+                plugin.getArtifactBagManager().recalcEffects(player);
             }
+            lastOffhandArtifact.put(uuid, currentId);
         }
     }
 

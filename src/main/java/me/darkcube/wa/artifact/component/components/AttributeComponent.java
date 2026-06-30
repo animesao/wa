@@ -48,9 +48,23 @@ public class AttributeComponent implements ArtifactComponent {
     public void apply(@NotNull ItemStack item) {
         var meta = item.getItemMeta();
         if (meta == null) return;
-        meta.addAttributeModifier(attribute, new AttributeModifier(
-                UUID.randomUUID(), "wa_" + attribute.name(), amount, operation, slot
-        ));
+        // Для HAND и OFF_HAND — добавляем модификатор на обе руки
+        if (slot == EquipmentSlot.HAND) {
+            meta.addAttributeModifier(attribute, new AttributeModifier(
+                    UUID.randomUUID(), "wa_" + attribute.name(), amount, operation, EquipmentSlot.HAND
+            ));
+            meta.addAttributeModifier(attribute, new AttributeModifier(
+                    UUID.randomUUID(), "wa_" + attribute.name() + "_off", amount, operation, EquipmentSlot.OFF_HAND
+            ));
+        } else if (slot == EquipmentSlot.OFF_HAND) {
+            meta.addAttributeModifier(attribute, new AttributeModifier(
+                    UUID.randomUUID(), "wa_" + attribute.name(), amount, operation, EquipmentSlot.OFF_HAND
+            ));
+        } else {
+            meta.addAttributeModifier(attribute, new AttributeModifier(
+                    UUID.randomUUID(), "wa_" + attribute.name(), amount, operation, slot
+            ));
+        }
         item.setItemMeta(meta);
     }
 
