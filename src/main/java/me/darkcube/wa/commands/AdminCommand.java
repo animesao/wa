@@ -138,8 +138,14 @@ public class AdminCommand extends Command {
             sender.sendMessage(miniMessage.deserialize(plugin.msg("admin.customitem-not-found", args[1])));
             return true;
         }
+        // Берём displayName из предмета, если есть
+        String displayName = args[1];
+        if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
+            displayName = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
+                    .serialize(item.getItemMeta().displayName());
+        }
         player.getInventory().addItem(item);
-        sender.sendMessage(miniMessage.deserialize(plugin.msg("admin.customitem-given", args[1], amount)));
+        sender.sendMessage(miniMessage.deserialize(plugin.msg("admin.customitem-given", displayName, amount)));
         return true;
     }
 

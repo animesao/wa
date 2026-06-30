@@ -191,10 +191,15 @@ public class AdminItemsGUI extends GUIBase {
         if (index < 0 || index >= allItems.size()) return;
         ItemStack item = allItems.get(index).clone();
         if (sender instanceof Player p) {
+            String displayName = itemOrigins.get(index);
+            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
+                displayName = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText()
+                        .serialize(item.getItemMeta().displayName());
+            }
             p.getInventory().addItem(item).forEach((i, leftover) ->
                     p.getWorld().dropItem(p.getLocation(), leftover));
             p.sendMessage(plugin.getConfigManager().getLang("admin.customitem-given",
-                    itemOrigins.get(index), item.getAmount()));
+                    displayName, item.getAmount()));
         }
     }
 
