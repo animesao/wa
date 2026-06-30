@@ -1,6 +1,6 @@
 # Wasteland Artifacts — Полная вики
 
-> **Версия:** 1.3.0 | **Платформа:** Paper 1.21.1+ (протестировано на 1.21.11) | **Java:** 21
+> **Версия:** v2.1.0 | **Платформа:** Paper 1.21.11 | **Java:** 21
 
 ---
 
@@ -21,23 +21,25 @@
    - [rarities.yml](#58-raritiesyml)
    - [balance.yml](#59-balanceyml)
    - [lang/*.yml](#510-языковые-файлы)
-6. [Интеграция с ItemsAdder](#6-интеграция-с-itemsadder)
+   - [features/*.yml](#511-featuresyml)
+6. [Интеграции](#6-интеграции)
 7. [Защита крафта](#7-защита-крафта)
 8. [Система подземельной добычи](#8-система-подземельной-добычи)
 9. [Размещение кастомных блоков](#9-размещение-кастомных-блоков)
-10. [API](#10-api)
-11. [Решение проблем](#11-решение-проблем)
+10. [База данных](#10-база-данных)
+11. [API](#11-api)
+12. [Решение проблем](#12-решение-проблем)
 
 ---
 
 ## 1. Обзор
 
-**Wasteland Artifacts** — это премиум-плагин для Minecraft Paper 1.21.1+, добавляющий на ваш сервер полноценную систему артефактов. Включает кастомные артефакты с уникальными способностями, подземельную добычу, 3D-алтари для крафта, систему выпадения с мобов и систему боссов.
+**Wasteland Artifacts** — это премиум-плагин для Minecraft Paper 1.21.11, добавляющий на ваш сервер полноценную систему артефактов. Включает кастомные артефакты с уникальными способностями, подземельную добычу, 3D-алтари для крафта, систему выпадения с мобов, систему боссов, коллекцию артефактов, активные способности, улучшение предметов, рыбалку, элитных мобов и арену боссов.
 
 ### Основные возможности
 
 - **30+ кастомных артефактов** — оружие, броня, инструменты, аксессуары с уникальными способностями (огненный аспект, молнии, вампиризм, взрывы, призывы, снаряды, АОЕ и др.)
-- **68 кастомных ингредиентов** — компоненты для крафта, разделённые на категории (Элементы, Части существ, Древние артефакты, Алхимия, Пустошь, Космос, Материалы, Мифические)
+- **86 кастомных ингредиентов** — компоненты для крафта, разделённые на категории (Элементы, Части существ, Древние артефакты, Алхимия, Пустошь, Космос, Материалы, Мифические, Особые, Добавленные)
 - **3 уровня алтарей** — 3D-мультиблочные структуры для крафта артефактов (Базовый, Продвинутый, Легендарный)
 - **Система чертежей** — создавайте чертежи в обычном верстаке, используйте их на алтарях
 - **Подземельная добыча** — 20+ типов ванильных структур с кастомными таблицами лута
@@ -47,7 +49,17 @@
 - **Ресурс-пак** — автоматически генерируемый ресурс-пак с кастомными моделями и текстурами
 - **Многоязычность** — 5 встроенных языковых файлов (EN, RU, DE, FR, ZH)
 - **Developer API** — публичное API для регистрации кастомных артефактов, компонентов и триггеров
-- **Интеграция с ItemsAdder** — используйте предметы ItemsAdder в любых конфигурациях
+- **Система фич** — 12 модулей, каждый включается/выключается в config.yml
+- **Коллекция артефактов** — `/artifact collection`, отслеживание в БД
+- **Сеты артефактов** — бонусы за набор (features/sets.yml)
+- **Активные способности** — 6 типов (PROJECTILE, TELEPORT, DASH, SHIELD, HEAL, AOE, COMMAND)
+- **Улучшение артефактов** — комбинированием копий
+- **Рыбалка** — кастомный лут
+- **Элитные мобы** — с множителями и особым дропом
+- **XP артефактов** — уровни и масштабирование
+- **Арена боссов** — волновая арена
+- **AdminItemsGUI** — `/waadmin gui` для выдачи любых предметов плагина
+- **Интеграции**: ItemsAdder, Nexo, Oraxen, MythicMobs, PlaceholderAPI — все через рефлексию
 
 ---
 
@@ -61,7 +73,9 @@
 ### Опциональные зависимости
 
 - **WorldEdit** или **FastAsyncWorldEdit** — для вставки схем
-- **ItemsAdder** — для использования предметов ItemsAdder в рецептах и луте
+- **ItemsAdder**, **Nexo** или **Oraxen** — для использования кастомных предметов в рецептах и луте
+- **MythicMobs** — для интеграции с элитными мобами
+- **PlaceholderAPI** — для плейсхолдеров
 
 ### Шаги установки
 
@@ -78,6 +92,14 @@
    - `plugins/WastelandArtifacts/mob_loot.yml`
    - `plugins/WastelandArtifacts/artifacts/examples.yml`
    - `plugins/WastelandArtifacts/dungeons/default.yml`
+   - `plugins/WastelandArtifacts/features/collection.yml`
+   - `plugins/WastelandArtifacts/features/sets.yml`
+   - `plugins/WastelandArtifacts/features/abilities.yml`
+   - `plugins/WastelandArtifacts/features/upgrades.yml`
+   - `plugins/WastelandArtifacts/features/fishing_loot.yml`
+   - `plugins/WastelandArtifacts/features/elites.yml`
+   - `plugins/WastelandArtifacts/features/xp.yml`
+   - `plugins/WastelandArtifacts/features/arena.yml`
    - `plugins/WastelandArtifacts/lang/en_US.yml`
    - `plugins/WastelandArtifacts/lang/ru_RU.yml`
    - `plugins/WastelandArtifacts/lang/de_DE.yml`
@@ -90,6 +112,8 @@
 - Регистрирует все рецепты крафта чертежей
 - Запускает HTTP-сервер ресурс-пака (порт 8192 по умолчанию)
 - Генерирует JSON-файлы кастомных моделей для всех артефактов
+- Инициализирует базу данных (SQLite/MySQL)
+- Загружает модули фич в соответствии с config.yml
 
 ---
 
@@ -107,6 +131,7 @@
 | `reload` | `wastelandartifacts.admin` | — | Перезагрузить все файлы конфигурации |
 | `create` | `wastelandartifacts.admin` | — | Открыть внутриигровой редактор артефактов |
 | `edit` | `wastelandartifacts.admin` | `<id>` | Редактировать существующий артефакт в GUI |
+| `collection` | `wastelandartifacts.player.collection` | — | Показать прогресс коллекции артефактов |
 
 **Примеры:**
 ```
@@ -116,6 +141,7 @@
 /artifact reload
 /artifact create
 /artifact edit fire_sword
+/artifact collection
 ```
 
 ### 3.2 `/waadmin` — Админские команды
@@ -124,6 +150,7 @@
 
 | Подкоманда | Право | Аргументы | Описание |
 |---|---|---|---|
+| `gui` | `wastelandartifacts.admin.gui` | — | Открыть GUI выдачи всех предметов (артефакты, кастомные предметы, чертежи) |
 | `rp build` | `wastelandartifacts.admin.rp` | — | Собрать ZIP-архив ресурс-пака |
 | `rp send` | `wastelandartifacts.admin.rp` | — | Отправить ресурс-пак всем игрокам онлайн |
 | `blueprint` | `wastelandartifacts.admin.blueprint` | `<recipe_id>` | Выдать предмет-чертёж |
@@ -132,6 +159,7 @@
 
 **Примеры:**
 ```
+/waadmin gui
 /waadmin rp build
 /waadmin rp send
 /waadmin blueprint basic_altar_craft_fire_sword
@@ -139,7 +167,11 @@
 /waadmin debug
 ```
 
-### 3.3 `/altar` — Система алтарей
+### 3.3 `/artifact` — Управление артефактами (продолжение)
+
+Команда `/artifact collection` открывает GUI коллекции артефактов, показывая какие артефакты игрок уже нашёл, а какие ещё предстоит найти.
+
+### 3.4 `/altar` — Система алтарей
 
 **Алиасы:** `/alt`
 
@@ -165,7 +197,7 @@
 /altar schematic paste my_altar
 ```
 
-### 3.4 `/bag` — Сумка артефактов
+### 3.5 `/bag` — Сумка артефактов
 
 **Алиасы:** `/artifacts`, `/artbag`
 
@@ -175,7 +207,7 @@
 
 Открывает GUI сумки артефактов. Требует наличия артефакта **Wasteland Bag** в инвентаре. Внутрь можно помещать только артефакты. Эффекты от артефактов в сумке с компонентом `POTION_EFFECT_ON_EQUIP` автоматически применяются к игроку.
 
-### 3.5 `/dungeon` — Управление подземельями
+### 3.6 `/dungeon` — Управление подземельями
 
 **Алиасы:** `/dg`
 
@@ -196,7 +228,7 @@
 /dungeon info
 ```
 
-### 3.6 `/item` — Кодирование/декодирование предметов
+### 3.7 `/item` — Кодирование/декодирование предметов
 
 **Право:** Требуется базовое право
 
@@ -211,6 +243,23 @@
 /item decode H4sI...
 ```
 
+### 3.8 `/arena` — Арена боссов
+
+**Алиасы:** `/bossarena`
+
+**Право:** `wastelandartifacts.player.arena`
+
+| Подкоманда | Описание |
+|---|---|
+| *(без аргументов)* | Открыть GUI арены боссов |
+| `start` | Начать волну на арене |
+
+**Примеры:**
+```
+/arena
+/arena start
+```
+
 ---
 
 ## 4. Права
@@ -218,17 +267,20 @@
 | Узел права | По умолчанию | Родитель | Описание |
 |---|---|---|---|
 | `wastelandartifacts.*` | op | `admin` + `player` | Все права |
-| `wastelandartifacts.admin` | op | `admin.altar`, `admin.blueprint`, `admin.customitem`, `admin.debug`, `admin.rp` | Все админские команды |
-| `wastelandartifacts.player` | true | `player.altar`, `player.bag`, `player.artifact`, `player.blueprint` | Все игровые команды |
+| `wastelandartifacts.admin` | op | `admin.altar`, `admin.blueprint`, `admin.customitem`, `admin.debug`, `admin.rp`, `admin.gui` | Все админские команды |
+| `wastelandartifacts.player` | true | `player.altar`, `player.bag`, `player.artifact`, `player.blueprint`, `player.collection`, `player.arena` | Все игровые команды |
 | `wastelandartifacts.admin.altar` | op | — | Управление алтарями (постройка, схемы) |
 | `wastelandartifacts.admin.blueprint` | op | — | Выдача чертежей |
 | `wastelandartifacts.admin.customitem` | op | — | Выдача кастомных предметов |
 | `wastelandartifacts.admin.debug` | op | — | Отладочные команды |
 | `wastelandartifacts.admin.rp` | op | — | Управление ресурс-паком |
+| `wastelandartifacts.admin.gui` | op | — | GUI выдачи предметов |
 | `wastelandartifacts.player.altar` | true | — | Просмотр и превью алтарей |
 | `wastelandartifacts.player.bag` | true | — | Использование сумки артефактов |
 | `wastelandartifacts.player.artifact` | true | — | Список и просмотр информации об артефактах |
 | `wastelandartifacts.player.blueprint` | true | — | Использование чертежей на алтарях |
+| `wastelandartifacts.player.collection` | true | — | Просмотр коллекции артефактов |
+| `wastelandartifacts.player.arena` | true | — | Доступ к арене боссов |
 
 ---
 
@@ -239,14 +291,28 @@
 Главный файл конфигурации, расположенный по пути `plugins/WastelandArtifacts/config.yml`.
 
 ```yaml
-# ─── Wasteland Artifacts — Main Config ───
+# ─── Wasteland Artifacts — Главный конфиг ───
+
+features:
+  placeholderAPI: true
+  mythicmobs: true
+  nexo: true
+  oraxen: true
+  collection: true
+  artifactSets: true
+  activeAbilities: true
+  upgrades: true
+  fishing: true
+  customMobs: true
+  artifactXP: true
+  bossArena: true
 
 resource-pack:
   mode: AUTO
   autoHost: true
   hostPort: 8192
   force: true
-  prompt: "<gold>This server uses a custom resource pack!"
+  prompt: "<gold>Этот сервер использует кастомный ресурс-пак!"
   hash: ""
 
 dungeons:
@@ -272,18 +338,38 @@ database:
   type: SQLITE
   host: localhost
   port: 3306
-  database: artifacts
+  database: wasteland_artifacts
   user: root
   password: ""
+  poolSize: 10
 
 gui:
   rows: 6
-  title: "<dark_gray>Wasteland Artifacts"
+  title: "<dark_gray>Артефакты Пустоши"
   fill-glass: true
 
 lang:
-  locale: en_US
+  locale: ru_RU
 ```
+
+#### Секция Features
+
+Управляет включением/отключением модулей плагина. Позволяет гибко настроить функционал под нужды сервера:
+
+| Настройка | Тип | По умолчанию | Описание |
+|---|---|---|---|
+| `placeholderAPI` | Boolean | `true` | Включить интеграцию с PlaceholderAPI |
+| `mythicmobs` | Boolean | `true` | Включить интеграцию с MythicMobs |
+| `nexo` | Boolean | `true` | Включить интеграцию с Nexo |
+| `oraxen` | Boolean | `true` | Включить интеграцию с Oraxen |
+| `collection` | Boolean | `true` | Включить систему коллекции артефактов |
+| `artifactSets` | Boolean | `true` | Включить сеты артефактов с бонусами |
+| `activeAbilities` | Boolean | `true` | Включить активные способности |
+| `upgrades` | Boolean | `true` | Включить улучшение артефактов |
+| `fishing` | Boolean | `true` | Включить кастомный лут при рыбалке |
+| `customMobs` | Boolean | `true` | Включить элитных мобов |
+| `artifactXP` | Boolean | `true` | Включить XP артефактов |
+| `bossArena` | Boolean | `true` | Включить арену боссов |
 
 #### Секция Resource Pack
 
@@ -331,9 +417,10 @@ lang:
 | `type` | String | `SQLITE` | Тип базы данных (SQLITE или MYSQL) |
 | `host` | String | `localhost` | Хост MySQL |
 | `port` | Integer | `3306` | Порт MySQL |
-| `database` | String | `artifacts` | Имя базы данных |
+| `database` | String | `wasteland_artifacts` | Имя базы данных |
 | `user` | String | `root` | Пользователь MySQL |
 | `password` | String | `""` | Пароль MySQL |
+| `poolSize` | Integer | `10` | Размер пула подключений HikariCP |
 
 #### Секция GUI
 
@@ -347,13 +434,13 @@ lang:
 
 | Настройка | Тип | По умолчанию | Описание |
 |---|---|---|---|
-| `locale` | String | `en_US` | Язык по умолчанию (`en_US`, `ru_RU`, `de_DE`, `fr_FR`, `zh_CN`) |
+| `locale` | String | `ru_RU` | Язык по умолчанию (`en_US`, `ru_RU`, `de_DE`, `fr_FR`, `zh_CN`) |
 
 ---
 
 ### 5.2 custom_items.yml
 
-Расположен по пути `plugins/WastelandArtifacts/custom_items.yml`. Содержит **76 кастомных предметов**, используемых в качестве ингредиентов для крафта артефактов. Каждый предмет имеет уникальное значение `customModelData` (6001–6076).
+Расположен по пути `plugins/WastelandArtifacts/custom_items.yml`. Содержит **86 кастомных предметов**, используемых в качестве ингредиентов для крафта артефактов. Каждый предмет имеет уникальное значение `customModelData` (6001–6086).
 
 #### Формат
 
@@ -473,6 +560,18 @@ items:
 - `echo_shard` (ECHO_SHARD, CMD 6074, RARE)
 - `prismarine_core` (PRISMARINE_CRYSTALS, CMD 6075, UNCOMMON)
 - `obsidian_shard` (OBSIDIAN, CMD 6076, UNCOMMON)
+
+**Добавленные (v2.0.0) (10):**
+- `crystal_heart` (DIAMOND, CMD 6077, LEGENDARY)
+- `demon_blood` (RED_DYE, CMD 6078, EPIC)
+- `star_dust` (GLOW_BERRIES, CMD 6079, RARE)
+- `frozen_heart` (ICE, CMD 6080, EPIC)
+- `thunder_feather` (FEATHER, CMD 6081, RARE)
+- `shadow_fragment` (BLACK_DYE, CMD 6082, EPIC)
+- `phoenix_ashes` (GUNPOWDER, CMD 6083, LEGENDARY)
+- `titan_armor_plate` (NETHERITE_SCRAP, CMD 6084, LEGENDARY)
+- `void_tentacle` (PRISMARINE_CRYSTALS, CMD 6085, EPIC)
+- `angel_feather` (FEATHER, CMD 6086, LEGENDARY)
 
 > **Примечание:** Вы можете добавлять собственные кастомные предметы, следуя тому же формату. Предметы указываются в рецептах и таблицах лута с префиксом `custom:item_id` (например, `custom:fire_core`).
 
@@ -1216,23 +1315,210 @@ no-permission: "<red>No permission!"
 artifact.not-found: "<red>Artifact '%s' not found!"
 ```
 
-Язык игрока определяется автоматически. Если ключ перевода отсутствует в языке игрока, плагин использует запасной `en_US.yml`.
+Язык игрока определяется автоматически. Если ключ перевода отсутствует в языке игрока, плагин использует запасной `ru_RU.yml`.
 
 #### Добавление нового языка
 
 1. Создайте новый файл в `lang/` (например, `lang/es_ES.yml`)
-2. Скопируйте ключи из `en_US.yml` и переведите значения
+2. Скопируйте ключи из `ru_RU.yml` и переведите значения
 3. Установите `lang.locale: es_ES` в `config.yml`
 
 ---
 
-## 6. Интеграция с ItemsAdder
+### 5.11 features/*.yml
 
-Wasteland Artifacts интегрируется с **ItemsAdder** через рефлексию, позволяя использовать предметы ItemsAdder в любом месте конфигурации плагина.
+Расположены по пути `plugins/WastelandArtifacts/features/`. Каждый файл соответствует модулю фич, управляемому через секцию `features` в `config.yml`. Если модуль отключён, его конфиг не загружается.
 
-### Использование
+#### features/collection.yml
 
-Добавьте префикс `itemsadder:namespace:id` к предметам ItemsAdder:
+Система коллекции артефактов. Отслеживает какие артефакты игрок нашёл и выдаёт награды за прогресс.
+
+```yaml
+collection:
+  enabled: true
+  gui-title: "<dark_gray>📚 Коллекция артефактов"
+  rewards:
+    - percent: 25
+      command: "give %player% diamond 1"
+      message: "<gold>🎉 25% коллекции! +1 алмаз"
+    - percent: 50
+      command: "give %player% netherite_ingot 1"
+      message: "<gold>🎉 50% коллекции! +1 незерит"
+    - percent: 75
+      command: "give %player% enchanted_golden_apple 1"
+      message: "<gold>🎉 75% коллекции! +1 зачарованное яблоко"
+    - percent: 100
+      command: "give %player% nether_star 1"
+      message: "<gold>🎉 100% коллекции! +1 звезда Незера"
+```
+
+#### features/sets.yml
+
+Сеты артефактов. При надевании нескольких артефактов из одного сета игрок получает бонусы.
+
+```yaml
+sets:
+  fiery_set:
+    enabled: true
+    name: "<red>Огненный набор"
+    artifacts:
+      - "fire_sword"
+      - "shadow_cloak"
+      - "staff_of_storms"
+    bonuses:
+      - pieces: 2
+        description: "<red>Огненная аура"
+        effects:
+          - "POTION:FIRE_RESISTANCE:0:999999"
+          - "ATTRIBUTE:GENERIC_ATTACK_DAMAGE:2:0"
+      - pieces: 3
+        description: "<gold>Пылающий гнев"
+        effects:
+          - "POTION:STRENGTH:1:999999"
+          - "POTION:SPEED:1:999999"
+          - "ATTRIBUTE:GENERIC_MAX_HEALTH:10:0"
+```
+
+#### features/abilities.yml
+
+Активные способности для артефактов. Каждая способность имеет тип, кулдаун, урон, радиус, эффекты и визуальное оформление.
+
+Поддерживаемые типы способностей:
+
+| Тип | Описание |
+|---|---|
+| `PROJECTILE` | Запускает снаряд (например, файербол) |
+| `TELEPORT` | Телепортирует игрока вперёд |
+| `DASH` | Рывок в направлении взгляда |
+| `SHIELD` | Даёт поглощение и сопротивление |
+| `HEAL` | Восстанавливает здоровье |
+| `AOE` | Наносит урон и применяет эффекты в области |
+| `COMMAND` | Выполняет команду |
+
+```yaml
+abilities:
+  fireball:
+    enabled: true
+    name: "<red>Огненный шар"
+    cooldown: 10
+    type: PROJECTILE
+    projectile: SMALL_FIREBALL
+    damage: 8
+    radius: 0
+    distance: 0
+    duration: 0
+    heal: 0
+    knockback: 0
+    command: ""
+    effects:
+      - type: FIRE
+        amplifier: 0
+        duration: 100
+    particle: FLAME
+    sound: ENTITY_BLAZE_SHOOT
+    lore:
+      - "<gray>Запускает огненный шар"
+      - "<gray>Урон: <red>8"
+      - "<gray>Кулдаун: <white>10с"
+```
+
+#### features/upgrades.yml
+
+Улучшение артефактов путём комбинирования нескольких копий одного артефакта.
+
+```yaml
+upgrades:
+  enabled: true
+  maxLevel: 10
+  itemsPerUpgrade: 3
+  damageMultiplier: 1.15
+  healthMultiplier: 1.10
+  keepOnDeath: false
+  lore-format:
+    - ""
+    - "<gray>Уровень: <green>%level%"
+    - "<gray>Множитель урона: <gold>x%damage_mult%"
+```
+
+#### features/fishing_loot.yml
+
+Кастомный лут при рыбалке. Добавляет шанс выловить предметы плагина вместо обычной рыбы.
+
+```yaml
+fishing:
+  enabled: true
+  entries:
+    - item: "water_pearl"
+      weight: 10
+      minCount: 1
+      maxCount: 2
+      message: "<aqua>🐟 Вы выловили Водную Жемчужину!"
+```
+
+#### features/elites.yml
+
+Элитные мобы — редкие варианты обычных мобов с повышенными характеристиками и особым дропом.
+
+```yaml
+elites:
+  enabled: true
+  spawnChance: 0.1
+  types:
+    - entity: ZOMBIE
+      name: "<red>☠ Элитный Зомби"
+      healthMultiplier: 3.0
+      damageMultiplier: 2.0
+      dropChance: 0.5
+      drops:
+        - "soul_fragment"
+        - "ancient_bone"
+```
+
+#### features/xp.yml
+
+Система опыта артефактов. Артефакты получают XP за убийства мобов и повышают свои характеристики с каждым уровнем.
+
+```yaml
+xp:
+  enabled: true
+  xpPerKill: 10
+  xpPerLevel: 100
+  maxLevel: 50
+  damagePerLevel: 0.05
+  levelUpSound: ENTITY_PLAYER_LEVELUP
+  levelUpMessage: "<green>⬆ Артефакт <gold>%artifact% <green>достиг уровня <yellow>%level%!"
+```
+
+#### features/arena.yml
+
+Арена боссов (волновая). Игрок сражается с волнами мобов и боссов.
+
+```yaml
+arena:
+  enabled: true
+  cooldown: 300
+  arenaWorld: "arena"
+  spawn:
+    x: 0
+    y: 64
+    z: 0
+  bossSpawn:
+    x: 0
+    y: 64
+    z: 20
+```
+
+---
+
+## 6. Интеграции
+
+Wasteland Artifacts интегрируется с другими плагинами через рефлексию, что позволяет избежать жёстких зависимостей. Если плагин не установлен, его функции корректно пропускаются.
+
+### ItemsAdder
+
+Позволяет использовать предметы ItemsAdder в любом месте конфигурации плагина.
+
+**Префикс:** `itemsadder:namespace:id`
 
 ```yaml
 # В рецептах:
@@ -1252,16 +1538,36 @@ drops:
     chance: 0.5
 ```
 
-### Поддерживаемые места
-
+**Поддерживаемые места:**
 - Ингредиенты рецептов алтаря
 - Ингредиенты рецептов верстака
 - Таблицы лута подземелий (секция customItems)
 - Выпадения с мобов
 
-### Технические детали
+### Nexo
 
-Интеграция использует рефлексию для избежания жёстких зависимостей. Если ItemsAdder не установлен, плагин корректно пропускает функции, связанные с ItemsAdder.
+Интеграция с Nexo для использования кастомных предметов Nexo. Работает аналогично ItemsAdder через рефлексию.
+
+**Префикс:** `nexo:item_id`
+
+### Oraxen
+
+Интеграция с Oraxen для использования кастомных предметов Oraxen. Работает через рефлексию.
+
+**Префикс:** `oraxen:item_id`
+
+### MythicMobs
+
+Интеграция с MythicMobs. Позволяет сопоставлять элитных мобов по их кастомным именам и тегам, а также использовать MythicMobs в конфигурациях выпадения.
+
+### PlaceholderAPI
+
+Добавляет плейсхолдеры для отображения данных артефактов, коллекции, XP и статистики арены.
+
+**Примеры плейсхолдеров:**
+- `%wastelandartifacts_collection_progress%` — прогресс коллекции
+- `%wastelandartifacts_artifact_level%` — уровень артефакта в руке
+- `%wastelandartifacts_arena_waves%` — пройденные волны на арене
 
 ---
 
@@ -1335,26 +1641,126 @@ mapStructureToDungeon("fortress")    → "fortress"
 
 ## 9. Размещение кастомных блоков
 
-`CustomItemBlockListener` обрабатывает размещение и разрушение кастомных предметов в виде блоков.
+`CustomItemBlockListener` обрабатывает размещение и разрушение кастомных предметов в виде блоков. Использует комбинацию `ConcurrentHashMap` в памяти и PDC на блоке для надёжного отслеживания всех типов блоков (не только `TileState`).
 
 ### Размещение
 
 Когда игрок нажимает ПКМ для размещения кастомного предмета (например, кастомного блока из `custom_items.yml`):
-1. Слушатель сохраняет PDC-ключ `wastelandartifacts:placed_custom_item` на размещённом блоке с ID предмета
-2. Один предмет расходуется из руки игрока
+1. Слушатель сохраняет ID предмета в `ConcurrentHashMap<BlockKey, String>` с ключом по координатам блока
+2. Если блок поддерживает `TileState`, ID также сохраняется в PDC-ключ `wastelandartifacts:placed_custom_item`
+3. Один предмет расходуется из руки игрока
 
 ### Разрушение
 
 Когда игрок разрушает размещённый кастомный блок:
-1. Слушатель проверяет наличие PDC-ключа `placed_custom_item`
-2. Если найден, выпадает кастомный предмет вместо ванильного блока
-3. Кастомный предмет сохраняет свои исходные NBT-данные (имя, описание, CMD)
+1. Слушатель сначала проверяет `HashMap` в памяти для получения ID предмета
+2. Если в памяти не найдено, проверяет PDC блоков с `TileState`
+3. Если ID найден, выпадает кастомный предмет вместо ванильного блока
+4. Кастомный предмет сохраняет свои исходные NBT-данные (имя, описание, CMD)
 
-Это позволяет использовать кастомные предметы в качестве размещаемых/декоративных блоков, сохраняя их идентичность.
+Двухуровневое хранение (HashMap + PDC) гарантирует корректную работу для всех типов блоков, включая те, которые не имеют `TileState` (например, песок, гравий, обычные блоки).
 
 ---
 
-## 10. API
+## 10. База данных
+
+Wasteland Artifacts использует HikariCP для подключения к базе данных. Поддерживаются SQLite (по умолчанию) и MySQL.
+
+### Конфигурация
+
+Настройка БД производится в `config.yml` в секции `database`:
+
+```yaml
+database:
+  enabled: true
+  type: SQLITE        # SQLITE или MYSQL
+  host: localhost
+  port: 3306
+  database: wasteland_artifacts
+  user: root
+  password: ""
+  poolSize: 10
+```
+
+### Типы БД
+
+| Тип | Файл/Хост | Пул подключений |
+|---|---|---|
+| `SQLITE` | `plugins/WastelandArtifacts/data.db` | 1 (SQLite не поддерживает конкурентные записи) |
+| `MYSQL` | `host:port/database` | Настраивается через `poolSize` (по умолчанию 10) |
+
+### Структура таблиц
+
+Плагин использует 4 таблицы:
+
+#### wa_players
+
+Хранит основную информацию об игроках.
+
+```sql
+CREATE TABLE IF NOT EXISTS wa_players (
+    uuid VARCHAR(36) PRIMARY KEY,
+    name VARCHAR(16),
+    last_seen BIGINT,
+    total_found INT DEFAULT 0
+);
+```
+
+#### wa_artifact_data
+
+Хранит данные об артефактах игроков (уровень, XP, убийства).
+
+```sql
+CREATE TABLE IF NOT EXISTS wa_artifact_data (
+    id VARCHAR(64),
+    owner_uuid VARCHAR(36),
+    level INT DEFAULT 1,
+    xp BIGINT DEFAULT 0,
+    kills INT DEFAULT 0,
+    slot INT DEFAULT -1,
+    PRIMARY KEY (id, owner_uuid)
+);
+```
+
+#### wa_collection
+
+Отслеживает какие артефакты игрок нашёл.
+
+```sql
+CREATE TABLE IF NOT EXISTS wa_collection (
+    player_uuid VARCHAR(36),
+    artifact_id VARCHAR(64),
+    found_date BIGINT,
+    PRIMARY KEY (player_uuid, artifact_id)
+);
+```
+
+#### wa_arena_stats
+
+Статистика игроков на арене боссов.
+
+```sql
+CREATE TABLE IF NOT EXISTS wa_arena_stats (
+    player_uuid VARCHAR(36) PRIMARY KEY,
+    waves_cleared INT DEFAULT 0,
+    bosses_killed INT DEFAULT 0,
+    best_time BIGINT DEFAULT 0
+);
+```
+
+### Система фич с поддержкой БД
+
+Некоторые модули требуют наличия базы данных для работы:
+- **Коллекция** (`collection`) — сохраняет прогресс игрока
+- **Улучшение** (`upgrades`) — хранит уровни артефактов
+- **XP артефактов** (`artifactXP`) — сохраняет опыт артефактов
+- **Арена боссов** (`bossArena`) — записывает статистику игроков
+
+Если `database.enabled: false`, эти модули автоматически отключаются.
+
+---
+
+## 11. API
 
 ### Получение экземпляра API
 
@@ -1426,7 +1832,7 @@ api.registerArtifact(customArtifact);
 
 ---
 
-## 11. Решение проблем
+## 12. Решение проблем
 
 ### Частые проблемы и решения
 
@@ -1467,6 +1873,16 @@ api.registerArtifact(customArtifact);
 - Убедитесь, что используется **Paper 1.21.1** или выше (не Spigot/CraftBukkit)
 - Проверьте на наличие конфликтующих плагинов, использующих похожие NBT/PDC-ключи
 
+#### База данных не подключается
+- Проверьте `database.enabled: true` в `config.yml`
+- Для MySQL убедитесь, что хост и порт доступны
+- Проверьте логи на наличие SQL ошибок
+
+#### Фичи не загружаются
+- Убедитесь, что соответствующие настройки в секции `features` включены
+- Некоторые модули (collection, upgrades, xp, arena) требуют включённой БД
+- Проверьте, что файлы в `features/` существуют и имеют корректный YAML
+
 ### Включение отладочного режима
 
 Используйте `/waadmin debug` для просмотра:
@@ -1480,11 +1896,12 @@ api.registerArtifact(customArtifact);
 
 Проверяйте `logs/latest.log` на наличие:
 - Сообщений инициализации плагина (включая время загрузки в мс)
-- Статуса интеграции с ItemsAdder
+- Статуса интеграций (ItemsAdder, Nexo, Oraxen, MythicMobs, PlaceholderAPI)
 - Прогресса сканирования подземелий
 - Статуса генерации ресурс-пака
 - Любых ошибок парсинга YAML
+- Статуса подключения к базе данных
 
 ---
 
-> **Wasteland Artifacts v1.3.0** — Создано animesao для Paper 1.21.1+.
+> **Wasteland Artifacts v2.1.0** — Создано animesao для Paper 1.21.11+.

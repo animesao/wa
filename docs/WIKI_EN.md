@@ -1,6 +1,6 @@
 # Wasteland Artifacts — Complete Wiki
 
-> **Version:** 1.3.0 | **Platform:** Paper 1.21.1+ (tested on 1.21.11) | **Java:** 21
+> **Version:** v2.1.0 | **Platform:** Paper 1.21.11 | **Java:** 21
 
 ---
 
@@ -21,23 +21,25 @@
    - [rarities.yml](#58-raritiesyml)
    - [balance.yml](#59-balanceyml)
    - [lang/*.yml](#510-lang-files)
-6. [ItemsAdder Integration](#6-itemsadder-integration)
+   - [features/*.yml](#511-featuresyml)
+6. [Integrations](#6-integrations)
 7. [CraftingProtection](#7-craftingprotection)
 8. [Dungeon Loot System](#8-dungeon-loot-system)
 9. [Custom Item Block Placement](#9-custom-item-block-placement)
-10. [API](#10-api)
-11. [Troubleshooting](#11-troubleshooting)
+10. [Database](#10-database)
+11. [API](#11-api)
+12. [Troubleshooting](#12-troubleshooting)
 
 ---
 
 ## 1. Overview
 
-**Wasteland Artifacts** is a premium Minecraft plugin for Paper 1.21.1+ that adds a complete artifact system to your server. It features custom artifacts with unique abilities, dungeon loot injection, 3D altar crafting, a mob drop system, and a boss system.
+**Wasteland Artifacts** is a premium Minecraft plugin for Paper 1.21.11 that adds a complete artifact system to your server. It features custom artifacts with unique abilities, dungeon loot injection, 3D altar crafting, a mob drop system, boss system, artifact collection, active abilities, item upgrades, fishing loot, elite mobs, and a boss arena.
 
 ### Main Features
 
 - **30+ Custom Artifacts** — weapons, armor, tools, accessories with unique abilities (fire aspect, lightning, life steal, explosions, summons, projectiles, AOE, etc.)
-- **68 Custom Ingredients** — crafting components organized into categories (Elements, Creature Parts, Ancient Artifacts, Alchemy, Wasteland, Cosmos, Materials, Mythic)
+- **86 Custom Ingredients** — crafting components organized into categories (Elements, Creature Parts, Ancient Artifacts, Alchemy, Wasteland, Cosmos, Materials, Mythic, Special, Added)
 - **3 Altar Tiers** — 3D multi-block structures for crafting artifacts (Basic, Advanced, Legendary)
 - **Blueprint System** — craft blueprints in a vanilla workbench, use them on altars
 - **Dungeon Loot Injection** — 20+ vanilla structure types with custom loot tables
@@ -46,8 +48,18 @@
 - **Artifact Bag** — portable artifact storage with automatic effect application
 - **Resource Pack** — auto-generated resource pack with custom models and textures
 - **Multi-Language** — 5 built-in language files (EN, RU, DE, FR, ZH)
+- **Feature System** — 12 toggleable modules, each enabled/disabled in config.yml
+- **Artifact Collection** — `/artifact collection` GUI with database tracking
+- **Artifact Sets** — set bonuses for wearing matching artifacts (features/sets.yml)
+- **Active Abilities** — 6 types (PROJECTILE, TELEPORT, DASH, SHIELD, HEAL, AOE, COMMAND)
+- **Artifact Upgrades** — combine identical artifacts to increase levels
+- **Fishing Loot** — custom fishing drops (features/fishing_loot.yml)
+- **Elite Mobs** — rare mob variants with multipliers and custom drops
+- **Artifact XP** — XP per kill, level-up, damage scaling
+- **Boss Arena** — wave-based arena with rewards (features/arena_config.yml)
+- **AdminItemsGUI** — `/waadmin gui` with categorized tabs
+- **Integrations**: ItemsAdder, Nexo, Oraxen, MythicMobs, PlaceholderAPI — all through reflection
 - **Developer API** — public API for registering custom artifacts, components, and triggers
-- **ItemsAdder Integration** — use ItemsAdder items anywhere in configurations
 
 ---
 
@@ -61,7 +73,9 @@
 ### Optional Dependencies
 
 - **WorldEdit** or **FastAsyncWorldEdit** — for schematic pasting
-- **ItemsAdder** — for using custom ItemsAdder items in recipes and loot
+- **ItemsAdder**, **Nexo** or **Oraxen** — for using custom items in recipes and loot
+- **MythicMobs** — for elite mob integration
+- **PlaceholderAPI** — for placeholders
 
 ### Installation Steps
 
@@ -78,6 +92,14 @@
    - `plugins/WastelandArtifacts/mob_loot.yml`
    - `plugins/WastelandArtifacts/artifacts/examples.yml`
    - `plugins/WastelandArtifacts/dungeons/default.yml`
+   - `plugins/WastelandArtifacts/features/collection.yml`
+   - `plugins/WastelandArtifacts/features/sets.yml`
+   - `plugins/WastelandArtifacts/features/abilities.yml`
+   - `plugins/WastelandArtifacts/features/upgrades.yml`
+   - `plugins/WastelandArtifacts/features/fishing_loot.yml`
+   - `plugins/WastelandArtifacts/features/elites.yml`
+   - `plugins/WastelandArtifacts/features/xp.yml`
+   - `plugins/WastelandArtifacts/features/arena.yml`
    - `plugins/WastelandArtifacts/lang/en_US.yml`
    - `plugins/WastelandArtifacts/lang/ru_RU.yml`
    - `plugins/WastelandArtifacts/lang/de_DE.yml`
@@ -90,6 +112,8 @@
 - Registers all blueprint crafting recipes
 - Starts the HTTP resource pack server (port 8192 by default)
 - Generates custom model data JSON files for all artifacts
+- Initializes the database (SQLite/MySQL)
+- Loads feature modules according to config.yml
 
 ---
 
@@ -107,6 +131,7 @@
 | `reload` | `wastelandartifacts.admin` | — | Reload all configuration files |
 | `create` | `wastelandartifacts.admin` | — | Open the in-game artifact editor GUI |
 | `edit` | `wastelandartifacts.admin` | `<id>` | Edit an existing artifact in the GUI |
+| `collection` | `wastelandartifacts.player.collection` | — | Show artifact collection progress |
 
 **Examples:**
 ```
@@ -116,6 +141,7 @@
 /artifact reload
 /artifact create
 /artifact edit fire_sword
+/artifact collection
 ```
 
 ### 3.2 `/waadmin` — Admin Commands
@@ -124,6 +150,7 @@
 
 | Subcommand | Permission | Args | Description |
 |---|---|---|---|
+| `gui` | `wastelandartifacts.admin.gui` | — | Open admin items GUI (artifacts, custom items, blueprints) |
 | `rp build` | `wastelandartifacts.admin.rp` | — | Build the resource pack ZIP |
 | `rp send` | `wastelandartifacts.admin.rp` | — | Send resource pack to all online players |
 | `blueprint` | `wastelandartifacts.admin.blueprint` | `<recipe_id>` | Give a blueprint item |
@@ -132,6 +159,7 @@
 
 **Examples:**
 ```
+/waadmin gui
 /waadmin rp build
 /waadmin rp send
 /waadmin blueprint basic_altar_craft_fire_sword
@@ -139,7 +167,11 @@
 /waadmin debug
 ```
 
-### 3.3 `/altar` — Altar System
+### 3.3 `/artifact` — Artifact Management (continued)
+
+The `/artifact collection` subcommand opens the artifact collection GUI, showing which artifacts the player has found and which are still to be discovered.
+
+### 3.4 `/altar` — Altar System
 
 **Aliases:** `/alt`
 
@@ -165,7 +197,7 @@
 /altar schematic paste my_altar
 ```
 
-### 3.4 `/bag` — Artifact Bag
+### 3.5 `/bag` — Artifact Bag
 
 **Aliases:** `/artifacts`, `/artbag`
 
@@ -175,7 +207,7 @@
 
 Opens the Artifact Bag GUI. Requires the **Wasteland Bag** artifact in your inventory. Only artifacts can be placed inside. Effects from bagged artifacts with `POTION_EFFECT_ON_EQUIP` components are automatically applied to the player.
 
-### 3.5 `/dungeon` — Dungeon Management
+### 3.6 `/dungeon` — Dungeon Management
 
 **Aliases:** `/dg`
 
@@ -196,7 +228,7 @@ Opens the Artifact Bag GUI. Requires the **Wasteland Bag** artifact in your inve
 /dungeon info
 ```
 
-### 3.6 `/item` — Item Encode/Decode
+### 3.7 `/item` — Item Encode/Decode
 
 **Permission:** Requires base permission
 
@@ -211,6 +243,23 @@ Opens the Artifact Bag GUI. Requires the **Wasteland Bag** artifact in your inve
 /item decode H4sI...
 ```
 
+### 3.8 `/arena` — Boss Arena
+
+**Aliases:** `/bossarena`
+
+**Permission:** `wastelandartifacts.player.arena`
+
+| Subcommand | Description |
+|---|---|
+| *(no arguments)* | Open the boss arena GUI |
+| `start` | Start a wave on the arena |
+
+**Examples:**
+```
+/arena
+/arena start
+```
+
 ---
 
 ## 4. Permissions
@@ -218,17 +267,20 @@ Opens the Artifact Bag GUI. Requires the **Wasteland Bag** artifact in your inve
 | Permission Node | Default | Parent | Description |
 |---|---|---|---|
 | `wastelandartifacts.*` | op | `admin` + `player` | All permissions |
-| `wastelandartifacts.admin` | op | `admin.altar`, `admin.blueprint`, `admin.customitem`, `admin.debug`, `admin.rp` | All admin commands |
-| `wastelandartifacts.player` | true | `player.altar`, `player.bag`, `player.artifact`, `player.blueprint` | All player commands |
+| `wastelandartifacts.admin` | op | `admin.altar`, `admin.blueprint`, `admin.customitem`, `admin.debug`, `admin.rp`, `admin.gui` | All admin commands |
+| `wastelandartifacts.player` | true | `player.altar`, `player.bag`, `player.artifact`, `player.blueprint`, `player.collection`, `player.arena` | All player commands |
 | `wastelandartifacts.admin.altar` | op | — | Altar management (build, schematic) |
 | `wastelandartifacts.admin.blueprint` | op | — | Give blueprints |
 | `wastelandartifacts.admin.customitem` | op | — | Give custom items |
 | `wastelandartifacts.admin.debug` | op | — | Debug commands |
 | `wastelandartifacts.admin.rp` | op | — | Resource pack management |
+| `wastelandartifacts.admin.gui` | op | — | Admin items GUI |
 | `wastelandartifacts.player.altar` | true | — | View and preview altars |
 | `wastelandartifacts.player.bag` | true | — | Use the artifact bag |
 | `wastelandartifacts.player.artifact` | true | — | List and view artifact info |
 | `wastelandartifacts.player.blueprint` | true | — | Use blueprints on altars |
+| `wastelandartifacts.player.collection` | true | — | View artifact collection |
+| `wastelandartifacts.player.arena` | true | — | Access the boss arena |
 
 ---
 
@@ -240,6 +292,20 @@ The main configuration file located at `plugins/WastelandArtifacts/config.yml`.
 
 ```yaml
 # ─── Wasteland Artifacts — Main Config ───
+
+features:
+  placeholderAPI: true
+  mythicmobs: true
+  nexo: true
+  oraxen: true
+  collection: true
+  artifactSets: true
+  activeAbilities: true
+  upgrades: true
+  fishing: true
+  customMobs: true
+  artifactXP: true
+  bossArena: true
 
 resource-pack:
   mode: AUTO
@@ -272,9 +338,10 @@ database:
   type: SQLITE
   host: localhost
   port: 3306
-  database: artifacts
+  database: wasteland_artifacts
   user: root
   password: ""
+  poolSize: 10
 
 gui:
   rows: 6
@@ -284,6 +351,25 @@ gui:
 lang:
   locale: en_US
 ```
+
+#### Features Section
+
+Controls plugin module toggles. Allows flexible feature customization per server:
+
+| Setting | Type | Default | Description |
+|---|---|---|---|
+| `placeholderAPI` | Boolean | `true` | Enable PlaceholderAPI integration |
+| `mythicmobs` | Boolean | `true` | Enable MythicMobs integration |
+| `nexo` | Boolean | `true` | Enable Nexo integration |
+| `oraxen` | Boolean | `true` | Enable Oraxen integration |
+| `collection` | Boolean | `true` | Enable artifact collection system |
+| `artifactSets` | Boolean | `true` | Enable artifact set bonuses |
+| `activeAbilities` | Boolean | `true` | Enable active abilities |
+| `upgrades` | Boolean | `true` | Enable artifact upgrades |
+| `fishing` | Boolean | `true` | Enable custom fishing loot |
+| `customMobs` | Boolean | `true` | Enable elite mobs |
+| `artifactXP` | Boolean | `true` | Enable artifact XP |
+| `bossArena` | Boolean | `true` | Enable boss arena |
 
 #### Resource Pack Section
 
@@ -331,9 +417,10 @@ lang:
 | `type` | String | `SQLITE` | Database type (SQLITE or MYSQL) |
 | `host` | String | `localhost` | MySQL host |
 | `port` | Integer | `3306` | MySQL port |
-| `database` | String | `artifacts` | Database name |
+| `database` | String | `wasteland_artifacts` | Database name |
 | `user` | String | `root` | MySQL user |
 | `password` | String | `""` | MySQL password |
+| `poolSize` | Integer | `10` | HikariCP connection pool size |
 
 #### GUI Section
 
@@ -353,7 +440,7 @@ lang:
 
 ### 5.2 custom_items.yml
 
-Located at `plugins/WastelandArtifacts/custom_items.yml`. Contains **76 custom items** used as crafting ingredients for artifacts. Each item has a unique `customModelData` value (6001–6076).
+Located at `plugins/WastelandArtifacts/custom_items.yml`. Contains **86 custom items** used as crafting ingredients for artifacts. Each item has a unique `customModelData` value (6001–6086).
 
 #### Format
 
@@ -473,6 +560,18 @@ items:
 - `echo_shard` (ECHO_SHARD, CMD 6074, RARE)
 - `prismarine_core` (PRISMARINE_CRYSTALS, CMD 6075, UNCOMMON)
 - `obsidian_shard` (OBSIDIAN, CMD 6076, UNCOMMON)
+
+**Added (v2.0.0) (10):**
+- `crystal_heart` (DIAMOND, CMD 6077, LEGENDARY)
+- `demon_blood` (RED_DYE, CMD 6078, EPIC)
+- `star_dust` (GLOW_BERRIES, CMD 6079, RARE)
+- `frozen_heart` (ICE, CMD 6080, EPIC)
+- `thunder_feather` (FEATHER, CMD 6081, RARE)
+- `shadow_fragment` (BLACK_DYE, CMD 6082, EPIC)
+- `phoenix_ashes` (GUNPOWDER, CMD 6083, LEGENDARY)
+- `titan_armor_plate` (NETHERITE_SCRAP, CMD 6084, LEGENDARY)
+- `void_tentacle` (PRISMARINE_CRYSTALS, CMD 6085, EPIC)
+- `angel_feather` (FEATHER, CMD 6086, LEGENDARY)
 
 > **Note:** You can add your own custom items by following the same format. Items are referenced in recipes and loot tables using `custom:item_id` prefix (e.g., `custom:fire_core`).
 
@@ -1201,7 +1300,7 @@ Located at `plugins/WastelandArtifacts/lang/`. The plugin ships with **5 languag
 | File | Language |
 |---|---|
 | `en_US.yml` | English (fallback) |
-| `ru_RU.yml` | Russian (default) |
+| `ru_RU.yml` | Russian |
 | `de_DE.yml` | German |
 | `fr_FR.yml` | French |
 | `zh_CN.yml` | Chinese |
@@ -1226,13 +1325,200 @@ Player locale is automatically detected. If a translation key is missing in the 
 
 ---
 
-## 6. ItemsAdder Integration
+### 5.11 features/*.yml
 
-Wasteland Artifacts integrates with **ItemsAdder** via reflection, allowing you to use ItemsAdder items anywhere in the plugin's configuration.
+Located at `plugins/WastelandArtifacts/features/`. Each file corresponds to a feature module controlled via the `features` section in `config.yml`. If a module is disabled, its config is not loaded.
 
-### Usage
+#### features/collection.yml
 
-Prefix ItemsAdder items with `itemsadder:namespace:id`:
+The artifact collection system. Tracks which artifacts the player has found and rewards progression.
+
+```yaml
+collection:
+  enabled: true
+  gui-title: "<dark_gray>📚 Artifact Collection"
+  rewards:
+    - percent: 25
+      command: "give %player% diamond 1"
+      message: "<gold>🎉 25% collection! +1 diamond"
+    - percent: 50
+      command: "give %player% netherite_ingot 1"
+      message: "<gold>🎉 50% collection! +1 netherite"
+    - percent: 75
+      command: "give %player% enchanted_golden_apple 1"
+      message: "<gold>🎉 75% collection! +1 enchanted golden apple"
+    - percent: 100
+      command: "give %player% nether_star 1"
+      message: "<gold>🎉 100% collection! +1 nether star"
+```
+
+#### features/sets.yml
+
+Artifact sets. When wearing multiple artifacts from the same set, the player receives bonuses.
+
+```yaml
+sets:
+  fiery_set:
+    enabled: true
+    name: "<red>Fiery Set"
+    artifacts:
+      - "fire_sword"
+      - "shadow_cloak"
+      - "staff_of_storms"
+    bonuses:
+      - pieces: 2
+        description: "<red>Fire Aura"
+        effects:
+          - "POTION:FIRE_RESISTANCE:0:999999"
+          - "ATTRIBUTE:GENERIC_ATTACK_DAMAGE:2:0"
+      - pieces: 3
+        description: "<gold>Burning Wrath"
+        effects:
+          - "POTION:STRENGTH:1:999999"
+          - "POTION:SPEED:1:999999"
+          - "ATTRIBUTE:GENERIC_MAX_HEALTH:10:0"
+```
+
+#### features/abilities.yml
+
+Active abilities for artifacts. Each ability has a type, cooldown, damage, radius, effects, and visual styling.
+
+Supported ability types:
+
+| Type | Description |
+|---|---|
+| `PROJECTILE` | Launches a projectile (e.g., fireball) |
+| `TELEPORT` | Teleports the player forward |
+| `DASH` | Dashes in the look direction |
+| `SHIELD` | Grants absorption and resistance |
+| `HEAL` | Restores health |
+| `AOE` | Deals damage and applies effects in an area |
+| `COMMAND` | Executes a command |
+
+```yaml
+abilities:
+  fireball:
+    enabled: true
+    name: "<red>Fireball"
+    cooldown: 10
+    type: PROJECTILE
+    projectile: SMALL_FIREBALL
+    damage: 8
+    radius: 0
+    distance: 0
+    duration: 0
+    heal: 0
+    knockback: 0
+    command: ""
+    effects:
+      - type: FIRE
+        amplifier: 0
+        duration: 100
+    particle: FLAME
+    sound: ENTITY_BLAZE_SHOOT
+    lore:
+      - "<gray>Launches a fireball"
+      - "<gray>Damage: <red>8"
+      - "<gray>Cooldown: <white>10s"
+```
+
+#### features/upgrades.yml
+
+Artifact upgrades by combining multiple copies of the same artifact.
+
+```yaml
+upgrades:
+  enabled: true
+  maxLevel: 10
+  itemsPerUpgrade: 3
+  damageMultiplier: 1.15
+  healthMultiplier: 1.10
+  keepOnDeath: false
+  lore-format:
+    - ""
+    - "<gray>Level: <green>%level%"
+    - "<gray>Damage multiplier: <gold>x%damage_mult%"
+```
+
+#### features/fishing_loot.yml
+
+Custom fishing loot. Adds a chance to catch plugin items instead of regular fish.
+
+```yaml
+fishing:
+  enabled: true
+  entries:
+    - item: "water_pearl"
+      weight: 10
+      minCount: 1
+      maxCount: 2
+      message: "<aqua>🐟 You caught a Water Pearl!"
+```
+
+#### features/elites.yml
+
+Elite mobs — rare variants of regular mobs with boosted stats and special drops.
+
+```yaml
+elites:
+  enabled: true
+  spawnChance: 0.1
+  types:
+    - entity: ZOMBIE
+      name: "<red>☠ Elite Zombie"
+      healthMultiplier: 3.0
+      damageMultiplier: 2.0
+      dropChance: 0.5
+      drops:
+        - "soul_fragment"
+        - "ancient_bone"
+```
+
+#### features/xp.yml
+
+Artifact XP system. Artifacts gain XP from mob kills and scale their stats with each level.
+
+```yaml
+xp:
+  enabled: true
+  xpPerKill: 10
+  xpPerLevel: 100
+  maxLevel: 50
+  damagePerLevel: 0.05
+  levelUpSound: ENTITY_PLAYER_LEVELUP
+  levelUpMessage: "<green>⬆ Artifact <gold>%artifact% <green>reached level <yellow>%level%!"
+```
+
+#### features/arena.yml
+
+Boss arena (wave-based). The player fights waves of mobs and bosses.
+
+```yaml
+arena:
+  enabled: true
+  cooldown: 300
+  arenaWorld: "arena"
+  spawn:
+    x: 0
+    y: 64
+    z: 0
+  bossSpawn:
+    x: 0
+    y: 64
+    z: 20
+```
+
+---
+
+## 6. Integrations
+
+Wasteland Artifacts integrates with other plugins through reflection, avoiding hard dependencies. If a plugin is not installed, its features are gracefully skipped.
+
+### ItemsAdder
+
+Allows using ItemsAdder items anywhere in the plugin configuration.
+
+**Prefix:** `itemsadder:namespace:id`
 
 ```yaml
 # In recipes:
@@ -1252,16 +1538,36 @@ drops:
     chance: 0.5
 ```
 
-### Supported Locations
-
+**Supported locations:**
 - Altar recipe ingredients
 - Workbench recipe ingredients
 - Dungeon loot tables (customItems section)
 - Mob loot drops
 
-### Technical Details
+### Nexo
 
-The integration uses reflection to avoid hard dependencies. If ItemsAdder is not installed, the plugin gracefully skips ItemsAdder-related features.
+Integration with Nexo for using custom Nexo items. Works similarly to ItemsAdder via reflection.
+
+**Prefix:** `nexo:item_id`
+
+### Oraxen
+
+Integration with Oraxen for using custom Oraxen items. Works via reflection.
+
+**Prefix:** `oraxen:item_id`
+
+### MythicMobs
+
+Integration with MythicMobs. Allows matching elite mobs by their custom names and tags, and using MythicMobs in drop configurations.
+
+### PlaceholderAPI
+
+Adds placeholders for displaying artifact data, collection progress, XP, and arena statistics.
+
+**Placeholder examples:**
+- `%wastelandartifacts_collection_progress%` — collection progress
+- `%wastelandartifacts_artifact_level%` — artifact level in hand
+- `%wastelandartifacts_arena_waves%` — arena waves cleared
 
 ---
 
@@ -1335,26 +1641,127 @@ To add custom dungeons:
 
 ## 9. Custom Item Block Placement
 
-The `CustomItemBlockListener` handles placing and breaking custom items as blocks.
+The `CustomItemBlockListener` handles placing and breaking custom items as blocks. Uses a combination of `ConcurrentHashMap` in memory and PDC on blocks for reliable tracking across all block types (not just `TileState`).
 
 ### Placing
 
 When a player right-clicks to place a custom item (e.g., a custom block from `custom_items.yml`):
-1. The listener stores `wastelandartifacts:placed_custom_item` PDC on the placed block with the item's ID
-2. One item is consumed from the player's hand
+1. The listener stores the item ID in a `ConcurrentHashMap<BlockKey, String>` keyed by block coordinates
+2. If the block supports `TileState`, the ID is also stored in the `wastelandartifacts:placed_custom_item` PDC key
+3. One item is consumed from the player's hand
 
 ### Breaking
 
 When a player breaks a placed custom block:
-1. The listener checks for the `placed_custom_item` PDC key
-2. If found, drops the custom item instead of the vanilla block drop
-3. The custom item retains its original NBT data (name, lore, CMD)
+1. The listener first checks the in-memory `HashMap` for the item ID
+2. If not found in memory, it checks `TileState` blocks for PDC
+3. If the ID is found, drops the custom item instead of the vanilla block drop
+4. The custom item retains its original NBT data (name, lore, CMD)
 
-This allows custom items to be used as placeable/decorative blocks while maintaining their identity.
+The dual storage (HashMap + PDC) ensures correct behavior for all block types, including those without `TileState` (e.g., sand, gravel, regular blocks).
 
 ---
 
-## 10. API
+## 10. Database
+
+Wasteland Artifacts uses HikariCP for database connections. Supports SQLite (default) and MySQL.
+
+### Configuration
+
+Database settings are configured in `config.yml` under the `database` section:
+
+```yaml
+database:
+  enabled: true
+  type: SQLITE        # SQLITE or MYSQL
+  host: localhost
+  port: 3306
+  database: wasteland_artifacts
+  user: root
+  password: ""
+  poolSize: 10
+```
+
+### Database Types
+
+| Type | File/Host | Connection Pool |
+|---|---|---|
+| `SQLITE` | `plugins/WastelandArtifacts/data.db` | 1 (SQLite does not support concurrent writes) |
+| `MYSQL` | `host:port/database` | Configurable via `poolSize` (default 10) |
+
+### Table Structure
+
+The plugin uses 4 tables:
+
+#### wa_players
+
+Stores basic player information.
+
+```sql
+CREATE TABLE IF NOT EXISTS wa_players (
+    uuid VARCHAR(36) PRIMARY KEY,
+    name VARCHAR(16),
+    last_seen BIGINT,
+    total_found INT DEFAULT 0
+);
+```
+
+#### wa_artifact_data
+
+Stores artifact data (level, XP, kills).
+
+```sql
+CREATE TABLE IF NOT EXISTS wa_artifact_data (
+    id VARCHAR(64),
+    owner_uuid VARCHAR(36),
+    level INT DEFAULT 1,
+    xp BIGINT DEFAULT 0,
+    kills INT DEFAULT 0,
+    slot INT DEFAULT -1,
+    PRIMARY KEY (id, owner_uuid)
+);
+```
+
+#### wa_collection
+
+Tracks which artifacts the player has found.
+
+```sql
+CREATE TABLE IF NOT EXISTS wa_collection (
+    player_uuid VARCHAR(36),
+    artifact_id VARCHAR(64),
+    found_date BIGINT,
+    PRIMARY KEY (player_uuid, artifact_id)
+);
+```
+
+#### wa_arena_stats
+
+Player statistics on the boss arena.
+
+```sql
+CREATE TABLE IF NOT EXISTS wa_arena_stats (
+    player_uuid VARCHAR(36) PRIMARY KEY,
+    waves_cleared INT DEFAULT 0,
+    bosses_killed INT DEFAULT 0,
+    best_time BIGINT DEFAULT 0
+);
+```
+
+### Feature Modules with Database Dependencies
+
+Some feature modules require the database:
+
+- **Collection** (`collection`) — stores player progression
+- **Upgrades** (`upgrades`) — stores artifact levels
+- **Artifact XP** (`artifactXP`) — stores artifact experience
+- **Boss Arena** (`bossArena`) — stores player statistics
+
+If `database.enabled: false`, these modules are automatically disabled.
+
+---
+
+## 11. API
 
 ### Getting the API Instance
 
@@ -1426,7 +1833,7 @@ api.registerArtifact(customArtifact);
 
 ---
 
-## 11. Troubleshooting
+## 12. Troubleshooting
 
 ### Common Issues and Solutions
 
@@ -1467,6 +1874,16 @@ api.registerArtifact(customArtifact);
 - Ensure you are using **Paper 1.21.1** or higher (not Spigot/CraftBukkit)
 - Check for conflicting plugins using similar NBT/PDC keys
 
+#### Database is not connecting
+- Check `database.enabled: true` in `config.yml`
+- For MySQL, ensure the host and port are accessible
+- Check server logs for SQL errors
+
+#### Features are not loading
+- Ensure the corresponding settings in the `features` section are enabled
+- Some modules (collection, upgrades, xp, arena) require the database to be enabled
+- Verify that files in `features/` exist and have valid YAML
+
 ### Enabling Debug Mode
 
 Use `/waadmin debug` to view:
@@ -1480,11 +1897,12 @@ Use `/waadmin debug` to view:
 
 Check `logs/latest.log` for:
 - Plugin initialization messages (including load time in ms)
-- ItemsAdder integration status
+- Integration status (ItemsAdder, Nexo, Oraxen, MythicMobs, PlaceholderAPI)
 - Dungeon scanning progress
 - Resource pack generation status
 - Any errors with YAML parsing
+- Database connection status
 
 ---
 
-> **Wasteland Artifacts v1.3.0** — Created by animesao for Paper 1.21.1+.
+> **Wasteland Artifacts v2.1.0** — Created by animesao for Paper 1.21.11+.
