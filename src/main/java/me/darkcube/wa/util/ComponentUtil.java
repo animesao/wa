@@ -42,6 +42,13 @@ public class ComponentUtil {
     }
 
     public static @NotNull Component format(@NotNull String format, Object... args) {
-        return MINI_MESSAGE.deserialize(String.format(format, args));
+        String formatted = String.format(format, args);
+        if (formatted == null || formatted.isBlank()) return EMPTY;
+        return MINI_MESSAGE.deserialize(formatted);
+    }
+
+    public static @NotNull Component fromLang(@Nullable String msg) {
+        if (msg == null || msg.isBlank()) return EMPTY;
+        return MINI_MESSAGE.deserialize(msg);
     }
 }

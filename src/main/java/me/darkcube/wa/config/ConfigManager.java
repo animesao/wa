@@ -131,21 +131,21 @@ public class ConfigManager {
         return mainConfig;
     }
 
-    public @Nullable String getLang(String key, Object... args) {
+    public @NotNull String getLang(String key, Object... args) {
         return getLangFor(null, key, args);
     }
 
-    public @Nullable String getLangFor(@Nullable Player player, String key, Object... args) {
+    public @NotNull String getLangFor(@Nullable Player player, String key, Object... args) {
         Map<String, String> locale = lang;
         if (player != null) {
             String playerLocale = player.getLocale();
             locale = allLocales.getOrDefault(playerLocale, lang);
         }
         String template = locale.getOrDefault(key, lang.getOrDefault(key, key));
-        if (template == null || template.isBlank()) return null;
+        if (template == null || template.isBlank()) return "";
         try {
             String result = String.format(template, args);
-            return result.isBlank() ? null : result;
+            return result.isBlank() ? "" : result;
         } catch (IllegalFormatException e) {
             return template;
         }
