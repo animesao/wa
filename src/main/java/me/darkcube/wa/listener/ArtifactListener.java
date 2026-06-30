@@ -15,6 +15,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
@@ -31,12 +32,7 @@ public class ArtifactListener implements Listener {
 
     public ArtifactListener(WastelandArtifacts plugin) {
         this.plugin = plugin;
-        // Проверяем off-hand у всех игроков каждые 2 секунды
-        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                checkOffhandArtifact(p);
-            }
-        }, 40L, 40L);
+        // Проверка off-hand только при смене предметов (не тиками)
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -190,6 +186,13 @@ public class ArtifactListener implements Listener {
         }
 
         plugin.getArtifactBagManager().recalcEffects(player);
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+        // Проверяем off-hand после клика (может измениться через drag/click)
+        checkOffhandArtifact(player);
     }
 
     private void checkOffhandArtifact(Player player) {
