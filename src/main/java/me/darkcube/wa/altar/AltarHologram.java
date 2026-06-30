@@ -24,7 +24,8 @@ public class AltarHologram {
     }
 
     public void update(@NotNull String altarKey, @NotNull Location activatorLoc,
-                        @Nullable AltarRecipe recipe, @NotNull ItemStack[] slots) {
+                        @Nullable AltarRecipe recipe, @NotNull ItemStack[] slots,
+                        boolean hasCatalyst) {
         remove(altarKey);
         if (recipe == null) return;
 
@@ -53,10 +54,14 @@ public class AltarHologram {
         }
 
         if (recipe.getCatalyst() != null) {
-            allReady = false;
             String catName = getCatalystName(recipe.getCatalyst());
-            sb.append("<red>❌ <white>").append(catName)
-              .append(" <gray>(катализатор, брось на алтарь)\n");
+            if (hasCatalyst) {
+                sb.append("<green>✅ <white>").append(catName).append(" <gray>(катализатор)\n");
+            } else {
+                allReady = false;
+                sb.append("<red>❌ <white>").append(catName)
+                  .append(" <gray>(катализатор)\n");
+            }
         }
 
         sb.append("\n");

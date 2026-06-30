@@ -97,12 +97,16 @@ public class AltarBlockTracker {
             return false;
         }
 
-        // Очищаем старые предметы
+        // Очищаем старые предметы и катализатор
         for (int i = 1; i < 9; i++) {
             if (state.items[i] != null && state.items[i].isValid()) {
                 state.items[i].remove();
                 state.items[i] = null;
             }
+        }
+        if (state.catalyst != null && state.catalyst.isValid()) {
+            state.catalyst.remove();
+            state.catalyst = null;
         }
 
         state.activeRecipe = recipe;
@@ -136,20 +140,54 @@ public class AltarBlockTracker {
         return true;
     }
 
+    private void acceptCatalyst(Player player, Item droppedItem, Block activator,
+                                  String altarKey, AltarState state, AltarRecipe recipe) {
+        // Убираем старый катализатор если был
+        if (state.catalyst != null && state.catalyst.isValid()) {
+            state.catalyst.remove();
+        }
+        droppedItem.setGravity(false);
+        droppedItem.setPickupDelay(Integer.MAX_VALUE);
+        droppedItem.setGlowing(true);
+        droppedItem.setInvulnerable(true);
+        droppedItem.setMetadata("wa_altar_item", new FixedMetadataValue(plugin, true));
+        droppedItem.setMetadata("wa_altar_key", new FixedMetadataValue(plugin, altarKey));
+        droppedItem.setMetadata("wa_altar_slot", new FixedMetadataValue(plugin, 9));
+        Location pedLoc = getPedestalLocation(activator.getLocation(), 0);
+        if (pedLoc != null) droppedItem.teleport(pedLoc.clone().add(1, 0, 0));
+        state.catalyst = droppedItem;
+        player.sendMessage(mm.deserialize("<green>✅ Катализатор принят!"));
+        updateHologram(altarKey, activator.getLocation(), state);
+    }
+
     private boolean acceptIngredient(Player player, Item droppedItem, Block activator,
                                       String altarKey, AltarState state,
                                       AltarConfig.AltarTier tier) {
         AltarRecipe recipe = state.activeRecipe;
         if (recipe == null) return false;
 
-        Material dropType = droppedItem.getItemStack().getType();
-        int totalAmount = droppedItem.getItemStack().getAmount();
+        ItemStack dropStack = droppedItem.getItemStack();
+        Material dropType = dropStack.getType();
+        int totalAmount = dropStack.getAmount();
+
+        // Сначала проверяем — может это катализатор?
+        if (recipe.getCatalyst() != null && (state.catalyst == null || !state.catalyst.isValid())) {
+            boolean matchesCat = false;
+            if (recipe.getCatalyst().getTemplate() != null) {
+                matchesCat = itemsMatch(dropStack, recipe.getCatalyst().getTemplate());
+            } else {
+                matchesCat = dropType == recipe.getCatalyst().getItem();
+            }
+            if (matchesCat) {
+                acceptCatalyst(player, droppedItem, activator, altarKey, state, recipe);
+                return true;
+            }
+        }
 
         List<AltarRecipe.Ingredient> matching = new ArrayList<>();
-        ItemStack dropStack = droppedItem.getItemStack();
         boolean hasCustomName = dropStack.hasItemMeta() && dropStack.getItemMeta().hasDisplayName();
 
-        // Этап 1: точные совпадения по шаблону (если есть кастомное имя)
+        // Этап 1: точные совпадения по шаблону
         if (hasCustomName) {
             for (var ing : recipe.getIngredients()) {
                 int slot = ing.getSlot();
@@ -160,7 +198,7 @@ public class AltarBlockTracker {
             }
         }
 
-        // Этап 2: если ничего не нашли — совпадение по типу (для ванильных предметов)
+        // Этап 2: если ничего не нашли — совпадение по типу
         if (matching.isEmpty()) {
             for (var ing : recipe.getIngredients()) {
                 int slot = ing.getSlot();
@@ -409,7 +447,8 @@ public class AltarBlockTracker {
 
     private void updateHologram(String altarKey, Location activatorLoc, AltarState state) {
         ItemStack[] slots = buildSlotSnapshot(state);
-        hologram.update(altarKey, activatorLoc, state.activeRecipe, slots);
+        boolean hasCatalyst = state.catalyst != null && state.catalyst.isValid();
+        hologram.update(altarKey, activatorLoc, state.activeRecipe, slots, hasCatalyst);
     }
 
     private ItemStack[] buildSlotSnapshot(AltarState state) {
@@ -445,14 +484,14 @@ public class AltarBlockTracker {
             }
         }
 
-        // Проверяем катализатор (должен быть в слоте 0 как чертёж)
+        // Проверяем катализатор (отдельный предмет)
         if (recipe.getCatalyst() != null) {
-            ItemStack catSlot = slots[0];
-            if (catSlot == null) return;
+            if (state.catalyst == null || !state.catalyst.isValid()) return;
+            ItemStack catStack = state.catalyst.getItemStack();
             if (recipe.getCatalyst().getTemplate() != null) {
-                if (!itemsMatch(catSlot, recipe.getCatalyst().getTemplate())) return;
+                if (!itemsMatch(catStack, recipe.getCatalyst().getTemplate())) return;
             } else {
-                if (catSlot.getType() != recipe.getCatalyst().getItem()) return;
+                if (catStack.getType() != recipe.getCatalyst().getItem()) return;
             }
         }
 
@@ -460,6 +499,10 @@ public class AltarBlockTracker {
         if (state.items[0] != null && state.items[0].isValid()) {
             state.items[0].remove();
             state.items[0] = null;
+        }
+        if (state.catalyst != null && state.catalyst.isValid()) {
+            state.catalyst.remove();
+            state.catalyst = null;
         }
 
         // Крафт!
@@ -580,6 +623,18 @@ public class AltarBlockTracker {
                 state.items[i] = null;
             }
         }
+        // Собираем катализатор
+        if (state.catalyst != null && state.catalyst.isValid()) {
+            ItemStack catStack = state.catalyst.getItemStack();
+            HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(catStack);
+            if (leftover.isEmpty()) {
+                state.catalyst.remove();
+            } else {
+                state.catalyst.setItemStack(leftover.get(0));
+            }
+            state.catalyst = null;
+            count++;
+        }
         state.activeRecipe = null;
         hologram.remove(k);
 
@@ -601,6 +656,14 @@ public class AltarBlockTracker {
                 item.setGravity(true);
             }
         }
+        if (state.catalyst != null && state.catalyst.isValid()) {
+            state.catalyst.teleport(dropLoc);
+            state.catalyst.setPickupDelay(0);
+            state.catalyst.setGlowing(false);
+            state.catalyst.setInvulnerable(false);
+            state.catalyst.setGravity(true);
+            state.catalyst = null;
+        }
     }
 
     public static class AltarState {
@@ -608,6 +671,7 @@ public class AltarBlockTracker {
         public final String tierId;
         public final AltarConfig.AltarTier config;
         public final Item[] items = new Item[9];
+        public Item catalyst; // отдельный предмет-катализатор
         public AltarRecipe activeRecipe;
 
         public AltarState(Location activator, String tierId, AltarConfig.AltarTier config) {
@@ -620,7 +684,7 @@ public class AltarBlockTracker {
             for (Item i : items) {
                 if (i != null && i.isValid()) return true;
             }
-            return false;
+            return (catalyst != null && catalyst.isValid());
         }
     }
 
