@@ -29,16 +29,14 @@ jobs:
         run: |
           rm -rf wiki/*
           cp -r main/docs/*.md wiki/
-          if [ -f wiki/WIKI_EN.md ]; then
-            mv wiki/WIKI_EN.md wiki/Home.md
-          fi
-          if [ -f wiki/WIKI_RU.md ]; then
-            mv wiki/WIKI_RU.md wiki/Russian.md
-          fi
+          [ -f wiki/WIKI_EN.md ] && mv wiki/WIKI_EN.md wiki/Home.md
+          [ -f wiki/WIKI_RU.md ] && mv wiki/WIKI_RU.md wiki/Russian.md
 
       - name: Commit and push
         run: |
           cd wiki
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           if [ -n "$(git status --porcelain)" ]; then
             git add .
             git commit -m "Sync wiki from docs/ (${{ github.sha }})"
