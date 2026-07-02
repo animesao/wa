@@ -1,7 +1,7 @@
 # Wasteland Artifacts — Complete Wiki
 
 > **Version:** v2.2.0 | **Platform:** Paper 1.21.1 | **Java:** 21  
-> Auto-synced from `docs/`
+> Auto-synced from `docs/` via GitHub Actions
 
 ---
 
