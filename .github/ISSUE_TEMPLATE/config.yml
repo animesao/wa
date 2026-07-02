@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discord
+    url: https://dsc.gg/alfheimguide
+    about: Join our Discord for support, suggestions, and community
+  - name: 📖 Wiki (English)
+    url: https://github.com/animesao/WA/blob/main/docs/WIKI_EN.md
+    about: Read the English wiki before reporting
+  - name: 📖 Wiki (Русский)
+    url: https://github.com/animesao/WA/blob/main/docs/WIKI_RU.md
+    about: Почитай вики на русском перед созданием issue

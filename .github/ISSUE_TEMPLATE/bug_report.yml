@@ -1,0 +1,66 @@
+name: 🐛 Bug Report
+description: Report a bug to help improve Wasteland Artifacts
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+        Спасибо, что сообщаешь о баге!
+
+  - type: input
+    id: version
+    attributes:
+      label: Plugin Version
+      description: Run `/version WastelandArtifacts` on your server
+      placeholder: e.g. 2.1.0
+    validations:
+      required: true
+
+  - type: input
+    id: server
+    attributes:
+      label: Server Software & Version
+      description: Run `/version` on your server
+      placeholder: e.g. Paper 1.21.1 build 130
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: What happened? What did you expect to happen?
+      placeholder: |
+        1. /altar preview basic_altar
+        2. Place obsidian in pattern...
+        3. Drop blueprint...
+        4. See error: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console Errors
+      description: Paste full error log (use https://mclo.gs or https://pastebin.com)
+      placeholder: No errors? Write "none"
+      render: shell
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Relevant Config (optional)
+      description: If the bug is config-related, paste the relevant section
+      render: yaml
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I have checked that this bug hasn't been reported yet
+          required: true
+        - label: I am using the latest version of the plugin
+          required: true
+        - label: I tested without other plugins to confirm it's not a conflict

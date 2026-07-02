@@ -1,0 +1,45 @@
+name: 💡 Feature Request
+description: Suggest an idea for Wasteland Artifacts
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Got an idea? Tell us!
+        Есть идея? Расскажи!
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: What are you trying to do that you can't do now?
+      placeholder: e.g. I want artifacts to have a chance to drop from fishing
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe the solution
+      description: How should it work? What config options would it have?
+      placeholder: |
+        - New feature toggle: `fishing_loot.enabled`
+        - Config section under `features/fishing_loot.yml`
+        - Items are rolled on catch with configured chance
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any workarounds or alternative designs you've thought of?
+      placeholder: Using mob drops instead, but fishing is more thematic
+
+  - type: checkboxes
+    id: theme
+    attributes:
+      label: Theme fit
+      options:
+        - label: This fits the wasteland / post-apocalyptic theme
+          required: true
