@@ -1,0 +1,26 @@
+# ─── Сумка артефактов ───
+enabled: true
+title: "<dark_gray>🎒 Сумка артефактов"
+rows: 6
+
+items:
+  border:
+    material: GRAY_STAINED_GLASS_PANE
+    slot: 0
+    fill: true
+  info:
+    material: BOOK
+    slot: 4
+    name: "<gold>Сумка артефактов"
+    lore:
+      - "<gray>Ваши сохранённые артефакты"
+      - "<gray>ЛКМ — забрать | ПКМ — информация"
+    dynamic: true
+  close:
+    material: BARRIER
+    slot: 49
+    name: "<red>Закрыть"
+    lore:
+      - "<gray>Нажмите чтобы закрыть"
+    actions:
+      - "close"

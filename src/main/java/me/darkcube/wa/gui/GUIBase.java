@@ -35,6 +35,23 @@ public abstract class GUIBase implements Listener, InventoryHolder {
         this.inventory = Bukkit.createInventory(this, rows * 9, miniMessage.deserialize(title));
     }
 
+    public GUIBase(WastelandArtifacts plugin, Player player, String configId) {
+        this.plugin = plugin;
+        this.player = player;
+        String title = "<dark_gray>" + configId;
+        int rows = 6;
+        var menuCfg = plugin.getMenuManager() != null ? plugin.getMenuManager().getMenu(configId) : null;
+        var guiCfg = plugin.getGuiConfig();
+        if (menuCfg != null) {
+            title = menuCfg.title;
+            rows = menuCfg.rows;
+        } else if (guiCfg != null) {
+            title = guiCfg.getTitle(configId, title);
+            rows = guiCfg.getRows(configId, rows);
+        }
+        this.inventory = Bukkit.createInventory(this, rows * 9, miniMessage.deserialize(title));
+    }
+
     public void open() {
         if (!registered) {
             Bukkit.getPluginManager().registerEvents(this, plugin);

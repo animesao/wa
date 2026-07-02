@@ -105,7 +105,7 @@ altar.schematic-list: "<gold>Схемы алтарей: <white>%s"
 # ─── Алтарь — трекер ───
 altar.tracker.found: "<gray>🔍 Найден алтарь: <white>%s"
 altar.tracker.need-blueprint: "<red>Сначала брось чертёж (схему крафта)!"
-altar.tracker.no-altar-nearby: " " #"<red>Рядом нет алтаря! Построй его через /altar build"
+altar.tracker.no-altar-nearby: " "
 altar.tracker.wrong-blueprint: "<red>Этот чертёж не подходит для этого алтаря!"
 altar.tracker.blueprint-accepted: "<gold>📜 Чертёж <yellow>%s <gold>принят!"
 altar.tracker.catalyst-accepted: "<green>✅ Catalyst accepted!"
@@ -248,16 +248,26 @@ upgrade.lore-kills: "<gray>Kills: <white>%d"
 
 fishing.caught: "<aqua>🐟 You caught %s!"
 
-arena.players-only: "<red>Players only!"
-arena.not-configured: "<red>Arena not configured!"
-arena.title: "<dark_red>⚔ Boss Arena"
-arena.start: "<green>⚔ Arena started! Prepare for battle!"
-arena.wave: "<gold>⚔ Wave <white>%d<gold>/<white>%d"
-arena.complete: "<green>🏆 Arena completed! Rewards granted!"
-arena.cooldown: "<red>Arena on cooldown: %ds"
-
 xp.level-up: "<green>⬆ Artifact <gold>%s <green>reached level <yellow>%d!"
 xp.progress: "<gray>XP: <white>%d<gray>/<white>%d"
 
 elite.spawned: "<red>☠ %s has appeared!"
 elite.killed: "<gold>🏆 Elite %s defeated!"
+
+soulbind.not-owner: "<red>This item is soulbound to another player!"
+
+# ─── Гнёзда / Самоцветы ───
+socket.gui-title: "<dark_gray>💎 Artifact Sockets"
+socket.place-artifact: "<yellow>Place artifact in the center</yellow>"
+socket.no-artifact: "<gray>🔒 No artifact</gray>"
+socket.locked: "<red>🔒 Locked</red>"
+socket.locked-lore: "<gray>Socket unavailable</gray>"
+socket.empty: "<green>✦ Empty socket</green>"
+socket.empty-lore: "<gray>Hold gem and click</gray>"
+socket.unknown-gem: "<gray>❓ Unknown gem</gray>"
+socket.extract-lore: "<yellow>LMB — extract gem</yellow>"
+socket.extracted: "<green>Gem extracted!</green>"
+socket.inserted: "<green>Gem inserted!</green>"
+socket.not-a-gem: "<red>That's not a gem!</red>"
+socket.hold-artifact: "<red>Hold artifact in your hand!</red>"
+socket.slot-occupied: "<red>This socket is already occupied!</red>"

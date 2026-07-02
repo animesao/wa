@@ -135,7 +135,7 @@ public class AltarManager {
         Long cdEnd = cooldowns.get(cooldownKey);
         if (cdEnd != null && System.currentTimeMillis() < cdEnd) {
             long left = (cdEnd - System.currentTimeMillis()) / 1000;
-            player.sendMessage(plugin.getConfigManager().getLang("altar-cooldown", left));
+            player.sendMessage(me.darkcube.wa.util.ComponentUtil.fromMini(plugin.getConfigManager().getLang("altar-cooldown", left)));
             return false;
         }
 

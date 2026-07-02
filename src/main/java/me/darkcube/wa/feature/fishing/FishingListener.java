@@ -49,6 +49,11 @@ public class FishingListener implements Listener {
                 }
                 if (drop != null) {
                     event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), drop);
+                    if (plugin.getDatabaseManager() != null) {
+                        plugin.getDatabaseManager().ensurePlayer(event.getPlayer());
+                        plugin.getDatabaseManager().execute("UPDATE wa_players SET fishing_caught = fishing_caught + 1 WHERE uuid=?",
+                                event.getPlayer().getUniqueId().toString());
+                    }
                     if (entry.message != null) {
                         event.getPlayer().sendMessage(me.darkcube.wa.util.ComponentUtil.fromMini(entry.message));
                     }

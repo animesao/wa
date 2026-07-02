@@ -1,6 +1,7 @@
 package me.darkcube.wa.listener;
 
 import me.darkcube.wa.WastelandArtifacts;
+import me.darkcube.wa.api.event.ArtifactEquipEvent;
 import me.darkcube.wa.artifact.Artifact;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -14,6 +15,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -23,6 +25,7 @@ public class ArmorListener implements Listener {
 
     private final WastelandArtifacts plugin;
     private final Map<UUID, ItemStack[]> previousArmor = new HashMap<>();
+    private final Map<UUID, ItemStack> previousMainHand = new HashMap<>();
 
     public ArmorListener(WastelandArtifacts plugin) {
         this.plugin = plugin;
@@ -32,11 +35,14 @@ public class ArmorListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         applyCurrentArmor(player);
+        previousMainHand.put(player.getUniqueId(), player.getInventory().getItemInMainHand().clone());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        previousArmor.remove(event.getPlayer().getUniqueId());
+        UUID id = event.getPlayer().getUniqueId();
+        previousArmor.remove(id);
+        previousMainHand.remove(id);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -50,6 +56,10 @@ public class ArmorListener implements Listener {
         // Offhand slot (40)
         if (rawSlot == 40) {
             scheduleOffhandCheck(player);
+        }
+        // Main hand — hotbar slots (36-44) or any click affecting hotbar
+        if (rawSlot >= 36 && rawSlot <= 44) {
+            scheduleMainHandCheck(player);
         }
     }
 
@@ -80,9 +90,15 @@ public class ArmorListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerItemHeld(PlayerItemHeldEvent event) {
+        scheduleMainHandCheck(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onSwapHands(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
         Bukkit.getScheduler().runTask(plugin, () -> {
+            scheduleMainHandCheck(player);
             plugin.getArtifactBagManager().recalcEffects(player);
         });
     }
@@ -97,6 +113,10 @@ public class ArmorListener implements Listener {
         Bukkit.getScheduler().runTask(plugin, () -> checkArmorChange(player));
     }
 
+    private void scheduleMainHandCheck(Player player) {
+        Bukkit.getScheduler().runTask(plugin, () -> checkMainHandChange(player));
+    }
+
     private void applyCurrentArmor(Player player) {
         ItemStack[] armor = player.getInventory().getArmorContents();
         previousArmor.put(player.getUniqueId(), armor.clone());
@@ -109,6 +129,42 @@ public class ArmorListener implements Listener {
                 }
             }
         }
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+        previousMainHand.put(player.getUniqueId(), mainHand.clone());
+        Artifact mainArt = plugin.getArtifactManager().getArtifactFromItem(mainHand);
+        if (mainArt != null) {
+            mainArt.getComponents().forEach(c -> c.onEquip(player));
+        }
+        if (plugin.getSetManager() != null) {
+            plugin.getSetManager().applySetBonuses(player);
+        }
+    }
+
+    private void checkMainHandChange(Player player) {
+        ItemStack current = player.getInventory().getItemInMainHand();
+        ItemStack prev = previousMainHand.get(player.getUniqueId());
+
+        if (isSame(current, prev)) return;
+
+        if (prev != null && prev.getType() != Material.AIR) {
+            Artifact oldArt = plugin.getArtifactManager().getArtifactFromItem(prev);
+            if (oldArt != null) {
+                oldArt.getComponents().forEach(c -> c.onUnequip(player));
+                Bukkit.getPluginManager().callEvent(new ArtifactEquipEvent(player, oldArt,
+                        ArtifactEquipEvent.EquipAction.UNEQUIP, ArtifactEquipEvent.EquipSlot.MAIN_HAND));
+            }
+        }
+
+        if (current != null && current.getType() != Material.AIR) {
+            Artifact newArt = plugin.getArtifactManager().getArtifactFromItem(current);
+            if (newArt != null) {
+                Bukkit.getPluginManager().callEvent(new ArtifactEquipEvent(player, newArt,
+                        ArtifactEquipEvent.EquipAction.EQUIP, ArtifactEquipEvent.EquipSlot.MAIN_HAND));
+                newArt.getComponents().forEach(c -> c.onEquip(player));
+            }
+        }
+
+        previousMainHand.put(player.getUniqueId(), current != null ? current.clone() : null);
     }
 
     private void checkArmorChange(Player player) {
@@ -130,18 +186,25 @@ public class ArmorListener implements Listener {
                 Artifact oldArt = plugin.getArtifactManager().getArtifactFromItem(oldItem);
                 if (oldArt != null) {
                     oldArt.getComponents().forEach(c -> c.onUnequip(player));
+                    Bukkit.getPluginManager().callEvent(new ArtifactEquipEvent(player, oldArt,
+                            ArtifactEquipEvent.EquipAction.UNEQUIP, ArtifactEquipEvent.EquipSlot.ARMOR));
                 }
             }
 
             if (newItem != null && newItem.getType() != Material.AIR) {
                 Artifact newArt = plugin.getArtifactManager().getArtifactFromItem(newItem);
                 if (newArt != null) {
+                    Bukkit.getPluginManager().callEvent(new ArtifactEquipEvent(player, newArt,
+                            ArtifactEquipEvent.EquipAction.EQUIP, ArtifactEquipEvent.EquipSlot.ARMOR));
                     newArt.getComponents().forEach(c -> c.onEquip(player));
                 }
             }
         }
 
         previousArmor.put(player.getUniqueId(), current.clone());
+        if (plugin.getSetManager() != null) {
+            plugin.getSetManager().applySetBonuses(player);
+        }
     }
 
     private boolean isSame(ItemStack a, ItemStack b) {

@@ -1,8 +1,10 @@
 package me.darkcube.wa.feature.xp;
 
 import me.darkcube.wa.WastelandArtifacts;
+import me.darkcube.wa.api.event.ArtifactLevelUpEvent;
 import me.darkcube.wa.artifact.Artifact;
 import me.darkcube.wa.database.DatabaseManager;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -40,10 +42,12 @@ public class ArtifactXPManager {
         long needed = getXPForNextLevel(level);
 
         if (xp >= needed && level < maxLevel) {
+            int oldLevel = level;
             level++;
             xp = 0;
             db.execute("UPDATE wa_artifact_data SET level=?, xp=?, kills=kills+1 WHERE id=? AND owner_uuid=?",
                     level, xp, aid, uuid);
+            Bukkit.getPluginManager().callEvent(new ArtifactLevelUpEvent(player, artifact, oldLevel, level));
         } else {
             db.execute("UPDATE wa_artifact_data SET xp=?, kills=kills+1 WHERE id=? AND owner_uuid=?",
                     xp, aid, uuid);

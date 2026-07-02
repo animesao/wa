@@ -25,7 +25,7 @@ public class ChatInputManager implements Listener {
     }
 
     public void requestInput(Player player, String prompt, Consumer<String> callback) {
-        player.sendMessage(plugin.getConfigManager().getLang("prefix") + " " + prompt);
+        player.sendMessage(me.darkcube.wa.util.ComponentUtil.fromMini(plugin.getConfigManager().getLang("prefix") + " " + prompt));
             player.sendMessage(mm.deserialize("<gray>[<green>Введите в чат<gray>] <white>Напишите текст <gray>(или <red>отмена<gray>)"));
             pendingInputs.put(player.getUniqueId(), callback);
     }

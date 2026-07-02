@@ -248,16 +248,26 @@ upgrade.lore-kills: "<gray>Убийств: <white>%d"
 
 fishing.caught: "<aqua>🐟 Вы выловили %s!"
 
-arena.players-only: "<red>Только для игроков!"
-arena.not-configured: "<red>Арена не настроена!"
-arena.title: "<dark_red>⚔ Арена Боссов"
-arena.start: "<green>⚔ Арена началась! Готовься к битве!"
-arena.wave: "<gold>⚔ Волна <white>%d<gold>/<white>%d"
-arena.complete: "<green>🏆 Арена пройдена! Награды получены!"
-arena.cooldown: "<red>Арена перезаряжается: %dс"
-
 xp.level-up: "<green>⬆ Артефакт <gold>%s <green>достиг <yellow>%d <green>уровня!"
 xp.progress: "<gray>XP: <white>%d<gray>/<white>%d"
 
 elite.spawned: "<red>☠ %s появился!"
 elite.killed: "<gold>🏆 Элитный %s повержен!"
+
+soulbind.not-owner: "<red>Этот предмет привязан к другому игроку!"
+
+# ─── Гнёзда / Самоцветы ───
+socket.gui-title: "<dark_gray>💎 Гнёзда артефакта"
+socket.place-artifact: "<yellow>Поместите артефакт в центр</yellow>"
+socket.no-artifact: "<gray>🔒 Нет артефакта</gray>"
+socket.locked: "<red>🔒 Заблокировано</red>"
+socket.locked-lore: "<gray>Гнездо недоступно</gray>"
+socket.empty: "<green>✦ Пустое гнездо</green>"
+socket.empty-lore: "<gray>Зажмите самоцвет и нажмите</gray>"
+socket.unknown-gem: "<gray>❓ Неизвестный самоцвет</gray>"
+socket.extract-lore: "<yellow>ЛКМ — извлечь самоцвет</yellow>"
+socket.extracted: "<green>Самоцвет извлечён!</green>"
+socket.inserted: "<green>Самоцвет вставлен!</green>"
+socket.not-a-gem: "<red>Это не самоцвет!</red>"
+socket.hold-artifact: "<red>Держите артефакт в руке!</red>"
+socket.slot-occupied: "<red>Это гнездо уже занято!</red>"

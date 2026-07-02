@@ -1,0 +1,14 @@
+# ─── Конфигурация GUI Wasteland Artifacts ───
+# enabled: false → GUI и её команда отключаются
+# title: MiniMessage-формат заголовка
+# rows: количество строк (1-6)
+
+gui:
+  admin_items:
+    enabled: true
+    title: "<dark_gray>📦 Админ: все предметы"
+    rows: 6
+  altar:
+    enabled: true
+    title: "<dark_gray>🔥 Алтарь"
+    rows: 6

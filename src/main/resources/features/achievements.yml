@@ -1,0 +1,94 @@
+# ─── Достижения Wasteland Artifacts ───
+# Типы: ARTIFACTS_FOUND, ARTIFACTS_CRAFTED, ARTIFACTS_UPGRADED,
+#        DUNGEONS_CLEARED, ELITE_KILLS, BOSS_KILLS,
+#        COLLECTION_PROGRESS, FISHING_CAUGHT, XP_LEVELS
+# Награды: COMMAND:say %player% молодец, ITEM:artifact_id, MESSAGE:lang.key
+
+achievements:
+  first_artifact:
+    enabled: true
+    name: "<green>Первая находка"
+    description: "Найдите свой первый артефакт"
+    icon: "CHEST"
+    category: "collection"
+    type: "ARTIFACTS_FOUND"
+    target: 1
+    rewards:
+      - "COMMAND:give %player% diamond 1"
+
+  collector_10:
+    enabled: true
+    name: "<green>Коллекционер"
+    description: "Соберите 10 разных артефактов"
+    icon: "BOOKSHELF"
+    category: "collection"
+    type: "COLLECTION_PROGRESS"
+    target: 10
+    rewards:
+      - "COMMAND:give %player% emerald 5"
+
+  collector_50:
+    enabled: true
+    name: "<gold>Мастер-коллекционер"
+    description: "Соберите 50 разных артефактов"
+    icon: "ENCHANTED_BOOK"
+    category: "collection"
+    type: "COLLECTION_PROGRESS"
+    target: 50
+    rewards:
+      - "COMMAND:give %player% netherite_ingot 1"
+
+  crafter:
+    enabled: true
+    name: "<green>Крафтер"
+    description: "Скрафтите 5 артефактов на алтаре"
+    icon: "CRAFTING_TABLE"
+    category: "crafting"
+    type: "ARTIFACTS_CRAFTED"
+    target: 5
+    rewards:
+      - "COMMAND:give %player% experience_bottle 10"
+
+  elite_hunter:
+    enabled: true
+    name: "<gold>Охотник на элиту"
+    description: "Убейте 25 элитных мобов"
+    icon: "ZOMBIE_HEAD"
+    category: "combat"
+    type: "ELITE_KILLS"
+    target: 25
+    rewards:
+      - "COMMAND:give %player% diamond 3"
+
+  boss_slayer:
+    enabled: true
+    name: "<red>Убийца боссов"
+    description: "Убейте 10 боссов в подземельях"
+    icon: "DRAGON_HEAD"
+    category: "combat"
+    type: "BOSS_KILLS"
+    target: 10
+    rewards:
+      - "COMMAND:give %player% netherite_scrap 2"
+
+  max_level:
+    enabled: true
+    name: "<light_purple>Легендарный уровень"
+    description: "Достигните 50 уровня артефакта"
+    icon: "EXPERIENCE_BOTTLE"
+    category: "progression"
+    type: "XP_LEVELS"
+    target: 50
+    rewards:
+      - "COMMAND:give %player% totem_of_undying 1"
+
+  fisher:
+    enabled: true
+    name: "<aqua>Рыбак"
+    description: "Поймайте 50 предметов на рыбалке"
+    icon: "FISHING_ROD"
+    category: "activities"
+    type: "FISHING_CAUGHT"
+    target: 50
+    rewards:
+      - "COMMAND:give %player% cooked_cod 16"

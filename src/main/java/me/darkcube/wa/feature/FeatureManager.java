@@ -39,7 +39,8 @@ public class FeatureManager {
             case "fishing": return config.fishing;
             case "elites": return config.customMobs;
             case "xp": return config.artifactXP;
-            case "arena": return config.bossArena;
+            case "achievements": return config.achievements;
+            case "sockets": return config.sockets;
             default: return false;
         }
     }

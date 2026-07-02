@@ -3,7 +3,6 @@ package me.darkcube.wa.commands;
 import me.darkcube.wa.WastelandArtifacts;
 import me.darkcube.wa.artifact.Artifact;
 import me.darkcube.wa.artifact.rarity.Rarity;
-import me.darkcube.wa.gui.ArtifactEditorGUI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -57,11 +56,8 @@ public class ArtifactCommand extends Command {
                 yield handleReload(sender);
             }
             case "create", "edit" -> {
-                if (!sender.hasPermission("wastelandartifacts.admin")) {
-                    sender.sendMessage(miniMessage.deserialize(plugin.msg("artifact.no-permission")));
-                    yield true;
-                }
-                yield handleEdit(sender, args);
+                sender.sendMessage(miniMessage.deserialize(plugin.msg("artifact.no-longer-available")));
+                yield true;
             }
             case "list" -> handleList(sender, args);
             case "info" -> handleInfo(sender, args);
@@ -182,32 +178,7 @@ public class ArtifactCommand extends Command {
         return true;
     }
 
-    private boolean handleCreate(CommandSender sender) {
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage(miniMessage.deserialize(plugin.msg("artifact.players-only")));
-            return true;
-        }
-        plugin.getArtifactEditorGUI().openCreator(player);
-        return true;
-    }
 
-    private boolean handleEdit(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage(miniMessage.deserialize(plugin.msg("artifact.players-only")));
-            return true;
-        }
-        if (args.length < 2) {
-            sender.sendMessage(miniMessage.deserialize(plugin.msg("artifact.usage.edit")));
-            return true;
-        }
-        Artifact artifact = plugin.getArtifactRegistry().get(args[1]);
-        if (artifact == null) {
-            sender.sendMessage(miniMessage.deserialize(plugin.msg("artifact.not-found-generic")));
-            return true;
-        }
-        plugin.getArtifactEditorGUI().openEditor(player, artifact);
-        return true;
-    }
 
     @Override
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias,

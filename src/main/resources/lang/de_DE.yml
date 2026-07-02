@@ -247,16 +247,26 @@ upgrade.lore-kills: "<gray>Tötungen: <white>%d"
 
 fishing.caught: "<aqua>🐟 Du hast %s gefangen!"
 
-arena.players-only: "<red>Nur für Spieler!"
-arena.not-configured: "<red>Arena nicht konfiguriert!"
-arena.title: "<dark_red>⚔ Boss-Arena"
-arena.start: "<green>⚔ Arena gestartet! Bereite dich auf den Kampf vor!"
-arena.wave: "<gold>⚔ Welle <white>%d<gold>/<white>%d"
-arena.complete: "<green>🏆 Arena abgeschlossen! Belohnungen erhalten!"
-arena.cooldown: "<red>Arena abklingend: %ds"
-
 xp.level-up: "<green>⬆ Artefakt <gold>%s <green>hat Stufe <yellow>%d <green>erreicht!"
 xp.progress: "<gray>EP: <white>%d<gray>/<white>%d"
 
 elite.spawned: "<red>☠ %s ist erschienen!"
 elite.killed: "<gold>🏆 Elite-%s besiegt!"
+
+soulbind.not-owner: "<red>Dieser Gegenstand ist an einen anderen Spieler gebunden!"
+
+# ─── Sockel / Edelsteine ───
+socket.gui-title: "<dark_gray>💎 Artefakt-Sockel"
+socket.place-artifact: "<yellow>Lege das Artefakt in die Mitte</yellow>"
+socket.no-artifact: "<gray>🔒 Kein Artefakt</gray>"
+socket.locked: "<red>🔒 Gesperrt</red>"
+socket.locked-lore: "<gray>Sockel nicht verfügbar</gray>"
+socket.empty: "<green>✦ Leerer Sockel</green>"
+socket.empty-lore: "<gray>Halte Edelstein und klicke</gray>"
+socket.unknown-gem: "<gray>❓ Unbekannter Edelstein</gray>"
+socket.extract-lore: "<yellow>LMB — Edelstein entfernen</yellow>"
+socket.extracted: "<green>Edelstein entfernt!</green>"
+socket.inserted: "<green>Edelstein eingesetzt!</green>"
+socket.not-a-gem: "<red>Das ist kein Edelstein!</red>"
+socket.hold-artifact: "<red>Halte das Artefakt in der Hand!</red>"
+socket.slot-occupied: "<red>Dieser Sockel ist bereits belegt!</red>"

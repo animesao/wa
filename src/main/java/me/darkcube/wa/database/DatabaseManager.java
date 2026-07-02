@@ -52,7 +52,13 @@ public class DatabaseManager {
                 "uuid VARCHAR(36) PRIMARY KEY, " +
                 "name VARCHAR(16), " +
                 "last_seen BIGINT, " +
-                "total_found INT DEFAULT 0)");
+                "total_found INT DEFAULT 0, " +
+                "total_crafted INT DEFAULT 0, " +
+                "total_upgraded INT DEFAULT 0, " +
+                "elite_kills INT DEFAULT 0, " +
+                "dungeons_cleared INT DEFAULT 0, " +
+                "fishing_caught INT DEFAULT 0, " +
+                "boss_kills INT DEFAULT 0)");
 
         execute("CREATE TABLE IF NOT EXISTS wa_artifact_data (" +
                 "id VARCHAR(64), " +
@@ -68,12 +74,6 @@ public class DatabaseManager {
                 "artifact_id VARCHAR(64), " +
                 "found_date BIGINT, " +
                 "PRIMARY KEY (player_uuid, artifact_id))");
-
-        execute("CREATE TABLE IF NOT EXISTS wa_arena_stats (" +
-                "player_uuid VARCHAR(36) PRIMARY KEY, " +
-                "waves_cleared INT DEFAULT 0, " +
-                "bosses_killed INT DEFAULT 0, " +
-                "best_time BIGINT DEFAULT 0)");
     }
 
     public void execute(String sql) {
@@ -95,6 +95,11 @@ public class DatabaseManager {
         } catch (SQLException e) {
             plugin.getComponentLogger().warn("<red>SQL ошибка: " + e.getMessage());
         }
+    }
+
+    public void ensurePlayer(org.bukkit.entity.Player player) {
+        execute("INSERT OR IGNORE INTO wa_players (uuid, name, last_seen) VALUES (?,?,?)",
+                player.getUniqueId().toString(), player.getName(), System.currentTimeMillis());
     }
 
     public <T> T query(String sql, ResultSetMapper<T> mapper, Object... args) {

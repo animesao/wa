@@ -12,7 +12,8 @@ features:
   fishing: true
   customMobs: true
   artifactXP: true
-  bossArena: true
+  achievements: true
+  sockets: true
 
 resource-pack:
   mode: AUTO

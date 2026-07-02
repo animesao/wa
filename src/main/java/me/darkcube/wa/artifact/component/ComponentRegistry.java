@@ -2,6 +2,7 @@ package me.darkcube.wa.artifact.component;
 
 import me.darkcube.wa.WastelandArtifacts;
 import me.darkcube.wa.artifact.component.components.*;
+import me.darkcube.wa.listener.SoulbindListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,6 +38,7 @@ public class ComponentRegistry {
         register("AOE", AoeComponent::new, AoeComponent.class);
         register("CHARGE", ChargeComponent::new, ChargeComponent.class);
         register("COMMAND", CommandComponent::new, CommandComponent.class);
+        register("SOULBIND", SoulbindComponent::new, SoulbindComponent.class);
     }
 
     public void register(@NotNull String id, @NotNull Supplier<ArtifactComponent> factory, @NotNull Class<? extends ArtifactComponent> clazz) {

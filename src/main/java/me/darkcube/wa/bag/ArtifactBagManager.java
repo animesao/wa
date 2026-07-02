@@ -53,11 +53,21 @@ public class ArtifactBagManager {
     }
 
     public void recalcEffects(@NotNull Player player) {
-        // Убираем все старые эффекты (полная перезапись)
-        for (PotionEffect effect : player.getActivePotionEffects()) {
-            player.removePotionEffect(effect.getType());
+        // Убираем только те эффекты, которые добавила сумка
+        Set<Integer> oldEffects = trackedEffects.remove(player.getUniqueId());
+        if (oldEffects != null) {
+            // Собираем, какие типы эффектов нужно снять
+            Set<PotionEffectType> toRemove = new HashSet<>();
+            for (var effect : player.getActivePotionEffects()) {
+                int key = Objects.hash(effect.getType(), effect.getAmplifier());
+                if (oldEffects.contains(key)) {
+                    toRemove.add(effect.getType());
+                }
+            }
+            for (var type : toRemove) {
+                player.removePotionEffect(type);
+            }
         }
-        trackedEffects.remove(player.getUniqueId());
 
         ItemStack[] bag = getBag(player);
         Map<PotionEffectType, Integer> effectMap = new HashMap<>();
@@ -105,12 +115,24 @@ public class ArtifactBagManager {
             int limit = effectLimits.getOrDefault(type, globalMax);
             int amp = Math.min(total - 1, limit);
             if (amp >= 0) {
-                player.addPotionEffect(new PotionEffect(type, Integer.MAX_VALUE, amp, true, false, true));
+                player.addPotionEffect(new PotionEffect(type, PotionEffect.INFINITE_DURATION, amp, true, false, true));
                 newEffects.add(Objects.hash(type, amp));
             }
         }
 
         trackedEffects.put(player.getUniqueId(), newEffects);
+
+        // Переприменяем эффекты брони и рук (на случай, если их случайно зачистили)
+        for (ItemStack piece : player.getInventory().getArmorContents()) {
+            if (piece == null || piece.getType() == Material.AIR) continue;
+            Artifact art = plugin.getArtifactManager().getArtifactFromItem(piece);
+            if (art != null) art.getComponents().forEach(c -> c.onEquip(player));
+        }
+        ItemStack main = player.getInventory().getItemInMainHand();
+        if (main.getType() != Material.AIR) {
+            Artifact art = plugin.getArtifactManager().getArtifactFromItem(main);
+            if (art != null) art.getComponents().forEach(c -> c.onEquip(player));
+        }
     }
 
     public void applyOnJoin(@NotNull Player player) {
@@ -138,7 +160,20 @@ public class ArtifactBagManager {
                 }
             }
         }
-        trackedEffects.remove(player.getUniqueId());
+        // Убираем только отслеживаемые эффекты сумки
+        Set<Integer> oldEffects = trackedEffects.remove(player.getUniqueId());
+        if (oldEffects != null) {
+            Set<PotionEffectType> toRemove = new HashSet<>();
+            for (var effect : player.getActivePotionEffects()) {
+                int key = Objects.hash(effect.getType(), effect.getAmplifier());
+                if (oldEffects.contains(key)) {
+                    toRemove.add(effect.getType());
+                }
+            }
+            for (var type : toRemove) {
+                player.removePotionEffect(type);
+            }
+        }
     }
 
     public void saveBag(@NotNull Player player) {

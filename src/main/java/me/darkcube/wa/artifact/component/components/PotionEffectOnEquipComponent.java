@@ -46,7 +46,7 @@ public class PotionEffectOnEquipComponent implements ArtifactComponent {
 
     @Override
     public void onEquip(@NotNull Player player) {
-        player.addPotionEffect(new PotionEffect(effect, Integer.MAX_VALUE, amplifier, ambient, showParticles, showIcon), true);
+        player.addPotionEffect(new PotionEffect(effect, PotionEffect.INFINITE_DURATION, amplifier, ambient, showParticles, showIcon), true);
     }
 
     @Override

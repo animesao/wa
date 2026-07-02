@@ -1,6 +1,6 @@
 # Wasteland Artifacts — Complete Wiki
 
-> **Version:** v2.1.0 | **Platform:** Paper 1.21.11 | **Java:** 21
+> **Version:** v2.2.0 | **Platform:** Paper 1.21.11 | **Java:** 21
 
 ---
 
@@ -38,7 +38,7 @@
 
 ### Main Features
 
-- **30+ Custom Artifacts** — weapons, armor, tools, accessories with unique abilities (fire aspect, lightning, life steal, explosions, summons, projectiles, AOE, etc.)
+- **86+ Custom Artifacts** — weapons, armor, tools, accessories with unique abilities (fire aspect, lightning, life steal, explosions, summons, projectiles, AOE, etc.)
 - **86 Custom Ingredients** — crafting components organized into categories (Elements, Creature Parts, Ancient Artifacts, Alchemy, Wasteland, Cosmos, Materials, Mythic, Special, Added)
 - **3 Altar Tiers** — 3D multi-block structures for crafting artifacts (Basic, Advanced, Legendary)
 - **Blueprint System** — craft blueprints in a vanilla workbench, use them on altars
@@ -56,10 +56,10 @@
 - **Fishing Loot** — custom fishing drops (features/fishing_loot.yml)
 - **Elite Mobs** — rare mob variants with multipliers and custom drops
 - **Artifact XP** — XP per kill, level-up, damage scaling
-- **Boss Arena** — wave-based arena with rewards (features/arena_config.yml)
 - **AdminItemsGUI** — `/waadmin gui` with categorized tabs
 - **Integrations**: ItemsAdder, Nexo, Oraxen, MythicMobs, PlaceholderAPI — all through reflection
-- **Developer API** — public API for registering custom artifacts, components, and triggers
+- **Developer API** — comprehensive API covering artifacts, components, triggers, gems, sets, abilities, collection, upgrades, XP, bag, dungeons, altars, achievements, elite mobs, database, and config
+- **Gem/Socket System** — 20 gems with configurable effects, socketable into artifact items, `/gem` command, GemBagGUI
 
 ---
 
@@ -99,8 +99,7 @@
    - `plugins/WastelandArtifacts/features/fishing_loot.yml`
    - `plugins/WastelandArtifacts/features/elites.yml`
    - `plugins/WastelandArtifacts/features/xp.yml`
-   - `plugins/WastelandArtifacts/features/arena.yml`
-   - `plugins/WastelandArtifacts/lang/en_US.yml`
+    - `plugins/WastelandArtifacts/lang/en_US.yml`
    - `plugins/WastelandArtifacts/lang/ru_RU.yml`
    - `plugins/WastelandArtifacts/lang/de_DE.yml`
    - `plugins/WastelandArtifacts/lang/fr_FR.yml`
@@ -243,21 +242,21 @@ Opens the Artifact Bag GUI. Requires the **Wasteland Bag** artifact in your inve
 /item decode H4sI...
 ```
 
-### 3.8 `/arena` — Boss Arena
+### 3.8 `/gem` — Gem & Socket System
 
-**Aliases:** `/bossarena`
+**Aliases:** `/gems`, `/socket`
 
-**Permission:** `wastelandartifacts.player.arena`
-
-| Subcommand | Description |
-|---|---|
-| *(no arguments)* | Open the boss arena GUI |
-| `start` | Start a wave on the arena |
+| Subcommand | Permission | Args | Description |
+|---|---|---|---|
+| `give` | `wastelandartifacts.admin` | `<id> [amount]` | Give a gem to the player |
+| `list` | `wastelandartifacts.player` | — | List all registered gems |
+| `open` | `wastelandartifacts.player` | — | Open gem sockets GUI for the artifact in hand |
 
 **Examples:**
 ```
-/arena
-/arena start
+/gem give ruby_of_strength 5
+/gem list
+/gem open
 ```
 
 ---
@@ -268,7 +267,7 @@ Opens the Artifact Bag GUI. Requires the **Wasteland Bag** artifact in your inve
 |---|---|---|---|
 | `wastelandartifacts.*` | op | `admin` + `player` | All permissions |
 | `wastelandartifacts.admin` | op | `admin.altar`, `admin.blueprint`, `admin.customitem`, `admin.debug`, `admin.rp`, `admin.gui` | All admin commands |
-| `wastelandartifacts.player` | true | `player.altar`, `player.bag`, `player.artifact`, `player.blueprint`, `player.collection`, `player.arena` | All player commands |
+| `wastelandartifacts.player` | true | `player.altar`, `player.bag`, `player.artifact`, `player.blueprint`, `player.collection` | All player commands |
 | `wastelandartifacts.admin.altar` | op | — | Altar management (build, schematic) |
 | `wastelandartifacts.admin.blueprint` | op | — | Give blueprints |
 | `wastelandartifacts.admin.customitem` | op | — | Give custom items |
@@ -280,7 +279,8 @@ Opens the Artifact Bag GUI. Requires the **Wasteland Bag** artifact in your inve
 | `wastelandartifacts.player.artifact` | true | — | List and view artifact info |
 | `wastelandartifacts.player.blueprint` | true | — | Use blueprints on altars |
 | `wastelandartifacts.player.collection` | true | — | View artifact collection |
-| `wastelandartifacts.player.arena` | true | — | Access the boss arena |
+| `wastelandartifacts.player.gem` | true | — | Use gem commands (`/gem list`, `/gem open`) |
+
 
 ---
 
@@ -305,7 +305,8 @@ features:
   fishing: true
   customMobs: true
   artifactXP: true
-  bossArena: true
+  achievements: true
+  sockets: true
 
 resource-pack:
   mode: AUTO
@@ -369,7 +370,7 @@ Controls plugin module toggles. Allows flexible feature customization per server
 | `fishing` | Boolean | `true` | Enable custom fishing loot |
 | `customMobs` | Boolean | `true` | Enable elite mobs |
 | `artifactXP` | Boolean | `true` | Enable artifact XP |
-| `bossArena` | Boolean | `true` | Enable boss arena |
+
 
 #### Resource Pack Section
 
@@ -1489,24 +1490,31 @@ xp:
   levelUpMessage: "<green>⬆ Artifact <gold>%artifact% <green>reached level <yellow>%level%!"
 ```
 
-#### features/arena.yml
+#### features/gems.yml
 
-Boss arena (wave-based). The player fights waves of mobs and bosses.
+Gem and socket system. Gems are socketable items that grant potion effects or run commands when inserted into artifact sockets.
+
+Each gem has a type, material, custom model data, rarity, lore, and a list of effects (type: `POTION` or `COMMAND`).
 
 ```yaml
-arena:
-  enabled: true
-  cooldown: 300
-  arenaWorld: "arena"
-  spawn:
-    x: 0
-    y: 64
-    z: 0
-  bossSpawn:
-    x: 0
-    y: 64
-    z: 20
+gems:
+  ruby_of_strength:
+    enabled: true
+    name: "<red>Ruby of Strength"
+    material: REDSTONE
+    custom-model-data: 1001
+    rarity: rare
+    lore:
+      - "<gray>Grants strength to its owner"
+    effects:
+      - type: POTION
+        params:
+          effect: INCREASE_DAMAGE
+          amplifier: 0
+          duration: 120
 ```
+
+Gems can be inserted into artifacts with available sockets using `/gem open` while holding the artifact. Socket count is configurable per artifact via the API.
 
 ---
 
@@ -1562,12 +1570,12 @@ Integration with MythicMobs. Allows matching elite mobs by their custom names an
 
 ### PlaceholderAPI
 
-Adds placeholders for displaying artifact data, collection progress, XP, and arena statistics.
+Adds placeholders for displaying artifact data, collection progress, and XP statistics.
 
 **Placeholder examples:**
 - `%wastelandartifacts_collection_progress%` — collection progress
 - `%wastelandartifacts_artifact_level%` — artifact level in hand
-- `%wastelandartifacts_arena_waves%` — arena waves cleared
+
 
 ---
 
@@ -1735,18 +1743,7 @@ CREATE TABLE IF NOT EXISTS wa_collection (
 );
 ```
 
-#### wa_arena_stats
 
-Player statistics on the boss arena.
-
-```sql
-CREATE TABLE IF NOT EXISTS wa_arena_stats (
-    player_uuid VARCHAR(36) PRIMARY KEY,
-    waves_cleared INT DEFAULT 0,
-    bosses_killed INT DEFAULT 0,
-    best_time BIGINT DEFAULT 0
-);
-```
 
 ### Feature Modules with Database Dependencies
 
@@ -1755,7 +1752,7 @@ Some feature modules require the database:
 - **Collection** (`collection`) — stores player progression
 - **Upgrades** (`upgrades`) — stores artifact levels
 - **Artifact XP** (`artifactXP`) — stores artifact experience
-- **Boss Arena** (`bossArena`) — stores player statistics
+
 
 If `database.enabled: false`, these modules are automatically disabled.
 
@@ -1763,42 +1760,215 @@ If `database.enabled: false`, these modules are automatically disabled.
 
 ## 11. API
 
+The public API is accessible via `WastelandArtifacts.getInstance().getApi()` and provides access to all plugin features. Methods that access feature modules return `null` if the feature is disabled.
+
 ### Getting the API Instance
 
 ```java
 WastelandArtifactsAPI api = WastelandArtifacts.getInstance().getApi();
+// Or via Bukkit:
+WastelandArtifacts wa = (WastelandArtifacts) Bukkit.getPluginManager().getPlugin("WastelandArtifacts");
+WastelandArtifactsAPI api = wa.getApi();
 ```
 
-### Available Methods
+### Artifact Registration & Management
 
 ```java
-// Artifact Registration
-void registerArtifact(@NotNull Artifact artifact)
-void unregisterArtifact(@NotNull String id)
-Artifact getArtifact(@NotNull String id)
-List<Artifact> getAllArtifacts()
-
-// Item Creation
-ItemStack createItem(@NotNull Artifact artifact)
-ItemStack createItem(@NotNull String artifactId)
-
-// Artifact Detection
-Artifact getArtifactFromItem(@NotNull ItemStack item)
-boolean isArtifact(@NotNull ItemStack item)
-
-// Giving Artifacts
-void giveArtifact(@NotNull Player player, @NotNull String artifactId, int amount)
-
-// Component & Trigger Registration
-void registerComponent(@NotNull String id, @NotNull Class<? extends ArtifactComponent> clazz)
-void registerTriggerType(@NotNull TriggerType type, @NotNull Trigger trigger)
-
-// Reload
-void reload()
-
-// Plugin Instance
-WastelandArtifacts getPlugin()
+void registerArtifact(@NotNull Artifact artifact)     // Register a new artifact
+void unregisterArtifact(@NotNull String id)            // Remove an artifact by ID
+Artifact getArtifact(@NotNull String id)               // Get an artifact by ID
+List<Artifact> getAllArtifacts()                       // All registered artifacts
+boolean hasArtifact(@NotNull String id)                // Check if artifact ID exists
+ArtifactBuilder builder(@NotNull String id)            // Create a builder for custom artifacts
+ArtifactManager getArtifactManager()                   // Get the artifact manager
+ArtifactRegistry getArtifactRegistry()                 // Get the artifact registry
 ```
+
+### Item Creation & Detection
+
+```java
+ItemStack createItem(@NotNull Artifact artifact)       // Create ItemStack from artifact
+ItemStack createItem(@NotNull String artifactId)       // Create ItemStack by ID
+Artifact getArtifactFromItem(@NotNull ItemStack item)  // Extract artifact from ItemStack (via PDC)
+boolean isArtifact(@NotNull ItemStack item)            // Check if ItemStack is an artifact
+void giveArtifact(@NotNull Player player, @NotNull String artifactId, int amount)
+```
+
+### Component System
+
+```java
+void registerComponent(@NotNull String id, @NotNull Class<? extends ArtifactComponent> clazz)
+ArtifactComponent createComponent(@NotNull String type)
+ComponentRegistry getComponentRegistry()
+```
+
+### Trigger System
+
+```java
+void registerTrigger(@NotNull TriggerType type, @NotNull Trigger trigger)
+void fireTriggers(@NotNull TriggerType type, @NotNull TriggerContext ctx)
+Map<TriggerType, List<Trigger>> getAllTriggers()
+```
+
+### Rarity System
+
+```java
+RarityManager getRarityManager()
+RarityManager.RarityDef getRarityDef(@NotNull String id)
+RarityManager.RarityDef getRarityDef(@NotNull Rarity rarity)
+```
+
+### Artifact Bag
+
+```java
+ArtifactBagManager getBagManager()                     // May be null if disabled
+ItemStack[] getPlayerBag(@NotNull Player player)
+void setBagSlot(@NotNull Player player, int slot, ItemStack item)
+void recalcBagEffects(@NotNull Player player)
+```
+
+### Dungeons
+
+```java
+DungeonManager getDungeonManager()                     // May be null if disabled
+List<ItemStack> generateDungeonLoot(@NotNull String dungeonId)
+```
+
+### Altars
+
+```java
+AltarManager getAltarManager()                         // May be null if disabled
+```
+
+### Collection
+
+```java
+CollectionManager getCollectionManager()               // May be null if disabled
+void markArtifactFound(@NotNull Player player, @NotNull String artifactId)
+boolean hasFoundArtifact(@NotNull Player player, @NotNull String artifactId)
+int getCollectionCount(@NotNull Player player)
+```
+
+### Upgrades
+
+```java
+UpgradeManager getUpgradeManager()                     // May be null if disabled
+int getArtifactLevel(@NotNull Player player, @NotNull String artifactId)
+void setArtifactLevel(@NotNull Player player, @NotNull String artifactId, int level)
+```
+
+### Artifact XP
+
+```java
+ArtifactXPManager getXPManager()                       // May be null if disabled
+int getArtifactXPLevel(@NotNull Player player, @NotNull String artifactId)
+```
+
+### Sets
+
+```java
+SetManager getSetManager()                             // May be null if disabled
+void registerSet(@NotNull ArtifactSet set)
+Map<ArtifactSet, Integer> getActiveSets(@NotNull Player player)
+void applySetBonuses(@NotNull Player player)
+```
+
+### Abilities (Active Abilities)
+
+```java
+AbilityManager getAbilityManager()                     // May be null if disabled
+Ability getAbility(@NotNull String id)
+Map<String, Ability> getAllAbilities()
+boolean hasAbilityCooldown(@NotNull Player player, @NotNull String abilityId)
+void executeAbility(@NotNull Player player, @NotNull Ability ability)
+```
+
+### Gems (Socket System)
+
+```java
+GemManager getGemManager()                             // May be null if disabled
+Gem getGem(@NotNull String id)
+Collection<Gem> getAllGems()
+boolean isGem(@NotNull ItemStack item)
+ItemStack createGemItem(@NotNull Gem gem)
+void giveGem(@NotNull Player player, @NotNull String gemId, int amount)
+
+// Socket Management
+int getSocketCount(@NotNull ItemStack artifactItem)
+void setSocketCount(@NotNull ItemStack artifactItem, int count)
+List<String> getSocketedGems(@NotNull ItemStack artifactItem)
+boolean socketGem(@NotNull ItemStack artifactItem, @NotNull String gemId)
+String unsocketGem(@NotNull ItemStack artifactItem, int index)
+
+// Force-apply gem effects to a player
+void applyGemEffects(@NotNull Player player)
+```
+
+### Custom Items
+
+```java
+CustomItemRegistry getCustomItemRegistry()
+ItemStack createCustomItem(@NotNull String id)
+ItemStack createCustomItem(@NotNull String id, int amount)
+boolean isCustomItem(@NotNull ItemStack item)
+String getCustomItemId(@NotNull ItemStack item)
+```
+
+### Achievements
+
+```java
+AchievementManager getAchievementManager()             // May be null if disabled
+Collection<Achievement> getAllAchievements()
+int getAchievementProgress(@NotNull Player player, @NotNull String achievementId)
+boolean isAchievementCompleted(@NotNull Player player, @NotNull String achievementId)
+void checkAchievements(@NotNull Player player)
+```
+
+### Elite Mobs
+
+```java
+EliteMobManager getEliteMobManager()                   // May be null if disabled
+```
+
+### Database
+
+```java
+DatabaseManager getDatabaseManager()                   // May be null if DB disabled
+void executeQuery(@NotNull String sql, Object... args)
+```
+
+### Config & Messages
+
+```java
+ConfigManager getConfigManager()
+void reload()                                          // Reload all configuration files
+String getMessage(@NotNull String key, Object... args) // Localized message
+String getMessageFor(@NotNull Player player, @NotNull String key, Object... args)
+```
+
+### Utility
+
+```java
+ItemBuilder getItemBuilder()
+NamespacedKey getPDCKey(@NotNull String key)
+WastelandArtifacts getPlugin()
+String getVersion()
+```
+
+### Events
+
+All events are in the `me.darkcube.wa.api.event` package:
+
+| Event | Cancellable | Description |
+|---|---|---|
+| `ArtifactCraftEvent` | No | Fired when an artifact is crafted on an altar |
+| `ArtifactEquipEvent` | Yes | Fired when an artifact is equipped/unequipped |
+| `ArtifactFoundEvent` | No | Fired when a player discovers a new artifact |
+| `ArtifactLevelUpEvent` | No | Fired when an artifact levels up (XP system) |
+| `ArtifactUpgradeEvent` | Yes | Fired when an artifact is upgraded by combining copies |
+| `GemSocketEvent` | Yes | Fired when a gem is inserted into an artifact |
+| `GemUnsocketEvent` | Yes | Fired when a gem is removed from an artifact |
+| `SetBonusActivateEvent` | No | Fired when a set bonus activates or deactivates |
 
 ### Example Usage
 
@@ -1829,6 +1999,20 @@ Artifact customArtifact = Artifact.builder("my_artifact")
     )
     .build();
 api.registerArtifact(customArtifact);
+
+// Work with gems
+api.giveGem(player, "ruby_of_strength", 1);
+int sockets = api.getSocketCount(item);
+api.socketGem(item, "ruby_of_strength");
+
+// Check active set bonuses
+Map<ArtifactSet, Integer> activeSets = api.getActiveSets(player);
+
+// Execute an ability
+Ability fireball = api.getAbility("fireball");
+if (!api.hasAbilityCooldown(player, "fireball")) {
+    api.executeAbility(player, fireball);
+}
 ```
 
 ---
@@ -1881,7 +2065,7 @@ api.registerArtifact(customArtifact);
 
 #### Features are not loading
 - Ensure the corresponding settings in the `features` section are enabled
-- Some modules (collection, upgrades, xp, arena) require the database to be enabled
+- Some modules (collection, upgrades, xp) require the database to be enabled
 - Verify that files in `features/` exist and have valid YAML
 
 ### Enabling Debug Mode
@@ -1905,4 +2089,4 @@ Check `logs/latest.log` for:
 
 ---
 
-> **Wasteland Artifacts v2.1.0** — Created by animesao for Paper 1.21.11+.
+> **Wasteland Artifacts v2.2.0** — Created by animesao for Paper 1.21.11+.

@@ -32,3 +32,5 @@ logs/
 
 # Keep gradle wrapper
 !gradle/wrapper/gradle-wrapper.jar
+
+session-*.md

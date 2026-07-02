@@ -452,6 +452,306 @@ altars:
             name: "<aqua>Кристальное Сердце"
             customModelData: 6077
 
+      # ─── НОВЫЕ РЕЦЕПТЫ v3.0 ───
+
+      - id: craft_soul_reaver
+        result: soul_reaver
+        experience: 50
+        cooldown: 45
+        catalyst:
+          item: NETHER_STAR
+          consume: true
+        blueprintMaterial: NETHERITE_SWORD
+        blueprintName: "<dark_red>📜 Чертёж: Душегуб"
+        blueprintCustomModelData: 5201
+        ingredients:
+          - type: NETHERITE_SWORD
+            amount: 1
+            slot: 5
+          - type: WITHER_SKELETON_SKULL
+            amount: 2
+            slot: 1
+          - type: WITHER_SKELETON_SKULL
+            amount: 2
+            slot: 3
+          - type: DIAMOND
+            amount: 8
+            slot: 4
+          - type: DIAMOND
+            amount: 8
+            slot: 6
+          - type: TOTEM_OF_UNDYING
+            amount: 1
+            slot: 8
+          - type: NETHERITE_INGOT
+            amount: 4
+            slot: 2
+          - type: NETHERITE_INGOT
+            amount: 4
+            slot: 7
+
+      - id: craft_dragon_slayer
+        result: dragon_slayer
+        experience: 60
+        cooldown: 60
+        catalyst:
+          item: DRAGON_EGG
+          consume: true
+        blueprintName: "<red>🐉 Чертёж: Драконоборец"
+        blueprintCustomModelData: 5202
+        ingredients:
+          - type: DIAMOND_SWORD
+            amount: 1
+            slot: 5
+          - type: OBSIDIAN
+            amount: 8
+            slot: 1
+          - type: OBSIDIAN
+            amount: 8
+            slot: 3
+          - type: FIRE_CHARGE
+            amount: 4
+            slot: 2
+          - type: FIRE_CHARGE
+            amount: 4
+            slot: 4
+          - type: FIRE_CHARGE
+            amount: 4
+            slot: 6
+          - type: NETHERITE_INGOT
+            amount: 8
+            slot: 7
+          - type: NETHERITE_INGOT
+            amount: 8
+            slot: 8
+
+      - id: craft_ring_of_storms
+        result: ring_of_storms
+        experience: 40
+        cooldown: 30
+        blueprintName: "<gold>⚡ Кольцо Бурь"
+        blueprintCustomModelData: 5203
+        ingredients:
+          - type: LIGHTNING_ROD
+            amount: 1
+            slot: 5
+          - type: AMETHYST_SHARD
+            amount: 8
+            slot: 1
+            name: "<gold>Кристалл Бури"
+            customModelData: 6004
+          - type: AMETHYST_SHARD
+            amount: 8
+            slot: 3
+            name: "<gold>Кристалл Бури"
+            customModelData: 6004
+          - type: NETHERITE_INGOT
+            amount: 2
+            slot: 4
+          - type: NETHERITE_INGOT
+            amount: 2
+            slot: 6
+          - type: COPPER_BLOCK
+            amount: 16
+            slot: 2
+
+      - id: craft_dragon_scale_armor
+        result: dragon_scale_armor
+        experience: 80
+        cooldown: 120
+        catalyst:
+          item: DRAGON_EGG
+          consume: true
+        blueprintName: "<dark_green>🛡 Чертеж: Чешуя Дракона"
+        blueprintCustomModelData: 5204
+        ingredients:
+          - type: NETHERITE_CHESTPLATE
+            amount: 1
+            slot: 5
+          - type: OBSIDIAN
+            amount: 16
+            slot: 1
+          - type: OBSIDIAN
+            amount: 16
+            slot: 3
+          - type: DIAMOND_BLOCK
+            amount: 8
+            slot: 4
+          - type: DIAMOND_BLOCK
+            amount: 8
+            slot: 6
+          - type: TOTEM_OF_UNDYING
+            amount: 3
+            slot: 8
+          - type: ENDER_EYE
+            amount: 4
+            slot: 2
+          - type: ENDER_EYE
+            amount: 4
+            slot: 7
+
+      - id: craft_chaos_blade
+        result: chaos_blade
+        experience: 70
+        cooldown: 60
+        catalyst:
+          item: END_CRYSTAL
+          consume: true
+        blueprintName: "<dark_purple>🌀 Чертёж: Клинок Хаоса"
+        blueprintCustomModelData: 5205
+        ingredients:
+          - type: DIAMOND_SWORD
+            amount: 1
+            slot: 5
+          - type: CRYING_OBSIDIAN
+            amount: 8
+            slot: 1
+          - type: CRYING_OBSIDIAN
+            amount: 8
+            slot: 3
+          - type: NETHERITE_INGOT
+            amount: 6
+            slot: 4
+          - type: NETHERITE_INGOT
+            amount: 6
+            slot: 6
+          - type: TOTEM_OF_UNDYING
+            amount: 2
+            slot: 8
+
+      - id: craft_chestplate_of_might
+        result: chestplate_of_might
+        experience: 45
+        cooldown: 45
+        blueprintName: "<dark_gray>🛡 Чертеж: Нагрудник Мощи"
+        blueprintCustomModelData: 5206
+        ingredients:
+          - type: NETHERITE_CHESTPLATE
+            amount: 1
+            slot: 5
+          - type: DIAMOND_BLOCK
+            amount: 4
+            slot: 1
+          - type: DIAMOND_BLOCK
+            amount: 4
+            slot: 3
+          - type: NETHERITE_INGOT
+            amount: 4
+            slot: 4
+          - type: NETHERITE_INGOT
+            amount: 4
+            slot: 6
+          - type: TOTEM_OF_UNDYING
+            amount: 1
+            slot: 8
+
+      - id: craft_book_of_secrets
+        result: book_of_secrets
+        experience: 60
+        cooldown: 60
+        catalyst:
+          item: END_CRYSTAL
+          consume: true
+        blueprintName: "<dark_purple>📖 Фолиант: Книга Тайн"
+        blueprintCustomModelData: 5207
+        ingredients:
+          - type: WRITTEN_BOOK
+            amount: 1
+            slot: 5
+          - type: SHULKER_SHELL
+            amount: 2
+            slot: 1
+          - type: SHULKER_SHELL
+            amount: 2
+            slot: 3
+          - type: NETHER_STAR
+            amount: 1
+            slot: 6
+          - type: ENDER_EYE
+            amount: 4
+            slot: 4
+          - type: ENDER_EYE
+            amount: 4
+            slot: 8
+
+      - id: craft_boots_of_the_titan
+        result: boots_of_the_titan
+        experience: 50
+        cooldown: 45
+        blueprintName: "<dark_gray>👟 Чертеж: Сапоги Титана"
+        blueprintCustomModelData: 5208
+        ingredients:
+          - type: NETHERITE_BOOTS
+            amount: 1
+            slot: 5
+          - type: DIAMOND_BLOCK
+            amount: 4
+            slot: 1
+          - type: DIAMOND_BLOCK
+            amount: 4
+            slot: 3
+          - type: NETHERITE_INGOT
+            amount: 2
+            slot: 4
+          - type: NETHERITE_INGOT
+            amount: 2
+            slot: 6
+          - type: SLIME_BLOCK
+            amount: 4
+            slot: 2
+
+      - id: craft_crossbow_of_time
+        result: crossbow_of_time
+        experience: 30
+        cooldown: 30
+        blueprintName: "<gold>🎯 Чертёж: Арбалет Времени"
+        blueprintCustomModelData: 5209
+        ingredients:
+          - type: CROSSBOW
+            amount: 1
+            slot: 5
+          - type: CLOCK
+            amount: 2
+            slot: 1
+          - type: CLOCK
+            amount: 2
+            slot: 3
+          - type: DIAMOND
+            amount: 8
+            slot: 4
+          - type: DIAMOND
+            amount: 8
+            slot: 6
+          - type: STRING
+            amount: 8
+            slot: 2
+
+      - id: craft_hammer_of_dawn
+        result: hammer_of_dawn
+        experience: 35
+        cooldown: 30
+        blueprintName: "<gold>🔨 Чертёж: Молот Рассвета"
+        blueprintCustomModelData: 5210
+        ingredients:
+          - type: DIAMOND_AXE
+            amount: 1
+            slot: 5
+          - type: GLOWSTONE
+            amount: 8
+            slot: 1
+          - type: GLOWSTONE
+            amount: 8
+            slot: 3
+          - type: NETHERITE_INGOT
+            amount: 2
+            slot: 4
+          - type: NETHERITE_INGOT
+            amount: 2
+            slot: 6
+          - type: GOLD_INGOT
+            amount: 8
+            slot: 2
+
 # ─── НАСТРОЙКИ ───
 settings:
   maxAltarsPerChunk: 1

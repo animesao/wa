@@ -30,7 +30,8 @@ public class AdminItemsGUI extends GUIBase {
     private enum Tab {
         ARTIFACTS(Material.NETHER_STAR, "<gold>✦ Артефакты"),
         CUSTOM_ITEMS(Material.ENDER_CHEST, "<green>✦ Кастомные предметы"),
-        BLUEPRINTS(Material.PAPER, "<aqua>✦ Чертежи");
+        BLUEPRINTS(Material.PAPER, "<aqua>✦ Чертежи"),
+        GEMS(Material.AMETHYST_SHARD, "<light_purple>✦ Самоцветы");
 
         final Material icon;
         final String name;
@@ -38,7 +39,7 @@ public class AdminItemsGUI extends GUIBase {
     }
 
     public AdminItemsGUI(WastelandArtifacts plugin, Player player) {
-        super(plugin, player, "<dark_gray>📦 Админ: все предметы", 6);
+        super(plugin, player, "admin_items");
     }
 
     @Override
@@ -55,6 +56,7 @@ public class AdminItemsGUI extends GUIBase {
             case ARTIFACTS -> loadArtifacts();
             case CUSTOM_ITEMS -> loadCustomItems();
             case BLUEPRINTS -> loadBlueprints();
+            case GEMS -> loadGems();
         }
 
         maxPage = Math.max(0, (allItems.size() - 1) / ITEMS_PER_PAGE);
@@ -74,6 +76,15 @@ public class AdminItemsGUI extends GUIBase {
             ItemStack item = entry.getValue().build();
             allItems.add(item);
             itemOrigins.add("custom:" + entry.getKey());
+        }
+    }
+
+    private void loadGems() {
+        if (plugin.getGemManager() == null) return;
+        for (var gem : plugin.getGemManager().getAll()) {
+            ItemStack item = plugin.getGemManager().createGemItem(gem);
+            allItems.add(item);
+            itemOrigins.add("gem:" + gem.getId());
         }
     }
 
@@ -198,8 +209,9 @@ public class AdminItemsGUI extends GUIBase {
             }
             p.getInventory().addItem(item).forEach((i, leftover) ->
                     p.getWorld().dropItem(p.getLocation(), leftover));
-            p.sendMessage(plugin.getConfigManager().getLang("admin.customitem-given",
-                    displayName, item.getAmount()));
+            p.sendMessage(me.darkcube.wa.util.ComponentUtil.fromMini(
+                    plugin.getConfigManager().getLang("admin.customitem-given",
+                    displayName, item.getAmount())));
         }
     }
 

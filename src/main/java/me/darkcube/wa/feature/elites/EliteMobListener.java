@@ -35,6 +35,11 @@ public class EliteMobListener implements Listener {
     public void onDeath(EntityDeathEvent event) {
         LivingEntity entity = event.getEntity();
         if (!manager.isElite(entity)) return;
+        if (entity.getKiller() != null && plugin.getDatabaseManager() != null) {
+            plugin.getDatabaseManager().ensurePlayer(entity.getKiller());
+            plugin.getDatabaseManager().execute("UPDATE wa_players SET elite_kills = elite_kills + 1 WHERE uuid=?",
+                    entity.getKiller().getUniqueId().toString());
+        }
         var drops = manager.getDrops(entity);
         for (String dropId : drops) {
             var item = plugin.getCustomItemRegistry().create(dropId);

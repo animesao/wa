@@ -8,6 +8,7 @@ import me.darkcube.wa.WastelandArtifacts;
 import me.darkcube.wa.altar.AltarBlockTracker;
 import me.darkcube.wa.artifact.Artifact;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -69,6 +70,41 @@ public class DungeonManager {
 
     public void scanWorld(World world) {
         plugin.getComponentLogger().info("<yellow>Сканирование мира " + world.getName() + "...");
+        int found = 0;
+        for (var entry : dungeonConfigs.entrySet()) {
+            String dungeonId = entry.getKey();
+            String structName = dungeonId;
+            try {
+                var structure = Registry.STRUCTURE.get(NamespacedKey.minecraft(structName));
+                if (structure == null) continue;
+                for (org.bukkit.Chunk chunk : world.getLoadedChunks()) {
+                    Location chunkCenter = new Location(world, chunk.getX() << 4 + 8, 64, chunk.getZ() << 4 + 8);
+                    var foundLoc = world.locateNearestStructure(chunkCenter, structure, 3, false);
+                    if (foundLoc != null) {
+                        Location base = foundLoc.getLocation();
+                        int minX = base.getBlockX() - 16, minZ = base.getBlockZ() - 16;
+                        int maxX = base.getBlockX() + 16, maxZ = base.getBlockZ() + 16;
+                        for (int x = minX; x <= maxX; x++) {
+                            for (int z = minZ; z <= maxZ; z++) {
+                                for (int y = world.getMinHeight(); y < world.getMaxHeight(); y++) {
+                                    Block block = world.getBlockAt(x, y, z);
+                                    if (block.getState() instanceof org.bukkit.block.TileState tile
+                                            && (block.getType() == Material.CHEST || block.getType() == Material.BARREL
+                                            || block.getType().name().endsWith("_SHULKER_BOX"))) {
+                                        tile.getPersistentDataContainer().set(
+                                                new NamespacedKey(plugin, "dungeon_id"),
+                                                PersistentDataType.STRING, dungeonId);
+                                        tile.update(true, false);
+                                        found++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception ignored) {}
+        }
+        plugin.getComponentLogger().info("<green>Сканирование " + world.getName() + " завершено. Найдено структур: " + found);
     }
 
     @Nullable
@@ -191,7 +227,7 @@ public class DungeonManager {
                     org.bukkit.potion.PotionEffectType type =
                             org.bukkit.potion.PotionEffectType.getByName(effect.effect);
                     if (type != null) {
-                        int duration = effect.duration < 0 ? Integer.MAX_VALUE : effect.duration * 20;
+                        int duration = effect.duration < 0 ? org.bukkit.potion.PotionEffect.INFINITE_DURATION : effect.duration * 20;
                         living.addPotionEffect(new org.bukkit.potion.PotionEffect(
                                 type, duration, effect.amplifier, true, false
                         ));

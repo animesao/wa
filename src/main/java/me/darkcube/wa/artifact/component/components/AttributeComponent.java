@@ -43,26 +43,54 @@ public class AttributeComponent implements ArtifactComponent {
     @Override
     public @NotNull String getType() { return "ATTRIBUTE"; }
 
+    private EquipmentSlot resolveSlot(@NotNull ItemStack item) {
+        if (slot != EquipmentSlot.HAND) return slot;
+        var type = item.getType();
+        if (type.name().endsWith("_HELMET") || type.name().endsWith("_HEAD")
+                || type == org.bukkit.Material.CARVED_PUMPKIN
+                || type == org.bukkit.Material.SKELETON_SKULL
+                || type == org.bukkit.Material.WITHER_SKELETON_SKULL
+                || type == org.bukkit.Material.ZOMBIE_HEAD
+                || type == org.bukkit.Material.CREEPER_HEAD
+                || type == org.bukkit.Material.DRAGON_HEAD
+                || type == org.bukkit.Material.PLAYER_HEAD) {
+            return EquipmentSlot.HEAD;
+        }
+        if (type.name().endsWith("_CHESTPLATE") || type == org.bukkit.Material.ELYTRA) {
+            return EquipmentSlot.CHEST;
+        }
+        if (type.name().endsWith("_LEGGINGS")) {
+            return EquipmentSlot.LEGS;
+        }
+        if (type.name().endsWith("_BOOTS")) {
+            return EquipmentSlot.FEET;
+        }
+        if (type == org.bukkit.Material.SHIELD) {
+            return EquipmentSlot.OFF_HAND;
+        }
+        return EquipmentSlot.HAND;
+    }
+
     @Override
     @SuppressWarnings("deprecation")
     public void apply(@NotNull ItemStack item) {
         var meta = item.getItemMeta();
         if (meta == null) return;
-        // Для HAND и OFF_HAND — добавляем модификатор на обе руки
-        if (slot == EquipmentSlot.HAND) {
+        EquipmentSlot s = resolveSlot(item);
+        if (s == EquipmentSlot.HAND) {
             meta.addAttributeModifier(attribute, new AttributeModifier(
                     UUID.randomUUID(), "wa_" + attribute.name(), amount, operation, EquipmentSlot.HAND
             ));
             meta.addAttributeModifier(attribute, new AttributeModifier(
                     UUID.randomUUID(), "wa_" + attribute.name() + "_off", amount, operation, EquipmentSlot.OFF_HAND
             ));
-        } else if (slot == EquipmentSlot.OFF_HAND) {
+        } else if (s == EquipmentSlot.OFF_HAND) {
             meta.addAttributeModifier(attribute, new AttributeModifier(
                     UUID.randomUUID(), "wa_" + attribute.name(), amount, operation, EquipmentSlot.OFF_HAND
             ));
         } else {
             meta.addAttributeModifier(attribute, new AttributeModifier(
-                    UUID.randomUUID(), "wa_" + attribute.name(), amount, operation, slot
+                    UUID.randomUUID(), "wa_" + attribute.name(), amount, operation, s
             ));
         }
         item.setItemMeta(meta);

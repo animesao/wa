@@ -39,6 +39,8 @@ artifacts:
     customModelData: 1001
     rarity: RARE
     unbreakable: true
+    extraData:
+      sockets: 2
     components:
       - type: DAMAGE
         damage: 12.0
@@ -63,6 +65,8 @@ artifacts:
     customModelData: 1004
     rarity: EPIC
     unbreakable: true
+    extraData:
+      sockets: 2
     components:
       - type: DAMAGE
         damage: 14.0
@@ -87,6 +91,8 @@ artifacts:
     customModelData: 1005
     rarity: LEGENDARY
     unbreakable: true
+    extraData:
+      sockets: 3
     components:
       - type: PROJECTILE
         projectileType: FIREBALL
@@ -113,6 +119,8 @@ artifacts:
     customModelData: 1006
     rarity: EPIC
     unbreakable: true
+    extraData:
+      sockets: 2
     components:
       - type: EXPLOSION
         power: 2.0
@@ -135,6 +143,8 @@ artifacts:
     customModelData: 2001
     rarity: RARE
     unbreakable: true
+    extraData:
+      sockets: 1
     components:
       - type: POTION_EFFECT_ON_EQUIP
         effect: RESISTANCE
@@ -165,6 +175,8 @@ artifacts:
     customModelData: 2002
     rarity: EPIC
     unbreakable: true
+    extraData:
+      sockets: 2
     components:
       - type: POTION_EFFECT_ON_EQUIP
         effect: STRENGTH
@@ -196,6 +208,8 @@ artifacts:
     customModelData: 2003
     rarity: RARE
     unbreakable: true
+    extraData:
+      sockets: 1
     components:
       - type: POTION_EFFECT_ON_EQUIP
         effect: SPEED
@@ -252,6 +266,8 @@ artifacts:
     customModelData: 1002
     rarity: EPIC
     unbreakable: true
+    extraData:
+      sockets: 2
     components:
       - type: POTION_EFFECT_ON_EQUIP
         effect: INVISIBILITY
@@ -403,6 +419,8 @@ artifacts:
     customModelData: 3002
     rarity: EPIC
     unbreakable: true
+    extraData:
+      sockets: 2
     components:
       - type: DAMAGE
         damage: 18.0
@@ -523,6 +541,8 @@ artifacts:
     customModelData: 5002
     rarity: EPIC
     unbreakable: true
+    extraData:
+      sockets: 2
     components:
       - type: DAMAGE
         damage: 13.0
@@ -1365,6 +1385,8 @@ artifacts:
     unbreakable: true
     lore:
       - "<gray>Клинок из чистой тьмы"
+    extraData:
+      sockets: 1
     components:
       - type: DAMAGE
         damage: 8
@@ -1374,3 +1396,575 @@ artifacts:
         multiplier: 0.5
       - type: SOUND_ON_HIT
         sound: ENTITY_WITHER_HURT
+
+  # ════════════════════════════════════════════════════════════
+  # ║  25 НОВЫХ АРТЕФАКТОВ v3.0
+  # ════════════════════════════════════════════════════════════
+
+  # ── Ближний бой (8) ──
+
+  - id: "soul_reaver"
+    displayName: "<dark_red>Душегуб"
+    baseItem: NETHERITE_SWORD
+    rarity: LEGENDARY
+    customModelData: 6201
+    unbreakable: true
+    lore:
+      - "<gray>Высасывает душу врага"
+      - "<dark_red>💀 30% вампиризм"
+    extraData:
+      sockets: 3
+    components:
+      - type: DAMAGE
+        damage: 14
+      - type: LIFE_STEAL
+        percentage: 0.30
+      - type: POTION_EFFECT_ON_HIT
+        effect: WITHER
+        duration: 60
+        amplifier: 1
+      - type: SOUND_ON_HIT
+        sound: ENTITY_WITHER_HURT
+      - type: PARTICLE_ON_HIT
+        particle: SOUL_FIRE_FLAME
+        count: 20
+
+  - id: "crystal_halberd"
+    displayName: "<aqua>Кристальная Алебарда"
+    baseItem: NETHERITE_AXE
+    rarity: LEGENDARY
+    customModelData: 6202
+    unbreakable: true
+    lore:
+      - "<gray>Сечёт врагов кристальными гранями"
+    extraData:
+      sockets: 2
+    components:
+      - type: DAMAGE
+        damage: 16
+      - type: AOE
+        radius: 3.0
+        damage: 6.0
+      - type: PARTICLE_ON_HIT
+        particle: END_ROD
+        count: 25
+      - type: SOUND_ON_HIT
+        sound: BLOCK_AMETHYST_BLOCK_CHIME
+
+  - id: "dragon_slayer"
+    displayName: "<red>Драконоборец"
+    baseItem: NETHERITE_SWORD
+    rarity: LEGENDARY
+    customModelData: 6203
+    unbreakable: true
+    lore:
+      - "<gray>Ковался в пасти дракона"
+      - "<dark_red>🐉 Огненный клинок"
+    extraData:
+      sockets: 3
+    components:
+      - type: DAMAGE
+        damage: 18
+      - type: FIRE_ASPECT
+        level: 3
+      - type: EXPLOSION
+        power: 2.0
+        safe: true
+      - type: PARTICLE_ON_HIT
+        particle: DRAGON_BREATH
+        count: 30
+      - type: SOUND_ON_HIT
+        sound: ENTITY_ENDER_DRAGON_GROWL
+
+  - id: "chaos_blade"
+    displayName: "<dark_purple>Клинок Хаоса"
+    baseItem: DIAMOND_SWORD
+    rarity: MYTHIC
+    customModelData: 6204
+    unbreakable: true
+    lore:
+      - "<gray>Нестабильная реальность в стали"
+    extraData:
+      sockets: 4
+    components:
+      - type: DAMAGE
+        damage: 20
+      - type: LIGHTNING
+        chance: 0.35
+      - type: POTION_EFFECT_ON_HIT
+        effect: POISON
+        duration: 100
+        amplifier: 2
+      - type: LIFE_STEAL
+        percentage: 0.15
+      - type: PARTICLE_ON_HIT
+        particle: PORTAL
+        count: 30
+      - type: SOUND_ON_HIT
+        sound: ENTITY_ENDERMAN_TELEPORT
+
+  - id: "moonlight_dagger"
+    displayName: "<white>Кинжал Лунного Света"
+    baseItem: IRON_SWORD
+    rarity: EPIC
+    customModelData: 6205
+    unbreakable: true
+    lore:
+      - "<gray>Лёгок как лунный луч"
+    extraData:
+      sockets: 1
+    components:
+      - type: DAMAGE
+        damage: 9
+      - type: LIFE_STEAL
+        percentage: 0.20
+      - type: PARTICLE_ON_HIT
+        particle: END_ROD
+        count: 10
+      - type: SOUND_ON_HIT
+        sound: BLOCK_AMETHYST_BLOCK_CHIME
+
+  - id: "bloodletter"
+    displayName: "<dark_red>Кровавый Нож"
+    baseItem: STONE_SWORD
+    rarity: RARE
+    customModelData: 6206
+    unbreakable: true
+    lore:
+      - "<gray>Жаждет крови врагов"
+    extraData:
+      sockets: 1
+    components:
+      - type: DAMAGE
+        damage: 7
+      - type: LIFE_STEAL
+        percentage: 0.25
+      - type: POTION_EFFECT_ON_HIT
+        effect: WEAKNESS
+        duration: 60
+        amplifier: 1
+
+  - id: "hammer_of_dawn"
+    displayName: "<gold>Молот Рассвета"
+    baseItem: DIAMOND_AXE
+    rarity: EPIC
+    customModelData: 6207
+    unbreakable: true
+    lore:
+      - "<gray>Разбивает тьму светом"
+    extraData:
+      sockets: 2
+    components:
+      - type: DAMAGE
+        damage: 12
+      - type: AOE
+        radius: 4.0
+        damage: 8.0
+      - type: COOLDOWN
+        seconds: 5
+      - type: SOUND_ON_USE
+        sound: ENTITY_PLAYER_ATTACK_CRIT
+      - type: PARTICLE_ON_HIT
+        particle: GLOW
+        count: 25
+
+  - id: "vampire_fang"
+    displayName: "<dark_red>Клык Вампира"
+    baseItem: GOLDEN_SWORD
+    rarity: EPIC
+    customModelData: 6208
+    unbreakable: true
+    lore:
+      - "<gray>Каждый удар продлевает жизнь"
+    extraData:
+      sockets: 2
+    components:
+      - type: DAMAGE
+        damage: 8
+      - type: LIFE_STEAL
+        percentage: 0.35
+      - type: POTION_EFFECT_ON_HIT
+        effect: HUNGER
+        duration: 100
+        amplifier: 1
+      - type: SOUND_ON_HIT
+        sound: ENTITY_BAT_HURT
+
+  # ── Дальний бой (4) ──
+
+  - id: "hunter_bow"
+    displayName: "<green>Лук Охотника"
+    baseItem: BOW
+    rarity: RARE
+    customModelData: 6209
+    unbreakable: true
+    lore:
+      - "<gray>Стрелы находят цель"
+    extraData:
+      sockets: 1
+    components:
+      - type: EXPLOSION
+        power: 1.5
+        safe: true
+      - type: PARTICLE_ON_HIT
+        particle: CRIT
+        count: 15
+      - type: SOUND_ON_HIT
+        sound: ENTITY_ARROW_HIT
+
+  - id: "crossbow_of_time"
+    displayName: "<gold>Арбалет Времени"
+    baseItem: CROSSBOW
+    rarity: EPIC
+    customModelData: 6210
+    unbreakable: true
+    lore:
+      - "<gray>Замедляет врагов при попадании"
+    extraData:
+      sockets: 2
+    components:
+      - type: POTION_EFFECT_ON_HIT
+        effect: SLOWNESS
+        duration: 100
+        amplifier: 2
+      - type: SOUND_ON_HIT
+        sound: ENTITY_SKELETON_SHOOT
+
+  - id: "longbow_of_frost"
+    displayName: "<aqua>Дальнобойный Ледяной Лук"
+    baseItem: BOW
+    rarity: EPIC
+    customModelData: 6211
+    unbreakable: true
+    lore:
+      - "<gray>Ледяные стрелы сковывают"
+    extraData:
+      sockets: 2
+    components:
+      - type: POTION_EFFECT_ON_HIT
+        effect: SLOWNESS
+        duration: 100
+        amplifier: 3
+      - type: LIGHTNING
+        chance: 0.15
+      - type: PARTICLE_ON_HIT
+        particle: SNOWFLAKE
+        count: 20
+
+  - id: "sniper_bow"
+    displayName: "<dark_gray>Снайперский Лук"
+    baseItem: BOW
+    rarity: LEGENDARY
+    customModelData: 6212
+    unbreakable: true
+    lore:
+      - "<gray>Точный выстрел издалека"
+    extraData:
+      sockets: 3
+    components:
+      - type: EXPLOSION
+        power: 3.0
+        safe: true
+      - type: LIGHTNING
+        chance: 0.25
+      - type: COOLDOWN
+        seconds: 3
+      - type: SOUND_ON_HIT
+        sound: ENTITY_LIGHTNING_BOLT_THUNDER
+
+  # ── Броня (5) ──
+
+  - id: "helm_of_valor"
+    displayName: "<gold>Шлем Доблести"
+    baseItem: NETHERITE_HELMET
+    rarity: EPIC
+    customModelData: 6213
+    unbreakable: true
+    lore:
+      - "<gray>Шлем древнего героя"
+    extraData:
+      sockets: 2
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: STRENGTH
+        amplifier: 0
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: NIGHT_VISION
+        amplifier: 0
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR
+        amount: 3.0
+        operation: ADD_NUMBER
+
+  - id: "chestplate_of_might"
+    displayName: "<dark_gray>Нагрудник Мощи"
+    baseItem: NETHERITE_CHESTPLATE
+    rarity: EPIC
+    customModelData: 6214
+    unbreakable: true
+    lore:
+      - "<gray>Несокрушимая сила"
+    extraData:
+      sockets: 3
+    components:
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR
+        amount: 8.0
+        operation: ADD_NUMBER
+      - type: ATTRIBUTE
+        attribute: GENERIC_ATTACK_DAMAGE
+        amount: 3.0
+        operation: ADD_NUMBER
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: RESISTANCE
+        amplifier: 0
+      - type: PARTICLE_AMBIENT
+        particle: ENCHANTMENT_TABLE
+        count: 3
+
+  - id: "leggings_of_the_wind"
+    displayName: "<white>Поножи Ветра"
+    baseItem: NETHERITE_LEGGINGS
+    rarity: RARE
+    customModelData: 6215
+    unbreakable: true
+    lore:
+      - "<gray>Несут владельца быстрее ветра"
+    extraData:
+      sockets: 1
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: SPEED
+        amplifier: 1
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR
+        amount: 6.0
+        operation: ADD_NUMBER
+      - type: ATTRIBUTE
+        attribute: GENERIC_MOVEMENT_SPEED
+        amount: 0.1
+        operation: MULTIPLY_SCALAR_1
+
+  - id: "boots_of_the_titan"
+    displayName: "<dark_gray>Сапоги Титана"
+    baseItem: NETHERITE_BOOTS
+    rarity: LEGENDARY
+    customModelData: 6216
+    unbreakable: true
+    lore:
+      - "<gray>Шаг сокрушает землю"
+    extraData:
+      sockets: 2
+    components:
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR
+        amount: 5.0
+        operation: ADD_NUMBER
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: JUMP_BOOST
+        amplifier: 2
+      - type: AOE
+        radius: 5.0
+        damage: 4.0
+      - type: COOLDOWN
+        seconds: 10
+
+  - id: "dragon_scale_armor"
+    displayName: "<dark_green>Чешуя Дракона"
+    baseItem: NETHERITE_CHESTPLATE
+    rarity: MYTHIC
+    customModelData: 6217
+    unbreakable: true
+    lore:
+      - "<gray>Броня из чешуи древнего дракона"
+    extraData:
+      sockets: 4
+    components:
+      - type: ATTRIBUTE
+        attribute: GENERIC_ARMOR
+        amount: 12.0
+        operation: ADD_NUMBER
+      - type: ATTRIBUTE
+        attribute: GENERIC_MAX_HEALTH
+        amount: 10.0
+        operation: ADD_NUMBER
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: FIRE_RESISTANCE
+        amplifier: 0
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: RESISTANCE
+        amplifier: 1
+      - type: PARTICLE_AMBIENT
+        particle: DRAGON_BREATH
+        count: 5
+
+  # ── Аксессуары (4) ──
+
+  - id: "ring_of_storms"
+    displayName: "<gold>Кольцо Бурь"
+    baseItem: FIRE_CHARGE
+    rarity: LEGENDARY
+    customModelData: 6218
+    unbreakable: true
+    lore:
+      - "<gray>ПКМ — удар молнии по области"
+    extraData:
+      sockets: 2
+    components:
+      - type: LIGHTNING
+        chance: 0.50
+      - type: AOE
+        radius: 6.0
+        damage: 8.0
+      - type: COOLDOWN
+        seconds: 10
+      - type: SOUND_ON_USE
+        sound: ENTITY_LIGHTNING_BOLT_THUNDER
+
+  - id: "necklace_of_life"
+    displayName: "<green>Ожерелье Жизни"
+    baseItem: CHAIN
+    rarity: EPIC
+    customModelData: 6219
+    unbreakable: true
+    lore:
+      - "<gray>Восстанавливает здоровье с течением времени"
+    extraData:
+      sockets: 1
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: REGENERATION
+        amplifier: 1
+      - type: ATTRIBUTE
+        attribute: GENERIC_MAX_HEALTH
+        amount: 6.0
+        operation: ADD_NUMBER
+      - type: PARTICLE_AMBIENT
+        particle: HEART
+        count: 3
+
+  - id: "amulet_of_the_ancients"
+    displayName: "<gold>Амулет Древних"
+    baseItem: GOLD_NUGGET
+    rarity: LEGENDARY
+    customModelData: 6220
+    unbreakable: true
+    lore:
+      - "<gray>Хранит мудрость веков"
+    extraData:
+      sockets: 3
+    components:
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: RESISTANCE
+        amplifier: 1
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: ABSORPTION
+        amplifier: 1
+      - type: ATTRIBUTE
+        attribute: GENERIC_MAX_HEALTH
+        amount: 8.0
+        operation: ADD_NUMBER
+      - type: PARTICLE_AMBIENT
+        particle: ENCHANTMENT_TABLE
+        count: 5
+
+  - id: "book_of_secrets"
+    displayName: "<dark_purple>Книга Тайн"
+    baseItem: WRITTEN_BOOK
+    rarity: MYTHIC
+    customModelData: 6221
+    unbreakable: true
+    lore:
+      - "<gray>ПКМ — случайный эффект"
+    extraData:
+      sockets: 0
+    components:
+      - type: PROJECTILE
+        projectileType: WITHER_SKULL
+        speed: 1.5
+        yield: 2.0
+      - type: COOLDOWN
+        seconds: 20
+      - type: SOUND_ON_USE
+        sound: ENTITY_WITHER_SHOOT
+      - type: PARTICLE_ON_HIT
+        particle: SOUL_FIRE_FLAME
+        count: 30
+
+  # ── Инструменты (4) ──
+
+  - id: "drill_of_the_deep"
+    displayName: "<gray>Бур Глубин"
+    baseItem: NETHERITE_PICKAXE
+    rarity: EPIC
+    customModelData: 6222
+    unbreakable: true
+    lore:
+      - "<gray>Проходит сквозь камень как масло"
+    extraData:
+      sockets: 2
+    components:
+      - type: DAMAGE
+        damage: 10
+      - type: ATTRIBUTE
+        attribute: GENERIC_MOVEMENT_SPEED
+        amount: 0.05
+        operation: MULTIPLY_SCALAR_1
+      - type: PARTICLE_AMBIENT
+        particle: SMOKE_LARGE
+        count: 5
+
+  - id: "axe_of_the_woods"
+    displayName: "<green>Топор Лесов"
+    baseItem: DIAMOND_AXE
+    rarity: RARE
+    customModelData: 6223
+    unbreakable: true
+    lore:
+      - "<gray>Владыка деревьев"
+    extraData:
+      sockets: 1
+    components:
+      - type: DAMAGE
+        damage: 9
+      - type: FIRE_ASPECT
+        level: 1
+      - type: SOUND_ON_HIT
+        sound: BLOCK_WOOD_BREAK
+
+  - id: "shovel_of_sands"
+    displayName: "<gold>Лопата Песков"
+    baseItem: NETHERITE_SHOVEL
+    rarity: RARE
+    customModelData: 6224
+    unbreakable: true
+    lore:
+      - "<gray>Копает с невероятной скоростью"
+    extraData:
+      sockets: 1
+    components:
+      - type: DAMAGE
+        damage: 7
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: FAST_DIGGING
+        amplifier: 1
+
+  - id: "hoe_of_plenty"
+    displayName: "<green>Мотыга Изобилия"
+    baseItem: NETHERITE_HOE
+    rarity: EPIC
+    customModelData: 6225
+    unbreakable: true
+    lore:
+      - "<gray>Урожай растёт в разы быстрее"
+    extraData:
+      sockets: 1
+    components:
+      - type: DAMAGE
+        damage: 6
+      - type: POTION_EFFECT_ON_EQUIP
+        effect: FAST_DIGGING
+        amplifier: 2
+      - type: PARTICLE_AMBIENT
+        particle: HAPPY_VILLAGER
+        count: 10

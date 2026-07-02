@@ -1,7 +1,10 @@
 package me.darkcube.wa.altar;
 
 import me.darkcube.wa.WastelandArtifacts;
+import me.darkcube.wa.api.event.ArtifactCraftEvent;
+import me.darkcube.wa.artifact.Artifact;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -102,7 +105,18 @@ public class AltarCraftingManager {
         }
 
         String resultId = recipe.getResultId();
+        Artifact resultArt = plugin.getArtifactRegistry().get(resultId);
+        if (resultArt != null) {
+            ArtifactCraftEvent craftEvent = new ArtifactCraftEvent(player, resultArt, recipe.getId(), recipe.getTier());
+            Bukkit.getPluginManager().callEvent(craftEvent);
+            if (craftEvent.isCancelled()) return false;
+        }
         plugin.getArtifactManager().giveArtifact(player, resultId, 1);
+        if (plugin.getDatabaseManager() != null) {
+            plugin.getDatabaseManager().ensurePlayer(player);
+            plugin.getDatabaseManager().execute("UPDATE wa_players SET total_crafted = total_crafted + 1 WHERE uuid=?",
+                    player.getUniqueId().toString());
+        }
         player.sendMessage(mm.deserialize(plugin.getConfigManager().getLang("altar-craft-success")));
 
         return true;

@@ -1,0 +1,29 @@
+# ─── Улучшение артефакта ───
+enabled: true
+title: "<dark_gray>✦ Улучшение артефакта"
+rows: 3
+
+items:
+  border:
+    material: GRAY_STAINED_GLASS_PANE
+    slot: 0
+    fill: true
+  info:
+    material: EXPERIENCE_BOTTLE
+    slot: 4
+    name: "<gold>✦ Улучшение артефакта"
+    lore:
+      - "<gray>Положите артефакт в центр"
+      - "<gray>Нужно копий: %items_per_upgrade%"
+      - "<gray>Макс. уровень: %max_level%"
+    dynamic: true
+  artifact_target:
+    material: AIR
+    slot: 13
+    name: ""
+    dynamic: true
+  upgrade_btn:
+    material: RED_STAINED_GLASS_PANE
+    slot: 22
+    name: "<red>Положите артефакт в центр"
+    dynamic: true

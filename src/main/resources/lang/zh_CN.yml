@@ -247,16 +247,26 @@ upgrade.lore-kills: "<gray>击杀: <white>%d"
 
 fishing.caught: "<aqua>🐟 你钓到了 %s!"
 
-arena.players-only: "<red>仅限玩家!"
-arena.not-configured: "<red>竞技场未配置!"
-arena.title: "<dark_red>⚔ Boss 竞技场"
-arena.start: "<green>⚔ 竞技场开始!准备战斗!"
-arena.wave: "<gold>⚔ 第 <white>%d<gold>/<white>%d 波"
-arena.complete: "<green>🏆 竞技场完成!已获得奖励!"
-arena.cooldown: "<red>竞技场冷却中: %d秒"
-
 xp.level-up: "<green>⬆ 神器 <gold>%s <green>已达到 <yellow>%d <green>级!"
 xp.progress: "<gray>经验: <white>%d<gray>/<white>%d"
 
 elite.spawned: "<red>☠ %s 出现了!"
 elite.killed: "<gold>🏆 精英 %s 已被击败!"
+
+soulbind.not-owner: "<red>此物品已绑定到其他玩家!"
+
+# ─── 插槽 / 宝石 ───
+socket.gui-title: "<dark_gray>💎 神器插槽"
+socket.place-artifact: "<yellow>将神器放在中间</yellow>"
+socket.no-artifact: "<gray>🔒 没有神器</gray>"
+socket.locked: "<red>🔒 已锁定</red>"
+socket.locked-lore: "<gray>插槽不可用</gray>"
+socket.empty: "<green>✦ 空插槽</green>"
+socket.empty-lore: "<gray>手持宝石并点击</gray>"
+socket.unknown-gem: "<gray>❓ 未知宝石</gray>"
+socket.extract-lore: "<yellow>左键 — 取出宝石</yellow>"
+socket.extracted: "<green>宝石已取出!</green>"
+socket.inserted: "<green>宝石已插入!</green>"
+socket.not-a-gem: "<red>这不是宝石!</red>"
+socket.hold-artifact: "<red>请手持神器!</red>"
+socket.slot-occupied: "<red>此插槽已被占用!</red>"

@@ -16,6 +16,7 @@ import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
@@ -87,7 +88,7 @@ public class ArtifactSerializer {
             recipe = deserializeRecipe(node.get("recipe"));
         }
 
-        return Artifact.builder(id)
+        var builder = Artifact.builder(id)
                 .displayName(displayName)
                 .lore(lore)
                 .baseItem(baseItem)
@@ -97,8 +98,20 @@ public class ArtifactSerializer {
                 .maxStackSize(maxStackSize)
                 .skinTexture(skinTexture)
                 .components(components.toArray(new ArtifactComponent[0]))
-                .recipe(recipe)
-                .build();
+                .recipe(recipe);
+
+        if (node.has("extraData") && node.get("extraData").isObject()) {
+            var extra = node.get("extraData");
+            extra.fieldNames().forEachRemaining(key -> {
+                var val = extra.get(key);
+                if (val.isInt()) builder.extraData(key, val.asInt());
+                else if (val.isDouble()) builder.extraData(key, val.asDouble());
+                else if (val.isBoolean()) builder.extraData(key, val.asBoolean());
+                else if (val.isTextual()) builder.extraData(key, val.asText());
+            });
+        }
+
+        return builder.build();
     }
 
     private ArtifactComponent deserializeComponent(JsonNode node) {
@@ -107,6 +120,9 @@ public class ArtifactSerializer {
             case "DAMAGE" -> {
                 DamageComponent c = new DamageComponent();
                 c.setDamage(node.has("damage") ? node.get("damage").asDouble() : 1.0);
+                if (node.has("slot")) {
+                    try { c.setSlot(EquipmentSlot.valueOf(node.get("slot").asText())); } catch (IllegalArgumentException ignored) {}
+                }
                 yield c;
             }
             case "FIRE_ASPECT" -> {
@@ -122,6 +138,9 @@ public class ArtifactSerializer {
                 c.setAmount(node.has("amount") ? node.get("amount").asDouble() : 0.1);
                 if (node.has("operation")) {
                     c.setOperation(AttributeModifier.Operation.valueOf(node.get("operation").asText()));
+                }
+                if (node.has("slot")) {
+                    try { c.setSlot(EquipmentSlot.valueOf(node.get("slot").asText())); } catch (IllegalArgumentException ignored) {}
                 }
                 yield c;
             }
@@ -176,7 +195,9 @@ public class ArtifactSerializer {
             }
             case "LIFE_STEAL" -> {
                 LifeStealComponent c = new LifeStealComponent();
-                c.setPercentage(node.has("percentage") ? node.get("percentage").asDouble() : 0.1);
+                double pct = node.has("percentage") ? node.get("percentage").asDouble()
+                        : node.has("multiplier") ? node.get("multiplier").asDouble() : 0.1;
+                c.setPercentage(pct);
                 yield c;
             }
             case "LIGHTNING" -> {

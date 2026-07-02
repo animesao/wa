@@ -715,3 +715,173 @@ items:
       - "<gray>Чистейший свет"
     customModelData: 6086
     rarity: LEGENDARY
+
+  # ════════════════════════════════════════════════════════════
+  # ║  20 НОВЫХ КАСТОМНЫХ ПРЕДМЕТОВ v3.0
+  # ════════════════════════════════════════════════════════════
+
+  # ── Мифические ингредиенты (8) ──
+
+  dragon_heart:
+    material: NETHER_STAR
+    name: "<dark_red>Сердце Дракона"
+    lore:
+      - "<gray>Пульсирует древней силой"
+    customModelData: 6087
+    rarity: LEGENDARY
+
+  titan_blood:
+    material: RED_DYE
+    name: "<dark_red>Кровь Титана"
+    lore:
+      - "<gray>Горячая кровь гигантов"
+    customModelData: 6088
+    rarity: LEGENDARY
+
+  celestial_essence:
+    material: GLOWSTONE_DUST
+    name: "<gold>Небесная Эссенция"
+    lore:
+      - "<gray>Чистая энергия небес"
+    customModelData: 6089
+    rarity: EPIC
+
+  abyss_core:
+    material: OBSIDIAN
+    name: "<dark_purple>Ядро Бездны"
+    lore:
+      - "<gray>Сгусток тьмы и холода"
+    customModelData: 6090
+    rarity: EPIC
+
+  phoenix_core:
+    material: BLAZE_POWDER
+    name: "<red>Ядро Феникса"
+    lore:
+      - "<gray>Тлеющая искра возрождения"
+    customModelData: 6091
+    rarity: LEGENDARY
+
+  storm_essence:
+    material: AMETHYST_SHARD
+    name: "<yellow>Эссенция Шторма"
+    lore:
+      - "<gray>Потрескивает электричеством"
+    customModelData: 6092
+    rarity: EPIC
+
+  frozen_core:
+    material: ICE
+    name: "<aqua>Ледяное Ядро"
+    lore:
+      - "<gray>Холод вечной мерзлоты"
+    customModelData: 6093
+    rarity: EPIC
+
+  shadow_core:
+    material: BLACK_DYE
+    name: "<dark_purple>Теневое Ядро"
+    lore:
+      - "<gray>Абсолютная тьма"
+    customModelData: 6094
+    rarity: EPIC
+
+  # ── Механизмы (5) ──
+
+  ancient_gear:
+    material: IRON_INGOT
+    name: "<gold>Древний Механизм"
+    lore:
+      - "<gray>Тикает в такт вечности"
+    customModelData: 6095
+    rarity: UNCOMMON
+
+  crystal_lens:
+    material: GLASS
+    name: "<aqua>Кристальная Линза"
+    lore:
+      - "<gray>Фокусирует магическую энергию"
+    customModelData: 6096
+    rarity: RARE
+
+  rune_stone:
+    material: STONE
+    name: "<gray>Рунический Камень"
+    lore:
+      - "<gray>Покрыт древними рунами"
+    customModelData: 6097
+    rarity: RARE
+
+  soul_crystal:
+    material: AMETHYST_SHARD
+    name: "<light_purple>Кристалл Души"
+    lore:
+      - "<gray>Хранит частицу души"
+    customModelData: 6098
+    rarity: EPIC
+
+  warp_stone:
+    material: OBSIDIAN
+    name: "<dark_purple>Камень Искажения"
+    lore:
+      - "<gray>Границы пространства дрожат"
+    customModelData: 6099
+    rarity: EPIC
+
+  # ── Элементальные (7) ──
+
+  flame_orb:
+    material: FIRE_CHARGE
+    name: "<red>Огненная Сфера"
+    lore:
+      - "<gray>Сгусток чистого пламени"
+    customModelData: 6100
+    rarity: UNCOMMON
+
+  frost_crystal:
+    material: BLUE_ICE
+    name: "<aqua>Кристалл Мороза"
+    lore:
+      - "<gray>Сковывает всё вокруг"
+    customModelData: 6101
+    rarity: RARE
+
+  lightning_rod:
+    material: LIGHTNING_ROD
+    name: "<yellow>Громовой Стержень"
+    lore:
+      - "<gray>Притягивает молнии"
+    customModelData: 6102
+    rarity: RARE
+
+  nature_essence:
+    material: VINE
+    name: "<green>Эссенция Природы"
+    lore:
+      - "<gray>Живая сила лесов"
+    customModelData: 6103
+    rarity: RARE
+
+  void_shard:
+    material: ECHO_SHARD
+    name: "<dark_purple>Осколок Пустоты"
+    lore:
+      - "<gray>Ничто внутри"
+    customModelData: 6104
+    rarity: LEGENDARY
+
+  moon_crystal:
+    material: QUARTZ
+    name: "<white>Лунный Кристалл"
+    lore:
+      - "<gray>Свет холодной луны"
+    customModelData: 6105
+    rarity: RARE
+
+  sun_core:
+    material: GLOWSTONE
+    name: "<gold>Солнечное Ядро"
+    lore:
+      - "<gray>Ослепительный свет"
+    customModelData: 6106
+    rarity: EPIC

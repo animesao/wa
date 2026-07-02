@@ -35,6 +35,7 @@ public class AdminCommand extends Command {
 
         if (args.length == 0) {
             sender.sendMessage(miniMessage.deserialize("<gold>/waadmin gui - GUI всех предметов"));
+            sender.sendMessage(miniMessage.deserialize("<gold>/waadmin upgrade - улучшить артефакт"));
             sender.sendMessage(miniMessage.deserialize("<gold>/waadmin rp build - собрать RP"));
             sender.sendMessage(miniMessage.deserialize("<gold>/waadmin rp send - раздать RP"));
             sender.sendMessage(miniMessage.deserialize("<gold>/waadmin debug - режим отладки"));
@@ -47,6 +48,7 @@ public class AdminCommand extends Command {
             case "customitem" -> handleCustomItem(sender, args);
             case "debug" -> handleDebug(sender);
             case "gui" -> handleGUI(sender);
+            case "gem" -> handleGem(sender, args);
             default -> {
                 sender.sendMessage(miniMessage.deserialize(plugin.msg("admin.unknown-subcommand")));
                 yield true;
@@ -164,6 +166,30 @@ public class AdminCommand extends Command {
         return true;
     }
 
+    private boolean handleGem(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(miniMessage.deserialize(plugin.msg("admin.players-only")));
+            return true;
+        }
+        if (args.length < 2 || !"give".equalsIgnoreCase(args[1])) {
+            sender.sendMessage(miniMessage.deserialize("<gold>/waadmin gem give <gemId> [amount]"));
+            return true;
+        }
+        if (plugin.getGemManager() == null) {
+            sender.sendMessage(miniMessage.deserialize("<red>Система самоцветов неактивна"));
+            return true;
+        }
+        String gemId = args[2];
+        if (plugin.getGemManager().getGem(gemId) == null) {
+            sender.sendMessage(miniMessage.deserialize("<red>Самоцвет '" + gemId + "' не найден"));
+            return true;
+        }
+        int amount = args.length >= 4 ? tryParse(args[3], 1) : 1;
+        plugin.getGemManager().giveGem(player, gemId, amount);
+        sender.sendMessage(miniMessage.deserialize("<green>Выдан самоцвет " + gemId + " x" + amount));
+        return true;
+    }
+
     private boolean handleGUI(CommandSender sender) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage(miniMessage.deserialize(plugin.msg("admin.players-only")));
@@ -185,6 +211,11 @@ public class AdminCommand extends Command {
             completions.addAll(plugin.getAltarManager().getCraftingManager().getAllRecipes().keySet());
         } else if (args.length == 2 && "customitem".equals(args[0])) {
             completions.addAll(plugin.getCustomItemRegistry().getAll().keySet());
+        } else if (args.length == 3 && "gem".equals(args[0]) && "give".equals(args[1])) {
+            if (plugin.getGemManager() != null) {
+                completions.addAll(plugin.getGemManager().getAll().stream()
+                        .map(g -> g.getId()).toList());
+            }
         }
         return completions;
     }

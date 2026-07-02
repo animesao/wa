@@ -1,8 +1,10 @@
 package me.darkcube.wa.listener;
 
 import me.darkcube.wa.WastelandArtifacts;
+import me.darkcube.wa.api.event.ArtifactFoundEvent;
 import me.darkcube.wa.artifact.Artifact;
 import me.darkcube.wa.dungeon.DungeonManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -284,7 +286,7 @@ public class DungeonListener implements Listener {
                 dungeonManager.spawnBoss(bossLoc, bossConfig);
                 if (event.getPlayer() instanceof org.bukkit.entity.Player player) {
                     String bossName = bossConfig.name != null ? bossConfig.name : "<red>Босс";
-                    player.sendMessage(plugin.getConfigManager().getLang("dungeon.boss-spawned", bossName));
+                    player.sendMessage(me.darkcube.wa.util.ComponentUtil.fromMini(plugin.getConfigManager().getLang("dungeon.boss-spawned", bossName)));
                 }
             }
         }
@@ -382,11 +384,16 @@ public class DungeonListener implements Listener {
         var pdc = entity.getPersistentDataContainer();
         var bossArtifactKey = new NamespacedKey(plugin, "boss_artifact");
 
-        // Если это босс плагина — очищаем ванильный дроп
+        // Если это босс плагина — очищаем ванильный дроп и логируем убийство
         if (pdc.has(bossArtifactKey, PersistentDataType.STRING)
                 || pdc.has(new NamespacedKey(plugin, "boss_blueprint"), PersistentDataType.STRING)) {
             event.getDrops().clear();
             event.setDroppedExp(0);
+            if (plugin.getDatabaseManager() != null) {
+                plugin.getDatabaseManager().ensurePlayer(killer);
+                plugin.getDatabaseManager().execute("UPDATE wa_players SET boss_kills = boss_kills + 1 WHERE uuid=?",
+                        killer.getUniqueId().toString());
+            }
         }
 
         // Шансы из конфига (по умолчанию 0.25)
@@ -402,6 +409,8 @@ public class DungeonListener implements Listener {
                 ItemStack item = plugin.getArtifactManager().createItemStack(artifact);
                 entity.getWorld().dropItemNaturally(entity.getLocation(), item);
                 killer.sendMessage(plugin.getConfigManager().getLang("dungeon.artifact-found"));
+                Bukkit.getPluginManager().callEvent(new ArtifactFoundEvent(killer, artifact,
+                        ArtifactFoundEvent.FoundSource.DUNGEON_LOOT, ""));
             }
         }
 

@@ -1,0 +1,330 @@
+# ─── Самоцветы Wasteland Artifacts ───
+gems:
+  ruby_of_strength:
+    enabled: true
+    name: "<red>Рубин Силы"
+    material: REDSTONE
+    custom-model-data: 1001
+    rarity: rare
+    lore:
+      - "<gray>Даёт силу своему владельцу"
+    effects:
+      - type: POTION
+        params:
+          effect: INCREASE_DAMAGE
+          amplifier: 0
+          duration: 120
+
+  sapphire_of_speed:
+    enabled: true
+    name: "<blue>Сапфир Скорости"
+    material: LAPIS_LAZULI
+    custom-model-data: 1002
+    rarity: rare
+    lore:
+      - "<gray>Ускоряет добычу ресурсов"
+    effects:
+      - type: POTION
+        params:
+          effect: FAST_DIGGING
+          amplifier: 1
+          duration: 120
+
+  emerald_of_vitality:
+    enabled: true
+    name: "<green>Изумруд Жизни"
+    material: EMERALD
+    custom-model-data: 1003
+    rarity: epic
+    lore:
+      - "<gray>Укрепляет здоровье"
+    effects:
+      - type: POTION
+        params:
+          effect: REGENERATION
+          amplifier: 0
+          duration: 100
+
+  amethyst_of_resistance:
+    enabled: true
+    name: "<light_purple>Аметист Защиты"
+    material: AMETHYST_SHARD
+    custom-model-data: 1004
+    rarity: epic
+    lore:
+      - "<gray>Повышает сопротивляемость"
+    effects:
+      - type: POTION
+        params:
+          effect: DAMAGE_RESISTANCE
+          amplifier: 0
+          duration: 120
+
+  diamond_of_glory:
+    enabled: true
+    name: "<aqua>Алмаз Славы"
+    material: DIAMOND
+    custom-model-data: 1005
+    rarity: legendary
+    lore:
+      - "<gray>Дарует все силы сразу"
+    effects:
+      - type: POTION
+        params:
+          effect: INCREASE_DAMAGE
+          amplifier: 1
+          duration: 200
+      - type: POTION
+        params:
+          effect: DAMAGE_RESISTANCE
+          amplifier: 0
+          duration: 200
+      - type: POTION
+        params:
+          effect: REGENERATION
+          amplifier: 0
+          duration: 200
+
+  topaz_of_accuracy:
+    enabled: true
+    name: "<gold>Топаз Меткости"
+    material: YELLOW_DYE
+    custom-model-data: 1006
+    rarity: rare
+    lore:
+      - "<gray>Повышает точность атак"
+    effects:
+      - type: POTION
+        params:
+          effect: SPEED
+          amplifier: 0
+          duration: 120
+
+  jade_of_nature:
+    enabled: true
+    name: "<green>Нефрит Природы"
+    material: GREEN_DYE
+    custom-model-data: 1007
+    rarity: rare
+    lore:
+      - "<gray>Насыщает жизненной силой"
+    effects:
+      - type: POTION
+        params:
+          effect: SATURATION
+          amplifier: 0
+          duration: 200
+
+  onyx_of_darkness:
+    enabled: true
+    name: "<dark_gray>Оникс Тьмы"
+    material: BLACK_DYE
+    custom-model-data: 1008
+    rarity: epic
+    lore:
+      - "<gray>Дарует ночное зрение"
+    effects:
+      - type: POTION
+        params:
+          effect: NIGHT_VISION
+          amplifier: 0
+          duration: 300
+
+  opal_of_warding:
+    enabled: true
+    name: "<white>Опал Отражения"
+    material: QUARTZ
+    custom-model-data: 1009
+    rarity: epic
+    lore:
+      - "<gray>Повышает сопротивление отбрасыванию"
+    effects:
+      - type: COMMAND
+        params:
+          command: "effect give %player% minecraft:resistance 5 0 true"
+
+  pearl_of_depth:
+    enabled: true
+    name: "<aqua>Жемчужина Глубин"
+    material: PRISMARINE_SHARD
+    custom-model-data: 1010
+    rarity: rare
+    lore:
+      - "<gray>Позволяет дышать под водой"
+    effects:
+      - type: POTION
+        params:
+          effect: WATER_BREATHING
+          amplifier: 0
+          duration: 300
+
+  garnet_of_ferocity:
+    enabled: true
+    name: "<dark_red>Гранат Ярости"
+    material: RED_DYE
+    custom-model-data: 1011
+    rarity: epic
+    lore:
+      - "<gray>Усиливает атаку"
+    effects:
+      - type: POTION
+        params:
+          effect: INCREASE_DAMAGE
+          amplifier: 1
+          duration: 100
+
+  aquamarine_of_tides:
+    enabled: true
+    name: "<aqua>Аквамарин Приливов"
+    material: LIGHT_BLUE_DYE
+    custom-model-data: 1012
+    rarity: epic
+    lore:
+      - "<gray>Дарует скорость под водой"
+    effects:
+      - type: POTION
+        params:
+          effect: DOLPHINS_GRACE
+          amplifier: 0
+          duration: 200
+
+  amber_of_endurance:
+    enabled: true
+    name: "<gold>Янтарь Выносливости"
+    material: ORANGE_DYE
+    custom-model-data: 1013
+    rarity: rare
+    lore:
+      - "<gray>Укрепляет тело"
+    effects:
+      - type: POTION
+        params:
+          effect: HEALTH_BOOST
+          amplifier: 0
+          duration: 300
+
+  ruby_of_storms:
+    enabled: true
+    name: "<dark_red>Рубин Шторма"
+    material: REDSTONE_BLOCK
+    custom-model-data: 1014
+    rarity: legendary
+    lore:
+      - "<gray>Призывает молнии в атаке"
+    effects:
+      - type: COMMAND
+        params:
+          command: "effect give %player% minecraft:strength 10 1 true"
+
+  sapphire_of_frost:
+    enabled: true
+    name: "<blue>Сапфир Мороза"
+    material: LAPIS_BLOCK
+    custom-model-data: 1015
+    rarity: legendary
+    lore:
+      - "<gray>Замедляет врагов вокруг"
+    effects:
+      - type: POTION
+        params:
+          effect: DAMAGE_RESISTANCE
+          amplifier: 1
+          duration: 200
+      - type: COMMAND
+        params:
+          command: "effect give %player% minecraft:slowness 3 0 true"
+
+  diamond_of_eternity:
+    enabled: true
+    name: "<aqua>Бриллиант Вечности"
+    material: DIAMOND_BLOCK
+    custom-model-data: 1016
+    rarity: legendary
+    lore:
+      - "<gray>Абсолютная защита"
+    effects:
+      - type: POTION
+        params:
+          effect: DAMAGE_RESISTANCE
+          amplifier: 1
+          duration: 400
+      - type: POTION
+        params:
+          effect: REGENERATION
+          amplifier: 1
+          duration: 400
+      - type: POTION
+        params:
+          effect: FIRE_RESISTANCE
+          amplifier: 0
+          duration: 400
+
+  amethyst_of_absorption:
+    enabled: true
+    name: "<light_purple>Аметист Поглощения"
+    material: AMETHYST_CLUSTER
+    custom-model-data: 1017
+    rarity: legendary
+    lore:
+      - "<gray>Поглощает урон"
+    effects:
+      - type: POTION
+        params:
+          effect: ABSORPTION
+          amplifier: 2
+          duration: 300
+
+  void_gem:
+    enabled: true
+    name: "<dark_purple>Самоцвет Бездны"
+    material: OBSIDIAN
+    custom-model-data: 1018
+    rarity: void
+    lore:
+      - "<gray>Сила самой пустоты"
+    effects:
+      - type: POTION
+        params:
+          effect: INCREASE_DAMAGE
+          amplifier: 2
+          duration: 600
+      - type: POTION
+        params:
+          effect: DAMAGE_RESISTANCE
+          amplifier: 1
+          duration: 600
+      - type: POTION
+        params:
+          effect: REGENERATION
+          amplifier: 2
+          duration: 600
+      - type: POTION
+        params:
+          effect: FIRE_RESISTANCE
+          amplifier: 0
+          duration: 600
+
+  celestial_gem:
+    enabled: true
+    name: "<gold>Небесный Самоцвет"
+    material: NETHER_STAR
+    custom-model-data: 1019
+    rarity: void
+    lore:
+      - "<gray>Сила угасших звёзд"
+    effects:
+      - type: POTION
+        params:
+          effect: SPEED
+          amplifier: 1
+          duration: 600
+      - type: POTION
+        params:
+          effect: JUMP_BOOST
+          amplifier: 1
+          duration: 600
+      - type: POTION
+        params:
+          effect: SLOW_FALLING
+          amplifier: 0
+          duration: 600

@@ -85,8 +85,19 @@ public class ItemBuilder {
             applySkinTexture(skullMeta, artifact.getSkinTexture());
         }
 
+        Object socketsObj = artifact.getExtraData().get("sockets");
+        if (socketsObj instanceof Number n && n.intValue() > 0) {
+            lore.add(MINI_MESSAGE.deserialize(""));
+            lore.add(MINI_MESSAGE.deserialize("<dark_gray>💎 Гнёзда: <white>" + n.intValue()));
+        }
+
+        meta.lore(lore);
+
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         pdc.set(ARTIFACT_KEY, PersistentDataType.STRING, artifact.getId());
+        if (socketsObj instanceof Number n) {
+            pdc.set(new NamespacedKey("wastelandartifacts", "socket_count"), PersistentDataType.INTEGER, n.intValue());
+        }
 
         item.setItemMeta(meta);
 

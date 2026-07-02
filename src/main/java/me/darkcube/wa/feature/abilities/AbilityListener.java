@@ -8,9 +8,14 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class AbilityListener implements Listener {
     private final WastelandArtifacts plugin;
     private final AbilityManager manager;
+    private final Map<UUID, Long> globalCooldowns = new HashMap<>();
 
     public AbilityListener(WastelandArtifacts plugin, AbilityManager manager) {
         this.plugin = plugin;
@@ -22,11 +27,14 @@ public class AbilityListener implements Listener {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         Player player = event.getPlayer();
 
-        // Проверяем обе руки
-        ItemStack item = event.getItem();
-        if (item == null || !item.hasItemMeta()) {
-            item = player.getInventory().getItemInOffHand();
-        }
+        // Глобальный кулдаун 500мс для предотвращения двойного вызова (AIR+BLOCK)
+        long now = System.currentTimeMillis();
+        Long lastUse = globalCooldowns.get(player.getUniqueId());
+        if (lastUse != null && now - lastUse < 500) return;
+        globalCooldowns.put(player.getUniqueId(), now);
+
+        // Только главная рука
+        ItemStack item = player.getInventory().getItemInMainHand();
         if (item == null || !item.hasItemMeta()) return;
 
         var artifact = plugin.getArtifactManager().getArtifactFromItem(item);
@@ -39,10 +47,12 @@ public class AbilityListener implements Listener {
                     var field = comp.getClass().getDeclaredField("abilityId");
                     field.setAccessible(true);
                     abilityId = (String) field.get(comp);
-                } catch (Exception e) {}
+                } catch (Exception ignored) {}
                 if (abilityId != null) {
                     Ability ability = manager.getAbility(abilityId);
-                    manager.executeAbility(player, ability);
+                    if (ability != null) {
+                        manager.executeAbility(player, ability);
+                    }
                 }
             }
         }

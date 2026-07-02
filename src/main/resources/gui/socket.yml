@@ -1,0 +1,50 @@
+# ─── Гнёзда артефакта ───
+enabled: true
+title: "<dark_gray>💎 Гнёзда артефакта"
+rows: 5
+
+items:
+  border:
+    material: GRAY_STAINED_GLASS_PANE
+    slot: 0
+    fill: true
+  artifact_slot:
+    material: GRAY_STAINED_GLASS_PANE
+    slot: 22
+    name: "<yellow>Поместите артефакт в центр"
+    dynamic: true
+  socket_0:
+    material: BLACK_STAINED_GLASS_PANE
+    slot: 10
+    name: "<gray>🔒 Нет артефакта"
+    dynamic: true
+  socket_1:
+    material: BLACK_STAINED_GLASS_PANE
+    slot: 11
+    name: "<gray>🔒 Нет артефакта"
+    dynamic: true
+  socket_2:
+    material: BLACK_STAINED_GLASS_PANE
+    slot: 12
+    name: "<gray>🔒 Нет артефакта"
+    dynamic: true
+  socket_3:
+    material: BLACK_STAINED_GLASS_PANE
+    slot: 13
+    name: "<gray>🔒 Нет артефакта"
+    dynamic: true
+  socket_4:
+    material: BLACK_STAINED_GLASS_PANE
+    slot: 14
+    name: "<gray>🔒 Нет артефакта"
+    dynamic: true
+  socket_5:
+    material: BLACK_STAINED_GLASS_PANE
+    slot: 15
+    name: "<gray>🔒 Нет артефакта"
+    dynamic: true
+  socket_6:
+    material: BLACK_STAINED_GLASS_PANE
+    slot: 16
+    name: "<gray>🔒 Нет артефакта"
+    dynamic: true

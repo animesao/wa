@@ -14,7 +14,8 @@ public class FeatureConfig {
     public boolean fishing = true;
     public boolean customMobs = true;
     public boolean artifactXP = true;
-    public boolean bossArena = true;
+    public boolean achievements = true;
+    public boolean sockets = true;
 
     public static FeatureConfig from(MainConfig main) {
         return main.features != null ? main.features : new FeatureConfig();

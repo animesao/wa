@@ -247,16 +247,26 @@ upgrade.lore-kills: "<gray>Tués: <white>%d"
 
 fishing.caught: "<aqua>🐟 Vous avez pêché %s!"
 
-arena.players-only: "<red>Joueurs seulement !"
-arena.not-configured: "<red>Arène non configurée !"
-arena.title: "<dark_red>⚔ Arène des Boss"
-arena.start: "<green>⚔ Arène commencée! Prépare-toi au combat!"
-arena.wave: "<gold>⚔ Vague <white>%d<gold>/<white>%d"
-arena.complete: "<green>🏆 Arène terminée! Récompenses obtenues!"
-arena.cooldown: "<red>Arène en recharge: %ds"
-
 xp.level-up: "<green>⬆ Artefact <gold>%s <green>a atteint le niveau <yellow>%d!"
 xp.progress: "<gray>XP: <white>%d<gray>/<white>%d"
 
 elite.spawned: "<red>☠ %s est apparu!"
 elite.killed: "<gold>🏆 Élite %s vaincu!"
+
+soulbind.not-owner: "<red>Cet objet est lié à un autre joueur!"
+
+# ─── Emplacements / Gemmes ───
+socket.gui-title: "<dark_gray>💎 Emplacements d'artefact"
+socket.place-artifact: "<yellow>Placez l'artefact au centre</yellow>"
+socket.no-artifact: "<gray>🔒 Aucun artefact</gray>"
+socket.locked: "<red>🔒 Verrouillé</red>"
+socket.locked-lore: "<gray>Emplacement indisponible</gray>"
+socket.empty: "<green>✦ Emplacement vide</green>"
+socket.empty-lore: "<gray>Tenez la gemme et cliquez</gray>"
+socket.unknown-gem: "<gray>❓ Gemme inconnue</gray>"
+socket.extract-lore: "<yellow>LMB — extraire la gemme</yellow>"
+socket.extracted: "<green>Gemme extraite!</green>"
+socket.inserted: "<green>Gemme insérée!</green>"
+socket.not-a-gem: "<red>Ce n'est pas une gemme!</red>"
+socket.hold-artifact: "<red>Tenez l'artefact dans votre main!</red>"
+socket.slot-occupied: "<red>Cet emplacement est déjà occupé!</red>"

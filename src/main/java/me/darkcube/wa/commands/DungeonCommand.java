@@ -34,22 +34,12 @@ public class DungeonCommand extends Command {
             sender.sendMessage(miniMessage.deserialize(plugin.msg("dungeon.help.scan")));
             sender.sendMessage(miniMessage.deserialize(plugin.msg("dungeon.help.paste")));
             sender.sendMessage(miniMessage.deserialize(plugin.msg("dungeon.help.info")));
-            if (sender.hasPermission("wastelandartifacts.admin")) {
-                sender.sendMessage(miniMessage.deserialize(plugin.msg("dungeon.help.loot")));
-            }
             return true;
         }
 
         return switch (args[0].toLowerCase()) {
             case "scan" -> handleScan(sender, args);
             case "paste" -> handlePaste(sender, args);
-            case "loot" -> {
-                if (!sender.hasPermission("wastelandartifacts.admin")) {
-                    sender.sendMessage(miniMessage.deserialize(plugin.msg("dungeon.no-permission")));
-                    yield true;
-                }
-                yield handleLoot(sender);
-            }
             case "info" -> handleInfo(sender);
             default -> {
                 sender.sendMessage(miniMessage.deserialize(plugin.msg("dungeon.unknown-subcommand")));
@@ -91,15 +81,6 @@ public class DungeonCommand extends Command {
         } else {
             sender.sendMessage(miniMessage.deserialize(plugin.msg("dungeon.schematic-failed", args[1])));
         }
-        return true;
-    }
-
-    private boolean handleLoot(CommandSender sender) {
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage(miniMessage.deserialize(plugin.msg("dungeon.players-only")));
-            return true;
-        }
-        new me.darkcube.wa.dungeon.DungeonLootGUI(plugin, player).open();
         return true;
     }
 

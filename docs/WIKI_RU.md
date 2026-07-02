@@ -38,7 +38,7 @@
 
 ### Основные возможности
 
-- **30+ кастомных артефактов** — оружие, броня, инструменты, аксессуары с уникальными способностями (огненный аспект, молнии, вампиризм, взрывы, призывы, снаряды, АОЕ и др.)
+- **86+ кастомных артефактов** — оружие, броня, инструменты, аксессуары с уникальными способностями (огненный аспект, молнии, вампиризм, взрывы, призывы, снаряды, АОЕ и др.)
 - **86 кастомных ингредиентов** — компоненты для крафта, разделённые на категории (Элементы, Части существ, Древние артефакты, Алхимия, Пустошь, Космос, Материалы, Мифические, Особые, Добавленные)
 - **3 уровня алтарей** — 3D-мультиблочные структуры для крафта артефактов (Базовый, Продвинутый, Легендарный)
 - **Система чертежей** — создавайте чертежи в обычном верстаке, используйте их на алтарях
@@ -48,7 +48,8 @@
 - **Сумка артефактов** — портативное хранилище артефактов с автоматическим применением эффектов
 - **Ресурс-пак** — автоматически генерируемый ресурс-пак с кастомными моделями и текстурами
 - **Многоязычность** — 5 встроенных языковых файлов (EN, RU, DE, FR, ZH)
-- **Developer API** — публичное API для регистрации кастомных артефактов, компонентов и триггеров
+- **Developer API** — полное API для артефактов, компонентов, триггеров, самоцветов, сетов, абилок, коллекции, улучшений, XP, сумки, подземелий, алтарей, достижений, элитных мобов, БД и конфигов
+- **Система самоцветов/гнёзд** — 20 самоцветов с настраиваемыми эффектами, вставляются в артефакты, команда `/gem`, GemBagGUI
 - **Система фич** — 12 модулей, каждый включается/выключается в config.yml
 - **Коллекция артефактов** — `/artifact collection`, отслеживание в БД
 - **Сеты артефактов** — бонусы за набор (features/sets.yml)
@@ -57,7 +58,6 @@
 - **Рыбалка** — кастомный лут
 - **Элитные мобы** — с множителями и особым дропом
 - **XP артефактов** — уровни и масштабирование
-- **Арена боссов** — волновая арена
 - **AdminItemsGUI** — `/waadmin gui` для выдачи любых предметов плагина
 - **Интеграции**: ItemsAdder, Nexo, Oraxen, MythicMobs, PlaceholderAPI — все через рефлексию
 
@@ -99,8 +99,7 @@
    - `plugins/WastelandArtifacts/features/fishing_loot.yml`
    - `plugins/WastelandArtifacts/features/elites.yml`
    - `plugins/WastelandArtifacts/features/xp.yml`
-   - `plugins/WastelandArtifacts/features/arena.yml`
-   - `plugins/WastelandArtifacts/lang/en_US.yml`
+    - `plugins/WastelandArtifacts/lang/en_US.yml`
    - `plugins/WastelandArtifacts/lang/ru_RU.yml`
    - `plugins/WastelandArtifacts/lang/de_DE.yml`
    - `plugins/WastelandArtifacts/lang/fr_FR.yml`
@@ -243,21 +242,21 @@
 /item decode H4sI...
 ```
 
-### 3.8 `/arena` — Арена боссов
+### 3.8 `/gem` — Самоцветы и гнёзда
 
-**Алиасы:** `/bossarena`
+**Алиасы:** `/gems`, `/socket`
 
-**Право:** `wastelandartifacts.player.arena`
-
-| Подкоманда | Описание |
-|---|---|
-| *(без аргументов)* | Открыть GUI арены боссов |
-| `start` | Начать волну на арене |
+| Подкоманда | Право | Аргументы | Описание |
+|---|---|---|---|
+| `give` | `wastelandartifacts.admin` | `<id> [количество]` | Выдать самоцвет игроку |
+| `list` | `wastelandartifacts.player` | — | Список всех зарегистрированных самоцветов |
+| `open` | `wastelandartifacts.player` | — | Открыть GUI гнёзд для артефакта в руке |
 
 **Примеры:**
 ```
-/arena
-/arena start
+/gem give ruby_of_strength 5
+/gem list
+/gem open
 ```
 
 ---
@@ -268,7 +267,7 @@
 |---|---|---|---|
 | `wastelandartifacts.*` | op | `admin` + `player` | Все права |
 | `wastelandartifacts.admin` | op | `admin.altar`, `admin.blueprint`, `admin.customitem`, `admin.debug`, `admin.rp`, `admin.gui` | Все админские команды |
-| `wastelandartifacts.player` | true | `player.altar`, `player.bag`, `player.artifact`, `player.blueprint`, `player.collection`, `player.arena` | Все игровые команды |
+| `wastelandartifacts.player` | true | `player.altar`, `player.bag`, `player.artifact`, `player.blueprint`, `player.collection` | Все игровые команды |
 | `wastelandartifacts.admin.altar` | op | — | Управление алтарями (постройка, схемы) |
 | `wastelandartifacts.admin.blueprint` | op | — | Выдача чертежей |
 | `wastelandartifacts.admin.customitem` | op | — | Выдача кастомных предметов |
@@ -280,7 +279,8 @@
 | `wastelandartifacts.player.artifact` | true | — | Список и просмотр информации об артефактах |
 | `wastelandartifacts.player.blueprint` | true | — | Использование чертежей на алтарях |
 | `wastelandartifacts.player.collection` | true | — | Просмотр коллекции артефактов |
-| `wastelandartifacts.player.arena` | true | — | Доступ к арене боссов |
+| `wastelandartifacts.player.gem` | true | — | Команды самоцветов (`/gem list`, `/gem open`) |
+
 
 ---
 
@@ -305,7 +305,8 @@ features:
   fishing: true
   customMobs: true
   artifactXP: true
-  bossArena: true
+  achievements: true
+  sockets: true
 
 resource-pack:
   mode: AUTO
@@ -369,7 +370,7 @@ lang:
 | `fishing` | Boolean | `true` | Включить кастомный лут при рыбалке |
 | `customMobs` | Boolean | `true` | Включить элитных мобов |
 | `artifactXP` | Boolean | `true` | Включить XP артефактов |
-| `bossArena` | Boolean | `true` | Включить арену боссов |
+
 
 #### Секция Resource Pack
 
@@ -1489,24 +1490,31 @@ xp:
   levelUpMessage: "<green>⬆ Артефакт <gold>%artifact% <green>достиг уровня <yellow>%level%!"
 ```
 
-#### features/arena.yml
+#### features/gems.yml
 
-Арена боссов (волновая). Игрок сражается с волнами мобов и боссов.
+Система самоцветов и гнёзд. Самоцветы — предметы, вставляемые в гнёзда артефактов, дающие зельевые эффекты или выполняющие команды.
+
+Каждый самоцвет имеет тип, материал, custom model data, редкость, описание и список эффектов (type: `POTION` или `COMMAND`).
 
 ```yaml
-arena:
-  enabled: true
-  cooldown: 300
-  arenaWorld: "arena"
-  spawn:
-    x: 0
-    y: 64
-    z: 0
-  bossSpawn:
-    x: 0
-    y: 64
-    z: 20
+gems:
+  ruby_of_strength:
+    enabled: true
+    name: "<red>Рубин Силы"
+    material: REDSTONE
+    custom-model-data: 1001
+    rarity: rare
+    lore:
+      - "<gray>Даёт силу своему владельцу"
+    effects:
+      - type: POTION
+        params:
+          effect: INCREASE_DAMAGE
+          amplifier: 0
+          duration: 120
 ```
+
+Самоцветы вставляются в артефакты с доступными гнёздами через `/gem open` (держа артефакт в руке). Количество гнёзд настраивается через API.
 
 ---
 
@@ -1562,12 +1570,12 @@ drops:
 
 ### PlaceholderAPI
 
-Добавляет плейсхолдеры для отображения данных артефактов, коллекции, XP и статистики арены.
+Добавляет плейсхолдеры для отображения данных артефактов, коллекции, XP.
 
 **Примеры плейсхолдеров:**
 - `%wastelandartifacts_collection_progress%` — прогресс коллекции
 - `%wastelandartifacts_artifact_level%` — уровень артефакта в руке
-- `%wastelandartifacts_arena_waves%` — пройденные волны на арене
+
 
 ---
 
@@ -1735,18 +1743,7 @@ CREATE TABLE IF NOT EXISTS wa_collection (
 );
 ```
 
-#### wa_arena_stats
 
-Статистика игроков на арене боссов.
-
-```sql
-CREATE TABLE IF NOT EXISTS wa_arena_stats (
-    player_uuid VARCHAR(36) PRIMARY KEY,
-    waves_cleared INT DEFAULT 0,
-    bosses_killed INT DEFAULT 0,
-    best_time BIGINT DEFAULT 0
-);
-```
 
 ### Система фич с поддержкой БД
 
@@ -1754,7 +1751,6 @@ CREATE TABLE IF NOT EXISTS wa_arena_stats (
 - **Коллекция** (`collection`) — сохраняет прогресс игрока
 - **Улучшение** (`upgrades`) — хранит уровни артефактов
 - **XP артефактов** (`artifactXP`) — сохраняет опыт артефактов
-- **Арена боссов** (`bossArena`) — записывает статистику игроков
 
 Если `database.enabled: false`, эти модули автоматически отключаются.
 
@@ -1762,42 +1758,215 @@ CREATE TABLE IF NOT EXISTS wa_arena_stats (
 
 ## 11. API
 
+Публичное API доступно через `WastelandArtifacts.getInstance().getApi()` и предоставляет доступ ко всем функциям плагина. Методы, обращающиеся к отключённым модулям, возвращают `null`.
+
 ### Получение экземпляра API
 
 ```java
 WastelandArtifactsAPI api = WastelandArtifacts.getInstance().getApi();
+// Или через Bukkit:
+WastelandArtifacts wa = (WastelandArtifacts) Bukkit.getPluginManager().getPlugin("WastelandArtifacts");
+WastelandArtifactsAPI api = wa.getApi();
 ```
 
-### Доступные методы
+### Регистрация артефактов
 
 ```java
-// Регистрация артефактов
-void registerArtifact(@NotNull Artifact artifact)
-void unregisterArtifact(@NotNull String id)
-Artifact getArtifact(@NotNull String id)
-List<Artifact> getAllArtifacts()
-
-// Создание предметов
-ItemStack createItem(@NotNull Artifact artifact)
-ItemStack createItem(@NotNull String artifactId)
-
-// Определение артефакта
-Artifact getArtifactFromItem(@NotNull ItemStack item)
-boolean isArtifact(@NotNull ItemStack item)
-
-// Выдача артефактов
-void giveArtifact(@NotNull Player player, @NotNull String artifactId, int amount)
-
-// Регистрация компонентов и триггеров
-void registerComponent(@NotNull String id, @NotNull Class<? extends ArtifactComponent> clazz)
-void registerTriggerType(@NotNull TriggerType type, @NotNull Trigger trigger)
-
-// Перезагрузка
-void reload()
-
-// Экземпляр плагина
-WastelandArtifacts getPlugin()
+void registerArtifact(@NotNull Artifact artifact)     // Зарегистрировать новый артефакт
+void unregisterArtifact(@NotNull String id)            // Удалить артефакт по ID
+Artifact getArtifact(@NotNull String id)               // Получить артефакт по ID
+List<Artifact> getAllArtifacts()                       // Все зарегистрированные артефакты
+boolean hasArtifact(@NotNull String id)                // Проверить существование ID
+ArtifactBuilder builder(@NotNull String id)            // Создать билдер для кастомного артефакта
+ArtifactManager getArtifactManager()                   // Получить менеджер артефактов
+ArtifactRegistry getArtifactRegistry()                 // Получить реестр артефактов
 ```
+
+### Создание и определение предметов
+
+```java
+ItemStack createItem(@NotNull Artifact artifact)       // Создать ItemStack из артефакта
+ItemStack createItem(@NotNull String artifactId)       // Создать ItemStack по ID
+Artifact getArtifactFromItem(@NotNull ItemStack item)  // Извлечь артефакт из ItemStack (через PDC)
+boolean isArtifact(@NotNull ItemStack item)            // Проверить, является ли предмет артефактом
+void giveArtifact(@NotNull Player player, @NotNull String artifactId, int amount)
+```
+
+### Система компонентов
+
+```java
+void registerComponent(@NotNull String id, @NotNull Class<? extends ArtifactComponent> clazz)
+ArtifactComponent createComponent(@NotNull String type)
+ComponentRegistry getComponentRegistry()
+```
+
+### Система триггеров
+
+```java
+void registerTrigger(@NotNull TriggerType type, @NotNull Trigger trigger)
+void fireTriggers(@NotNull TriggerType type, @NotNull TriggerContext ctx)
+Map<TriggerType, List<Trigger>> getAllTriggers()
+```
+
+### Редкости
+
+```java
+RarityManager getRarityManager()
+RarityManager.RarityDef getRarityDef(@NotNull String id)
+RarityManager.RarityDef getRarityDef(@NotNull Rarity rarity)
+```
+
+### Сумка артефактов
+
+```java
+ArtifactBagManager getBagManager()                     // Может быть null если отключена
+ItemStack[] getPlayerBag(@NotNull Player player)
+void setBagSlot(@NotNull Player player, int slot, ItemStack item)
+void recalcBagEffects(@NotNull Player player)
+```
+
+### Подземелья
+
+```java
+DungeonManager getDungeonManager()                     // Может быть null если отключено
+List<ItemStack> generateDungeonLoot(@NotNull String dungeonId)
+```
+
+### Алтари
+
+```java
+AltarManager getAltarManager()                         // Может быть null если отключено
+```
+
+### Коллекция
+
+```java
+CollectionManager getCollectionManager()               // Может быть null если отключена
+void markArtifactFound(@NotNull Player player, @NotNull String artifactId)
+boolean hasFoundArtifact(@NotNull Player player, @NotNull String artifactId)
+int getCollectionCount(@NotNull Player player)
+```
+
+### Улучшения
+
+```java
+UpgradeManager getUpgradeManager()                     // Может быть null если отключены
+int getArtifactLevel(@NotNull Player player, @NotNull String artifactId)
+void setArtifactLevel(@NotNull Player player, @NotNull String artifactId, int level)
+```
+
+### Опыт артефактов (XP)
+
+```java
+ArtifactXPManager getXPManager()                       // Может быть null если отключён
+int getArtifactXPLevel(@NotNull Player player, @NotNull String artifactId)
+```
+
+### Сеты
+
+```java
+SetManager getSetManager()                             // Может быть null если отключены
+void registerSet(@NotNull ArtifactSet set)
+Map<ArtifactSet, Integer> getActiveSets(@NotNull Player player)
+void applySetBonuses(@NotNull Player player)
+```
+
+### Активные способности
+
+```java
+AbilityManager getAbilityManager()                     // Может быть null если отключены
+Ability getAbility(@NotNull String id)
+Map<String, Ability> getAllAbilities()
+boolean hasAbilityCooldown(@NotNull Player player, @NotNull String abilityId)
+void executeAbility(@NotNull Player player, @NotNull Ability ability)
+```
+
+### Самоцветы (гнёзда)
+
+```java
+GemManager getGemManager()                             // Может быть null если отключены
+Gem getGem(@NotNull String id)
+Collection<Gem> getAllGems()
+boolean isGem(@NotNull ItemStack item)
+ItemStack createGemItem(@NotNull Gem gem)
+void giveGem(@NotNull Player player, @NotNull String gemId, int amount)
+
+// Управление гнёздами
+int getSocketCount(@NotNull ItemStack artifactItem)
+void setSocketCount(@NotNull ItemStack artifactItem, int count)
+List<String> getSocketedGems(@NotNull ItemStack artifactItem)
+boolean socketGem(@NotNull ItemStack artifactItem, @NotNull String gemId)
+String unsocketGem(@NotNull ItemStack artifactItem, int index)
+
+// Принудительно применить эффекты самоцветов игроку
+void applyGemEffects(@NotNull Player player)
+```
+
+### Кастомные предметы
+
+```java
+CustomItemRegistry getCustomItemRegistry()
+ItemStack createCustomItem(@NotNull String id)
+ItemStack createCustomItem(@NotNull String id, int amount)
+boolean isCustomItem(@NotNull ItemStack item)
+String getCustomItemId(@NotNull ItemStack item)
+```
+
+### Достижения
+
+```java
+AchievementManager getAchievementManager()             // Может быть null если отключены
+Collection<Achievement> getAllAchievements()
+int getAchievementProgress(@NotNull Player player, @NotNull String achievementId)
+boolean isAchievementCompleted(@NotNull Player player, @NotNull String achievementId)
+void checkAchievements(@NotNull Player player)
+```
+
+### Элитные мобы
+
+```java
+EliteMobManager getEliteMobManager()                   // Может быть null если отключены
+```
+
+### База данных
+
+```java
+DatabaseManager getDatabaseManager()                   // Может быть null если БД отключена
+void executeQuery(@NotNull String sql, Object... args)
+```
+
+### Конфиги и сообщения
+
+```java
+ConfigManager getConfigManager()
+void reload()                                          // Перезагрузить все конфиги
+String getMessage(@NotNull String key, Object... args) // Локализованное сообщение (язык сервера)
+String getMessageFor(@NotNull Player player, @NotNull String key, Object... args) // С учётом языка игрока
+```
+
+### Утилиты
+
+```java
+ItemBuilder getItemBuilder()
+NamespacedKey getPDCKey(@NotNull String key)
+WastelandArtifacts getPlugin()
+String getVersion()
+```
+
+### События
+
+Все события находятся в пакете `me.darkcube.wa.api.event`:
+
+| Событие | Cancellable | Описание |
+|---|---|---|
+| `ArtifactCraftEvent` | Нет | Вызывается при крафте артефакта на алтаре |
+| `ArtifactEquipEvent` | Да | Вызывается при надевании/снятии артефакта |
+| `ArtifactFoundEvent` | Нет | Вызывается при нахождении нового артефакта |
+| `ArtifactLevelUpEvent` | Нет | Вызывается при повышении уровня артефакта (XP) |
+| `ArtifactUpgradeEvent` | Да | Вызывается при улучшении артефакта комбинированием |
+| `GemSocketEvent` | Да | Вызывается при вставке самоцвета в артефакт |
+| `GemUnsocketEvent` | Да | Вызывается при извлечении самоцвета из артефакта |
+| `SetBonusActivateEvent` | Нет | Вызывается при активации/деактивации сет-бонуса |
 
 ### Пример использования
 
@@ -1828,6 +1997,20 @@ Artifact customArtifact = Artifact.builder("my_artifact")
     )
     .build();
 api.registerArtifact(customArtifact);
+
+// Работа с самоцветами
+api.giveGem(player, "ruby_of_strength", 1);
+int sockets = api.getSocketCount(item);
+api.socketGem(item, "ruby_of_strength");
+
+// Проверить активные сет-бонусы
+Map<ArtifactSet, Integer> activeSets = api.getActiveSets(player);
+
+// Выполнить активную способность
+Ability fireball = api.getAbility("fireball");
+if (!api.hasAbilityCooldown(player, "fireball")) {
+    api.executeAbility(player, fireball);
+}
 ```
 
 ---
@@ -1880,7 +2063,7 @@ api.registerArtifact(customArtifact);
 
 #### Фичи не загружаются
 - Убедитесь, что соответствующие настройки в секции `features` включены
-- Некоторые модули (collection, upgrades, xp, arena) требуют включённой БД
+- Некоторые модули (collection, upgrades, xp) требуют включённой БД
 - Проверьте, что файлы в `features/` существуют и имеют корректный YAML
 
 ### Включение отладочного режима
@@ -1904,4 +2087,4 @@ api.registerArtifact(customArtifact);
 
 ---
 
-> **Wasteland Artifacts v2.1.0** — Создано animesao для Paper 1.21.11+.
+> **Wasteland Artifacts v2.2.0** — Создано animesao для Paper 1.21.11+.

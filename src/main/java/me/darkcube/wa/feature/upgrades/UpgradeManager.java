@@ -39,8 +39,14 @@ public class UpgradeManager {
     }
 
     public void setLevel(Player player, String artifactId, int level) {
-        db.execute("INSERT OR REPLACE INTO wa_artifact_data (id, owner_uuid, level, xp, kills) VALUES (?,?,?,0,0)",
-                artifactId, player.getUniqueId().toString(), Math.min(level, maxLevel));
+        int clamped = Math.min(level, maxLevel);
+        int currentLevel = getLevel(player, artifactId);
+        db.execute("INSERT OR REPLACE INTO wa_artifact_data (id, owner_uuid, level, xp, kills) VALUES (?,?,?, " +
+                        "COALESCE((SELECT xp FROM wa_artifact_data WHERE id=? AND owner_uuid=?), 0), " +
+                        "COALESCE((SELECT kills FROM wa_artifact_data WHERE id=? AND owner_uuid=?), 0))",
+                artifactId, player.getUniqueId().toString(), clamped,
+                artifactId, player.getUniqueId().toString(),
+                artifactId, player.getUniqueId().toString());
     }
 
     public boolean canUpgrade(Player player, String artifactId) {
