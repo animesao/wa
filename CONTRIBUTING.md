@@ -111,4 +111,4 @@ The project currently has **no automated tests**. If you add tests, you're a her
 
 ## 🤝 Need Help?
 
-Open a [Discussion](https://github.com/animesao/WA/discussions) or ping in the issue/PR. We're friendly!
+Open an [issue](https://github.com/animesao/WA/issues/new) or ping in the PR. We're friendly!
