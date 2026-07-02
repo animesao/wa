@@ -18,17 +18,12 @@ jobs:
         with:
           path: main
 
-      - name: Clone wiki repo
-        env:
-          TOKEN: ${{ secrets.WIKI_TOKEN }}
-        run: |
-          if [ -z "$TOKEN" ]; then
-            echo "::error::WIKI_TOKEN secret not set. Create a PAT at https://github.com/settings/tokens and add it as WIKI_TOKEN secret."
-            exit 1
-          fi
-          git clone https://x-access-token:$TOKEN@github.com/${{ github.repository }}.wiki.git wiki
-          git config --global user.name "wiki-sync[bot]"
-          git config --global user.email "wiki-sync[bot]@users.noreply.github.com"
+      - name: Checkout wiki repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}.wiki
+          token: ${{ github.token }}
+          path: wiki
 
       - name: Sync docs to wiki
         run: |
