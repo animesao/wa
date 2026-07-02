@@ -28,17 +28,6 @@
 
 ---
 
-## 🖼️ Скриншоты
-
-> *(Скриншоты и GIF-демонстрации будут добавлены позже. Следи за обновлениями!)*
-
-<!--
-Пример:
-![Altar Preview](docs/screenshots/altar_preview.png)
-![Artifact GUI](docs/screenshots/artifact_gui.png)
-![Boss Arena](docs/screenshots/boss_arena.png)
--->
-
 ## ✨ Возможности
 
 ### 🏛️ Алтари (3D multi-block structures)
@@ -444,17 +433,6 @@ Everything is configurable — rarities, effects, attributes, recipes, loot tabl
 **v2.1.0** introduces the FeatureManager (12 features), artifact collection, set bonuses, active abilities, item upgrades, fishing loot, elite mobs, artifact XP, boss arena, Nexo/Oraxen/MythicMobs/PlaceholderAPI integration, and AdminItemsGUI.
 
 ---
-
-## 🖼️ Screenshots
-
-> *(Screenshots and GIF demos will be added later. Stay tuned!)*
-
-<!--
-Example:
-![Altar Preview](docs/screenshots/altar_preview.png)
-![Artifact GUI](docs/screenshots/artifact_gui.png)
-![Boss Arena](docs/screenshots/boss_arena.png)
--->
 
 ## ✨ Features
 
