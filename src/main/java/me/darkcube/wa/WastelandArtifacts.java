@@ -107,7 +107,9 @@ public final class WastelandArtifacts extends JavaPlugin {
         MainConfig mainConfig = configManager.getMainConfig();
         if (mainConfig.database.enabled) {
             databaseManager = new DatabaseManager(this);
-            databaseManager.init(mainConfig.database);
+            if (!databaseManager.init(mainConfig.database)) {
+                getComponentLogger().warn("<yellow>БД не подключена — фичи, требующие БД, будут отключены");
+            }
         }
 
         FeatureConfig featureCfg = mainConfig.features;

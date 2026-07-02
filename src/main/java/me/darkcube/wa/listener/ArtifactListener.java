@@ -6,6 +6,7 @@ import me.darkcube.wa.artifact.component.components.*;
 import me.darkcube.wa.artifact.trigger.TriggerContext;
 import me.darkcube.wa.artifact.trigger.TriggerType;
 import org.bukkit.Bukkit;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,6 +22,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -32,7 +34,23 @@ public class ArtifactListener implements Listener {
 
     public ArtifactListener(WastelandArtifacts plugin) {
         this.plugin = plugin;
-        // Проверка off-hand только при смене предметов (не тиками)
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (var player : Bukkit.getOnlinePlayers()) {
+                    for (var slot : List.of(player.getInventory().getItemInMainHand(), player.getInventory().getItemInOffHand())) {
+                        var art = plugin.getArtifactManager().getArtifactFromItem(slot);
+                        if (art != null) {
+                            for (var comp : art.getComponents()) {
+                                if (comp instanceof PotionEffectAuraComponent aura) {
+                                    aura.applyAura(player);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(plugin, 40L, 40L);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -64,6 +82,9 @@ public class ArtifactListener implements Listener {
             }
             if (component instanceof LifeStealComponent ls && target instanceof Player targetPlayer) {
                 ls.steal(event.getFinalDamage(), targetPlayer, attacker);
+            }
+            if (component instanceof PotionEffectOnHitComponent pe) {
+                pe.applyToTarget(target);
             }
         }
 

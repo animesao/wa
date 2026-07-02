@@ -122,6 +122,10 @@ public class DatabaseManager {
         }
     }
 
+    public boolean isConnected() {
+        return dataSource != null && !dataSource.isClosed();
+    }
+
     public DatabaseType getType() {
         return type;
     }

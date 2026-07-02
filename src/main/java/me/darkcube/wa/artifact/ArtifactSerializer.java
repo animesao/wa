@@ -244,6 +244,26 @@ public class ArtifactSerializer {
                 c.setEffectDuration(node.has("duration") ? node.get("duration").asInt() : 0);
                 yield c;
             }
+            case "POTION_EFFECT_ON_HIT" -> {
+                PotionEffectOnHitComponent c = new PotionEffectOnHitComponent();
+                if (node.has("effect")) {
+                    PotionEffectType effect = PotionEffectType.getByName(node.get("effect").asText());
+                    if (effect != null) c.setEffect(effect);
+                }
+                c.setDuration(node.has("duration") ? node.get("duration").asInt() : 100);
+                c.setAmplifier(node.has("amplifier") ? node.get("amplifier").asInt() : 1);
+                yield c;
+            }
+            case "POTION_EFFECT_AURA" -> {
+                PotionEffectAuraComponent c = new PotionEffectAuraComponent();
+                if (node.has("effect")) {
+                    PotionEffectType effect = PotionEffectType.getByName(node.get("effect").asText());
+                    if (effect != null) c.setEffect(effect);
+                }
+                c.setAmplifier(node.has("amplifier") ? node.get("amplifier").asInt() : 2);
+                c.setRadius(node.has("radius") ? node.get("radius").asDouble() : 6.0);
+                yield c;
+            }
             case "CHARGE" -> {
                 ChargeComponent c = new ChargeComponent();
                 c.setMaxCharges(node.has("maxCharges") ? node.get("maxCharges").asInt() : 5);

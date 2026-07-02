@@ -25,6 +25,8 @@ public class ComponentRegistry {
         register("FIRE_ASPECT", FireAspectComponent::new, FireAspectComponent.class);
         register("ATTRIBUTE", AttributeComponent::new, AttributeComponent.class);
         register("POTION_EFFECT_ON_EQUIP", PotionEffectOnEquipComponent::new, PotionEffectOnEquipComponent.class);
+        register("POTION_EFFECT_ON_HIT", PotionEffectOnHitComponent::new, PotionEffectOnHitComponent.class);
+        register("POTION_EFFECT_AURA", PotionEffectAuraComponent::new, PotionEffectAuraComponent.class);
         register("PARTICLE_ON_HIT", ParticleOnHitComponent::new, ParticleOnHitComponent.class);
         register("PARTICLE_AMBIENT", ParticleAmbientComponent::new, ParticleAmbientComponent.class);
         register("SOUND_ON_HIT", SoundOnHitComponent::new, SoundOnHitComponent.class);

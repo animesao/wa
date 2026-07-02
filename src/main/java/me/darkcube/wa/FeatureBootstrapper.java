@@ -17,34 +17,41 @@ public class FeatureBootstrapper {
 
     public void saveDefaultResources() {
         plugin.saveDefaultConfig();
-        plugin.saveResource("altars.yml", false);
-        for (String lang : List.of("en_US", "ru_RU", "de_DE", "fr_FR", "zh_CN")) {
-            plugin.saveResource("lang/" + lang + ".yml", false);
+        for (String path : List.of(
+                "altars.yml",
+                "lang/en_US.yml", "lang/ru_RU.yml", "lang/de_DE.yml", "lang/fr_FR.yml", "lang/zh_CN.yml",
+                "artifacts/examples.yml",
+                "dungeons/default.yml",
+                "mob_loot.yml",
+                "custom_items.yml",
+                "blueprint_workbench.yml",
+                "rarities.yml",
+                "balance.yml",
+                "features/collection.yml",
+                "features/sets.yml",
+                "features/abilities.yml",
+                "features/upgrades.yml",
+                "features/fishing_loot.yml",
+                "features/elites.yml",
+                "features/xp.yml",
+                "features/achievements.yml"
+        )) {
+            if (!new File(plugin.getDataFolder(), path).exists()) {
+                plugin.saveResource(path, false);
+            }
         }
-        plugin.saveResource("artifacts/examples.yml", false);
-        plugin.saveResource("dungeons/default.yml", false);
-        plugin.saveResource("mob_loot.yml", false);
-        plugin.saveResource("custom_items.yml", false);
-        plugin.saveResource("blueprint_workbench.yml", false);
-        plugin.saveResource("rarities.yml", false);
-        plugin.saveResource("balance.yml", false);
-
-        plugin.saveResource("features/collection.yml", false);
-        plugin.saveResource("features/sets.yml", false);
-        plugin.saveResource("features/abilities.yml", false);
-        plugin.saveResource("features/upgrades.yml", false);
-        plugin.saveResource("features/fishing_loot.yml", false);
-        plugin.saveResource("features/elites.yml", false);
-        plugin.saveResource("features/xp.yml", false);
-        plugin.saveResource("features/achievements.yml", false);
     }
 
     @SuppressWarnings("unchecked")
     public void initFeatures(FeatureConfig cfg) {
-        if (cfg.collection && plugin.getDatabaseManager() != null) {
+        boolean dbOk = plugin.getDatabaseManager() != null && plugin.getDatabaseManager().isConnected();
+
+        if (cfg.collection && dbOk) {
             var collectionManager = new me.darkcube.wa.feature.collection.CollectionManager(plugin, plugin.getDatabaseManager());
             plugin.setCollectionManager(collectionManager);
             plugin.getComponentLogger().info("<green>Feature: Collection активна");
+        } else if (cfg.collection) {
+            plugin.getComponentLogger().warn("<yellow>Feature: Collection отключена — БД не подключена");
         }
         if (cfg.artifactSets) {
             var setManager = new me.darkcube.wa.feature.sets.SetManager(plugin);
@@ -58,11 +65,13 @@ public class FeatureBootstrapper {
             loadAbilities();
             plugin.getComponentLogger().info("<green>Feature: Abilities активна");
         }
-        if (cfg.upgrades && plugin.getDatabaseManager() != null) {
+        if (cfg.upgrades && dbOk) {
             var upgradeManager = new me.darkcube.wa.feature.upgrades.UpgradeManager(plugin, plugin.getDatabaseManager());
             plugin.setUpgradeManager(upgradeManager);
             loadUpgradeConfig();
             plugin.getComponentLogger().info("<green>Feature: Upgrades активна");
+        } else if (cfg.upgrades) {
+            plugin.getComponentLogger().warn("<yellow>Feature: Upgrades отключена — БД не подключена");
         }
         if (cfg.fishing) {
             var fishingListener = new me.darkcube.wa.feature.fishing.FishingListener(plugin);
@@ -76,17 +85,21 @@ public class FeatureBootstrapper {
             loadEliteConfig();
             plugin.getComponentLogger().info("<green>Feature: EliteMobs активна");
         }
-        if (cfg.artifactXP && plugin.getDatabaseManager() != null) {
+        if (cfg.artifactXP && dbOk) {
             var artifactXPManager = new me.darkcube.wa.feature.xp.ArtifactXPManager(plugin, plugin.getDatabaseManager());
             plugin.setArtifactXPManager(artifactXPManager);
             loadXPConfig();
             plugin.getComponentLogger().info("<green>Feature: ArtifactXP активна");
+        } else if (cfg.artifactXP) {
+            plugin.getComponentLogger().warn("<yellow>Feature: ArtifactXP отключена — БД не подключена");
         }
-        if (cfg.achievements && plugin.getDatabaseManager() != null) {
+        if (cfg.achievements && dbOk) {
             var achManager = new me.darkcube.wa.feature.achievements.AchievementManager(plugin, plugin.getDatabaseManager());
             plugin.setAchievementManager(achManager);
             loadAchievements();
             plugin.getComponentLogger().info("<green>Feature: Achievements активна");
+        } else if (cfg.achievements) {
+            plugin.getComponentLogger().warn("<yellow>Feature: Achievements отключена — БД не подключена");
         }
         if (cfg.sockets) {
             var gemManager = new me.darkcube.wa.feature.socket.GemManager(plugin);
