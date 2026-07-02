@@ -18,12 +18,11 @@ jobs:
         with:
           path: main
 
-      - name: Checkout wiki repo
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository }}.wiki
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: wiki
+      - name: Clone wiki repo
+        run: |
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.wiki.git wiki
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Sync docs to wiki
         run: |
@@ -39,8 +38,6 @@ jobs:
       - name: Commit and push
         run: |
           cd wiki
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
           if [ -n "$(git status --porcelain)" ]; then
             git add .
             git commit -m "Sync wiki from docs/ (${{ github.sha }})"
