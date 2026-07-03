@@ -1,7 +1,29 @@
 # Wasteland Artifacts — Complete Wiki
 
-> **Version:** v2.2.0 | **Platform:** Paper 1.21.1 | **Java:** 21  
+> **Version:** v2.4.0 | **Platform:** Paper 1.21.11 | **Java:** 21  
 > Auto-synced from `docs/` via GitHub Actions
+
+---
+
+## Changelog
+
+### v2.4.0 — Artifact Equip/Unequip Rewrite & Lazy Dungeon Loot
+- **Rewrite:** `ArtifactBagManager.recalcEffects()` is now the single source of truth for all artifact effects (armor, main hand, offhand, bag)
+- **Fix:** Potion effects from bag artifacts no longer break when unequipping armor/offhand with the same effect type
+- **Fix:** Added `trackedComponents` map for proper cleanup of all previous effects before re-scan
+- **Fix:** `onUnequip` is now called for all previously tracked components before recalculation
+- **Refactor:** `ArmorListener` simplified to a single `checkEquipmentChange()` method driven by diff-based detection
+- **Refactor:** Removed all individual `onEquip`/`onUnequip` calls — everything routes through `recalcEffects`
+- **Fix:** Added `PlayerRespawnEvent` handler to reset tracking and re-apply effects on death
+- **Change:** `scanOnStartup` default changed to `false` — dungeon loot generates lazily on first chest open
+- **Feature:** bStats metrics with custom charts (DB type, artifact count)
+- **Infra:** Migrated to Shadow plugin for building
+
+### v2.3.0 — Bug Fixes & Component Expansion
+- **Fix:** NPE when database fails to connect
+- **Feature:** Added `POTION_EFFECT_ON_HIT` component (applies potion to target on attack)
+- **Feature:** Added AURA component (periodic potion effect in radius)
+- **Chore:** Removed screenshots placeholder from config
 
 ---
 
@@ -108,7 +130,7 @@
 
 ### First Start Behavior
 
-- Scans all worlds for dungeons (if `scanOnStartup: true`)
+- Scans all worlds for dungeons (if `scanOnStartup: true` — now `false` by default; loot generates lazily on first chest open)
 - Registers all blueprint crafting recipes
 - Starts the HTTP resource pack server (port 8192 by default)
 - Generates custom model data JSON files for all artifacts
@@ -319,7 +341,7 @@ resource-pack:
 
 dungeons:
   enabled: true
-  scanOnStartup: true
+  scanOnStartup: false
   lootInjection: true
   specialChests: true
   bossSpawners: true
@@ -389,7 +411,7 @@ Controls plugin module toggles. Allows flexible feature customization per server
 | Setting | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | Boolean | `true` | Enable dungeon loot system |
-| `scanOnStartup` | Boolean | `true` | Scan all worlds for structures on startup |
+| `scanOnStartup` | Boolean | `false` | Scan all worlds for structures on startup (lazy generation via chest open) |
 | `lootInjection` | Boolean | `true` | Inject custom loot into structure chests |
 | `specialChests` | Boolean | `true` | Enable special chest handling |
 | `bossSpawners` | Boolean | `true` | Enable boss spawning on chest open |
@@ -2090,4 +2112,4 @@ Check `logs/latest.log` for:
 
 ---
 
-> **Wasteland Artifacts v2.2.0** — Created by animesao for Paper 1.21.11+.
+> **Wasteland Artifacts v2.4.0** — Created by animesao for Paper 1.21.11+.
