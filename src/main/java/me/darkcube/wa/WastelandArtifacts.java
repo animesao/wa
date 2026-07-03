@@ -129,9 +129,19 @@ public final class WastelandArtifacts extends JavaPlugin {
 
         resourcePackManager.start();
 
-        try {
-            new org.bstats.bukkit.Metrics(this, 0);
-        } catch (Exception ignored) {}
+        int pluginId = 32340;
+        var metrics = new org.bstats.bukkit.Metrics(this, pluginId);
+
+        if (mainConfig != null) {
+            metrics.addCustomChart(new org.bstats.charts.SimplePie(
+                "database_type",
+                () -> mainConfig.database.type.toLowerCase()
+            ));
+        }
+        metrics.addCustomChart(new org.bstats.charts.SimplePie(
+            "artifacts_loaded",
+            () -> String.valueOf(artifactRegistry != null ? artifactRegistry.size() : 0)
+        ));
 
         getComponentLogger().info("<gradient:gold:red>Wasteland Artifacts</gradient> <green>загружен за "
                 + (System.currentTimeMillis() - start) + "ms");
