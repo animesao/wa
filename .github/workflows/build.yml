@@ -59,12 +59,16 @@ jobs:
           name: WastelandArtifacts
           path: build/libs/*.jar
 
+      - name: List build output
+        run: ls -la build/libs/
+
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/v') || github.ref_name == 'main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="${{ steps.version.outputs.tag }}"
+          JAR="build/libs/WastelandArtifacts-${{ steps.version.outputs.version }}.jar"
 
           if gh release view "$TAG" --repo ${{ github.repository }} >/dev/null 2>&1; then
             echo "Release $TAG already exists, updating..."
@@ -72,13 +76,19 @@ jobs:
               --title "$TAG" \
               --notes-file release-notes.md \
               --repo ${{ github.repository }}
-            gh release upload "$TAG" build/libs/*.jar --clobber --repo ${{ github.repository }}
           else
             echo "Creating release $TAG..."
             gh release create "$TAG" \
               --title "$TAG" \
               --notes-file release-notes.md \
               --latest \
-              --repo ${{ github.repository }} \
-              build/libs/*.jar
+              --repo ${{ github.repository }}
+          fi
+
+          if [ -f "$JAR" ]; then
+            echo "Uploading $JAR..."
+            gh release upload "$TAG" "$JAR" --clobber --repo ${{ github.repository }}
+          else
+            echo "JAR not found: $JAR"
+            ls -la build/libs/ || true
           fi
