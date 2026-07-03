@@ -70,7 +70,9 @@ public class DungeonManager {
 
     public void scanWorld(World world) {
         plugin.getComponentLogger().info("<yellow>Сканирование мира " + world.getName() + "...");
+        plugin.getComponentLogger().warn("<yellow>Сканирование может загружать чанки. Используйте /dungeon scan только при необходимости.");
         int found = 0;
+        Set<Location> processedStructures = new HashSet<>();
         for (var entry : dungeonConfigs.entrySet()) {
             String dungeonId = entry.getKey();
             String structName = dungeonId;
@@ -78,25 +80,26 @@ public class DungeonManager {
                 var structure = Registry.STRUCTURE.get(NamespacedKey.minecraft(structName));
                 if (structure == null) continue;
                 for (org.bukkit.Chunk chunk : world.getLoadedChunks()) {
-                    Location chunkCenter = new Location(world, chunk.getX() << 4 + 8, 64, chunk.getZ() << 4 + 8);
+                    Location chunkCenter = new Location(world, (chunk.getX() << 4) + 8, 64, (chunk.getZ() << 4) + 8);
                     var foundLoc = world.locateNearestStructure(chunkCenter, structure, 3, false);
-                    if (foundLoc != null) {
-                        Location base = foundLoc.getLocation();
-                        int minX = base.getBlockX() - 16, minZ = base.getBlockZ() - 16;
-                        int maxX = base.getBlockX() + 16, maxZ = base.getBlockZ() + 16;
-                        for (int x = minX; x <= maxX; x++) {
-                            for (int z = minZ; z <= maxZ; z++) {
-                                for (int y = world.getMinHeight(); y < world.getMaxHeight(); y++) {
-                                    Block block = world.getBlockAt(x, y, z);
-                                    if (block.getState() instanceof org.bukkit.block.TileState tile
-                                            && (block.getType() == Material.CHEST || block.getType() == Material.BARREL
-                                            || block.getType().name().endsWith("_SHULKER_BOX"))) {
-                                        tile.getPersistentDataContainer().set(
-                                                new NamespacedKey(plugin, "dungeon_id"),
-                                                PersistentDataType.STRING, dungeonId);
-                                        tile.update(true, false);
-                                        found++;
-                                    }
+                    if (foundLoc == null) continue;
+                    Location base = foundLoc.getLocation().toBlockLocation();
+                    if (processedStructures.contains(base)) continue;
+                    processedStructures.add(base);
+                    int minX = base.getBlockX() - 16, minZ = base.getBlockZ() - 16;
+                    int maxX = base.getBlockX() + 16, maxZ = base.getBlockZ() + 16;
+                    for (int x = minX; x <= maxX; x++) {
+                        for (int z = minZ; z <= maxZ; z++) {
+                            for (int y = world.getMinHeight(); y < world.getMaxHeight(); y++) {
+                                Block block = world.getBlockAt(x, y, z);
+                                if (block.getState() instanceof org.bukkit.block.TileState tile
+                                        && (block.getType() == Material.CHEST || block.getType() == Material.BARREL
+                                        || block.getType().name().endsWith("_SHULKER_BOX"))) {
+                                    tile.getPersistentDataContainer().set(
+                                            new NamespacedKey(plugin, "dungeon_id"),
+                                            PersistentDataType.STRING, dungeonId);
+                                    tile.update(true, false);
+                                    found++;
                                 }
                             }
                         }

@@ -25,7 +25,7 @@ public class MainConfig {
 
     public static class DungeonsConfig {
         public boolean enabled = true;
-        public boolean scanOnStartup = true;
+        public boolean scanOnStartup = false;
         public boolean lootInjection = true;
         public boolean specialChests = true;
         public boolean bossSpawners = true;

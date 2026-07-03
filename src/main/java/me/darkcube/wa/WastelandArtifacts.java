@@ -124,6 +124,7 @@ public final class WastelandArtifacts extends JavaPlugin {
         new CommandRegistrar(this).registerAll();
 
         if (mainConfig.dungeons.scanOnStartup) {
+            getComponentLogger().warn("<yellow>⚠ scanOnStartup включён — это может загружать и генерировать чанки. Рекомендуется отключить и использовать события.");
             dungeonManager.scanAllWorlds();
         }
 
