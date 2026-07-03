@@ -129,6 +129,10 @@ public final class WastelandArtifacts extends JavaPlugin {
 
         resourcePackManager.start();
 
+        try {
+            new org.bstats.bukkit.Metrics(this, 0);
+        } catch (Exception ignored) {}
+
         getComponentLogger().info("<gradient:gold:red>Wasteland Artifacts</gradient> <green>загружен за "
                 + (System.currentTimeMillis() - start) + "ms");
     }

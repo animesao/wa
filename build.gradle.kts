@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("com.gradleup.shadow") version "9.3.1"
 }
 
 group = "me.darkcube"
@@ -28,26 +29,23 @@ dependencies {
     implementation("org.xerial:sqlite-jdbc:3.45.3.0")
     implementation("com.mysql:mysql-connector-j:8.3.0")
 
+    implementation("org.bstats:bstats-bukkit:3.2.1")
+
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.10")
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit:2.10.0")
 }
 
-val fatJar = tasks.register<Jar>("fatJar") {
+tasks.shadowJar {
     archiveFileName.set("WastelandArtifacts-${project.version}.jar")
-    from(sourceSets.main.get().output)
-    dependsOn(configurations.runtimeClasspath)
-    from({
-        configurations.runtimeClasspath.get()
-            .filter { it.name.endsWith(".jar") && !it.name.contains("paper-api") }
-            .map { zipTree(it) }
-    }) {
-        exclude("META-INF/**")
-    }
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    manifest {
-        attributes(mapOf(
-            "Main-Class" to "me.darkcube.wa.WastelandArtifacts"
-        ))
+    relocate("org.bstats", "${project.group}.libs.bstats")
+    mergeServiceFiles()
+    minimize {
+        exclude(dependency("com.fasterxml.jackson.*:.*:.*"))
+        exclude(dependency("com.zaxxer:.*:.*"))
+        exclude(dependency("org.xerial:.*:.*"))
+        exclude(dependency("com.mysql:.*:.*"))
+        exclude(dependency("net.kyori:.*:.*"))
+        exclude(dependency("org.bstats:.*:.*"))
     }
 }
 
@@ -61,7 +59,7 @@ tasks {
     }
 
     build {
-        dependsOn(fatJar)
+        dependsOn(shadowJar)
     }
 
     processResources {
