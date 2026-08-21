@@ -38,7 +38,7 @@ public class DatabaseManager {
                 hikari.setMaximumPoolSize(config.poolSize > 0 ? config.poolSize : 10);
             }
             dataSource = new HikariDataSource(hikari);
-            createTables();
+            runMigrations();
             plugin.getComponentLogger().info("<green>База данных подключена: " + type);
             return true;
         } catch (Exception e) {
@@ -47,33 +47,18 @@ public class DatabaseManager {
         }
     }
 
-    private void createTables() {
-        execute("CREATE TABLE IF NOT EXISTS wa_players (" +
-                "uuid VARCHAR(36) PRIMARY KEY, " +
-                "name VARCHAR(16), " +
-                "last_seen BIGINT, " +
-                "total_found INT DEFAULT 0, " +
-                "total_crafted INT DEFAULT 0, " +
-                "total_upgraded INT DEFAULT 0, " +
-                "elite_kills INT DEFAULT 0, " +
-                "dungeons_cleared INT DEFAULT 0, " +
-                "fishing_caught INT DEFAULT 0, " +
-                "boss_kills INT DEFAULT 0)");
+    private void runMigrations() {
+        var runner = new MigrationRunner(plugin, this);
+        runner.addAll(
+                MigrationRunner.initialTables(),
+                MigrationRunner.achievementsTable()
+        );
+        runner.runMigrations();
+    }
 
-        execute("CREATE TABLE IF NOT EXISTS wa_artifact_data (" +
-                "id VARCHAR(64), " +
-                "owner_uuid VARCHAR(36), " +
-                "level INT DEFAULT 1, " +
-                "xp BIGINT DEFAULT 0, " +
-                "kills INT DEFAULT 0, " +
-                "slot INT DEFAULT -1, " +
-                "PRIMARY KEY (id, owner_uuid))");
-
-        execute("CREATE TABLE IF NOT EXISTS wa_collection (" +
-                "player_uuid VARCHAR(36), " +
-                "artifact_id VARCHAR(64), " +
-                "found_date BIGINT, " +
-                "PRIMARY KEY (player_uuid, artifact_id))");
+    /** Получить сырые соединение (для MigrationRunner). */
+    public Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 
     public void execute(String sql) {
@@ -98,8 +83,26 @@ public class DatabaseManager {
     }
 
     public void ensurePlayer(org.bukkit.entity.Player player) {
-        execute("INSERT OR IGNORE INTO wa_players (uuid, name, last_seen) VALUES (?,?,?)",
+        execute(insertOrIgnore("wa_players", "uuid, name, last_seen", "?,?,?"),
                 player.getUniqueId().toString(), player.getName(), System.currentTimeMillis());
+    }
+
+    // ─── Диалект-зависимые SQL-хелперы ───
+
+    /** SQLite: INSERT OR IGNORE, MySQL: INSERT IGNORE */
+    public String insertOrIgnore(String table, String columns, String placeholders) {
+        return switch (type) {
+            case MYSQL -> "INSERT IGNORE INTO " + table + " (" + columns + ") VALUES (" + placeholders + ")";
+            default    -> "INSERT OR IGNORE INTO " + table + " (" + columns + ") VALUES (" + placeholders + ")";
+        };
+    }
+
+    /** SQLite: INSERT OR REPLACE, MySQL: REPLACE INTO */
+    public String insertOrReplace(String table, String columns, String placeholders) {
+        return switch (type) {
+            case MYSQL -> "REPLACE INTO " + table + " (" + columns + ") VALUES (" + placeholders + ")";
+            default    -> "INSERT OR REPLACE INTO " + table + " (" + columns + ") VALUES (" + placeholders + ")";
+        };
     }
 
     public <T> T query(String sql, ResultSetMapper<T> mapper, Object... args) {

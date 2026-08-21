@@ -23,7 +23,7 @@ public class CollectionManager {
     }
 
     public void markFound(Player player, String artifactId) {
-        db.execute("INSERT OR IGNORE INTO wa_collection (player_uuid, artifact_id, found_date) VALUES (?,?,?)",
+        db.execute(db.insertOrIgnore("wa_collection", "player_uuid, artifact_id, found_date", "?,?,?"),
                 player.getUniqueId().toString(), artifactId, System.currentTimeMillis());
         db.execute("UPDATE wa_players SET total_found = total_found + 1 WHERE uuid=?",
                 player.getUniqueId().toString());

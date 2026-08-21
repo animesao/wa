@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "me.darkcube"
-version = "2.4.0"
+version = "2.5.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -30,6 +30,7 @@ dependencies {
     implementation("com.mysql:mysql-connector-j:8.3.0")
 
     implementation("org.bstats:bstats-bukkit:3.2.1")
+    implementation("org.nanohttpd:nanohttpd:2.3.1")
 
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.10")
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit:2.10.0")
@@ -38,6 +39,7 @@ dependencies {
 tasks.shadowJar {
     archiveFileName.set("WastelandArtifacts-${project.version}.jar")
     relocate("org.bstats", "${project.group}.libs.bstats")
+    relocate("fi.iki.elonen", "${project.group}.libs.nanohttpd")
     mergeServiceFiles()
     minimize {
         exclude(dependency("com.fasterxml.jackson.*:.*:.*"))
@@ -46,6 +48,7 @@ tasks.shadowJar {
         exclude(dependency("com.mysql:.*:.*"))
         exclude(dependency("net.kyori:.*:.*"))
         exclude(dependency("org.bstats:.*:.*"))
+        exclude(dependency("org.nanohttpd:.*:.*"))
     }
 }
 

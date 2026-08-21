@@ -1,8 +1,11 @@
 package me.darkcube.wa.feature.socket;
 
 import me.darkcube.wa.WastelandArtifacts;
+import me.darkcube.wa.api.event.GemSocketEvent;
+import me.darkcube.wa.api.event.GemUnsocketEvent;
 import me.darkcube.wa.util.ComponentUtil;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -162,6 +165,26 @@ public class GemManager {
         artifactItem.setItemMeta(meta);
     }
 
+    public boolean socketGem(@NotNull Player player, @NotNull ItemStack artifactItem, @NotNull String gemId) {
+        int max = getSocketCount(artifactItem);
+        List<String> current = new ArrayList<>(getSocketedGems(artifactItem));
+        if (current.size() >= max) return false;
+        if (current.contains(gemId)) return false;
+
+        Gem gem = gems.get(gemId);
+        if (gem == null) return false;
+
+        GemSocketEvent event = new GemSocketEvent(player, artifactItem, gem, current.size());
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return false;
+
+        current.add(gemId);
+        setSocketedGems(artifactItem, current);
+        return true;
+    }
+
+    /** @deprecated Используйте {@link #socketGem(Player, ItemStack, String)} */
+    @Deprecated
     public boolean socketGem(@NotNull ItemStack artifactItem, @NotNull String gemId) {
         int max = getSocketCount(artifactItem);
         List<String> current = new ArrayList<>(getSocketedGems(artifactItem));
@@ -172,6 +195,25 @@ public class GemManager {
         return true;
     }
 
+    public @Nullable String unsocketGem(@NotNull Player player, @NotNull ItemStack artifactItem, int index) {
+        List<String> current = new ArrayList<>(getSocketedGems(artifactItem));
+        if (index < 0 || index >= current.size()) return null;
+
+        String gemId = current.get(index);
+        Gem gem = gems.get(gemId);
+        if (gem == null) return null;
+
+        GemUnsocketEvent event = new GemUnsocketEvent(player, artifactItem, gem, index);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return null;
+
+        String removed = current.remove(index);
+        setSocketedGems(artifactItem, current);
+        return removed;
+    }
+
+    /** @deprecated Используйте {@link #unsocketGem(Player, ItemStack, int)} */
+    @Deprecated
     public @Nullable String unsocketGem(@NotNull ItemStack artifactItem, int index) {
         List<String> current = new ArrayList<>(getSocketedGems(artifactItem));
         if (index < 0 || index >= current.size()) return null;

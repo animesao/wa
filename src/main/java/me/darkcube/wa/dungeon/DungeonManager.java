@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.darkcube.wa.WastelandArtifacts;
-import me.darkcube.wa.WastelandArtifacts;
 import me.darkcube.wa.altar.AltarBlockTracker;
 import me.darkcube.wa.artifact.Artifact;
 import org.bukkit.*;
@@ -21,12 +20,12 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class DungeonManager {
 
     private final WastelandArtifacts plugin;
     private final Map<String, DungeonConfig> dungeonConfigs = new HashMap<>();
-    private final Random random = new Random();
 
     public DungeonManager(WastelandArtifacts plugin) {
         this.plugin = plugin;
@@ -117,11 +116,11 @@ public class DungeonManager {
 
         List<ItemStack> loot = new ArrayList<>();
         for (var entry : config.loot.artifacts) {
-            if (random.nextDouble() * 100 < entry.weight) {
+            if (ThreadLocalRandom.current().nextDouble() * 100 < entry.weight) {
                 Artifact artifact = plugin.getArtifactRegistry().get(entry.id);
                 if (artifact != null) {
                     ItemStack item = plugin.getArtifactManager().createItemStack(artifact);
-                    int count = entry.minCount + random.nextInt(entry.maxCount - entry.minCount + 1);
+                    int count = entry.minCount + ThreadLocalRandom.current().nextInt(entry.maxCount - entry.minCount + 1);
                     item.setAmount(count);
                     loot.add(item);
                 }
@@ -129,7 +128,7 @@ public class DungeonManager {
         }
         // Blueprint loot
         for (var entry : config.loot.blueprints) {
-            if (random.nextDouble() * 100 < entry.weight) {
+            if (ThreadLocalRandom.current().nextDouble() * 100 < entry.weight) {
                 ItemStack bp = createBlueprintDrop(entry.recipeId);
                 if (bp != null) {
                     bp.setAmount(entry.amount);
@@ -139,10 +138,10 @@ public class DungeonManager {
         }
         // Custom item loot (ингредиенты для артефактов)
         for (var entry : config.loot.customItems) {
-            if (random.nextDouble() * 100 < entry.weight) {
+            if (ThreadLocalRandom.current().nextDouble() * 100 < entry.weight) {
                 ItemStack item = plugin.getCustomItemRegistry().create(entry.id);
                 if (item != null) {
-                    int count = entry.minCount + random.nextInt(entry.maxCount - entry.minCount + 1);
+                    int count = entry.minCount + ThreadLocalRandom.current().nextInt(entry.maxCount - entry.minCount + 1);
                     item.setAmount(count);
                     loot.add(item);
                 }
@@ -157,10 +156,10 @@ public class DungeonManager {
 
         List<ItemStack> loot = new ArrayList<>();
         for (var entry : config.loot.vanillaItems) {
-            if (random.nextDouble() * 100 < entry.weight) {
+            if (ThreadLocalRandom.current().nextDouble() * 100 < entry.weight) {
                 Material mat = Material.matchMaterial(entry.item);
                 if (mat != null) {
-                    int count = entry.minCount + random.nextInt(entry.maxCount - entry.minCount + 1);
+                    int count = entry.minCount + ThreadLocalRandom.current().nextInt(entry.maxCount - entry.minCount + 1);
                     loot.add(new ItemStack(mat, count));
                 }
             }

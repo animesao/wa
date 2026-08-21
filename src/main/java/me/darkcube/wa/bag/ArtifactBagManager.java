@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -156,15 +157,28 @@ public class ArtifactBagManager {
         ItemStack[] bag = bags.get(player.getUniqueId());
         if (bag == null) return;
         File file = new File(bagDir, player.getUniqueId() + ".json");
+        File tmpFile = new File(bagDir, player.getUniqueId() + ".json.tmp");
+        File bakFile = new File(bagDir, player.getUniqueId() + ".json.bak");
         try {
+            // 1. Сериализуем во временный файл
             List<String> list = new ArrayList<>();
             for (ItemStack item : bag) {
                 list.add(me.darkcube.wa.util.MojangItemCodec.encode(item));
             }
             plugin.getConfigManager().getYamlMapper()
                     .writerWithDefaultPrettyPrinter()
-                    .writeValue(file, Map.of("slots", list, "format", "mojang_base64"));
+                    .writeValue(tmpFile, Map.of("slots", list, "format", "mojang_base64"));
+
+            // 2. Если основной файл существует — сохраняем бэкап
+            if (file.exists()) {
+                Files.copy(file.toPath(), bakFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            // 3. Атомарная замена: tmp → основной
+            Files.move(tmpFile.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
         } catch (IOException e) {
+            // Если tmp остался — удаляем
+            tmpFile.delete();
             plugin.getComponentLogger().warn("<red>Ошибка сохранения сумки " + player.getName() + ": " + e.getMessage());
         }
     }
@@ -173,10 +187,14 @@ public class ArtifactBagManager {
     private ItemStack[] loadBag(Player player) {
         ItemStack[] bag = new ItemStack[54];
         File file = new File(bagDir, player.getUniqueId() + ".json");
-        if (!file.exists()) return bag;
+        File bakFile = new File(bagDir, player.getUniqueId() + ".json.bak");
+
+        // Попытка загрузки: сначала основной, потом бэкап
+        File source = file.exists() ? file : (bakFile.exists() ? bakFile : null);
+        if (source == null) return bag;
 
         try {
-            Map<String, Object> root = plugin.getConfigManager().getYamlMapper().readValue(file, Map.class);
+            Map<String, Object> root = plugin.getConfigManager().getYamlMapper().readValue(source, Map.class);
             List<String> slots = (List<String>) root.get("slots");
             if (slots == null) return bag;
 
@@ -187,7 +205,28 @@ public class ArtifactBagManager {
                 }
             }
         } catch (Exception e) {
-            plugin.getComponentLogger().warn("<red>Ошибка загрузки сумки " + player.getName() + ": " + e.getMessage());
+            // Если основной файл повреждён — пробуем бэкап
+            if (source == file && bakFile.exists()) {
+                try {
+                    Map<String, Object> root = plugin.getConfigManager().getYamlMapper().readValue(bakFile, Map.class);
+                    List<String> slots = (List<String>) root.get("slots");
+                    if (slots != null) {
+                        for (int i = 0; i < Math.min(slots.size(), 54); i++) {
+                            String b64 = slots.get(i);
+                            if (b64 != null && !b64.isEmpty()) {
+                                bag[i] = me.darkcube.wa.util.MojangItemCodec.decode(b64);
+                            }
+                        }
+                    }
+                    // Восстанавливаем из бэкапа
+                    Files.copy(bakFile.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    plugin.getComponentLogger().warn("<yellow>Сумка " + player.getName() + " восстановлена из бэкапа");
+                } catch (Exception ex) {
+                    plugin.getComponentLogger().warn("<red>Ошибка загрузки сумки " + player.getName() + ": " + e.getMessage());
+                }
+            } else {
+                plugin.getComponentLogger().warn("<red>Ошибка загрузки сумки " + player.getName() + ": " + e.getMessage());
+            }
         }
         return bag;
     }

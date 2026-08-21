@@ -3,9 +3,9 @@ package me.darkcube.wa.listener;
 import me.darkcube.wa.WastelandArtifacts;
 import me.darkcube.wa.artifact.Artifact;
 import me.darkcube.wa.artifact.component.components.*;
+import me.darkcube.wa.api.event.ArtifactEquipEvent;
 import me.darkcube.wa.artifact.trigger.TriggerContext;
 import me.darkcube.wa.artifact.trigger.TriggerType;
-import org.bukkit.Bukkit;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -20,6 +20,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -160,6 +161,7 @@ public class ArtifactListener implements Listener {
                     comp.onUnequip(player);
                 }
                 fireTriggers(prevArt, player, prevArt, prev, TriggerType.ON_UNEQUIP, null, null);
+                Bukkit.getPluginManager().callEvent(new ArtifactEquipEvent(player, prevArt, ArtifactEquipEvent.EquipAction.UNEQUIP, ArtifactEquipEvent.EquipSlot.MAIN_HAND));
             }
         }
         if (next != null) {
@@ -169,6 +171,7 @@ public class ArtifactListener implements Listener {
                     comp.onEquip(player);
                 }
                 fireTriggers(nextArt, player, nextArt, next, TriggerType.ON_EQUIP, null, null);
+                Bukkit.getPluginManager().callEvent(new ArtifactEquipEvent(player, nextArt, ArtifactEquipEvent.EquipAction.EQUIP, ArtifactEquipEvent.EquipSlot.MAIN_HAND));
             }
         }
     }
@@ -194,6 +197,7 @@ public class ArtifactListener implements Listener {
                 comp.onUnequip(player);
             }
             fireTriggers(oldArtifact, player, oldArtifact, oldOffhand, TriggerType.ON_UNEQUIP, null, null);
+            Bukkit.getPluginManager().callEvent(new ArtifactEquipEvent(player, oldArtifact, ArtifactEquipEvent.EquipAction.UNEQUIP, ArtifactEquipEvent.EquipSlot.OFF_HAND));
         }
 
         // Надеваем эффекты на предмет кото��ый приходит в off-hand
@@ -204,6 +208,7 @@ public class ArtifactListener implements Listener {
                 comp.onEquip(player);
             }
             fireTriggers(newArtifact, player, newArtifact, newOffhand, TriggerType.ON_EQUIP, null, null);
+            Bukkit.getPluginManager().callEvent(new ArtifactEquipEvent(player, newArtifact, ArtifactEquipEvent.EquipAction.EQUIP, ArtifactEquipEvent.EquipSlot.OFF_HAND));
         }
 
         plugin.getArtifactBagManager().recalcEffects(player);
@@ -234,6 +239,7 @@ public class ArtifactListener implements Listener {
                 for (var comp : oldArt.getComponents()) {
                     comp.onUnequip(player);
                 }
+                Bukkit.getPluginManager().callEvent(new ArtifactEquipEvent(player, oldArt, ArtifactEquipEvent.EquipAction.UNEQUIP, ArtifactEquipEvent.EquipSlot.OFF_HAND));
             }
             player.removePotionEffect(org.bukkit.potion.PotionEffectType.ABSORPTION);
             lastOffhandArtifact.remove(uuid);
@@ -247,6 +253,7 @@ public class ArtifactListener implements Listener {
                     comp.onEquip(player);
                 }
                 fireTriggers(newArt, player, newArt, offhand, TriggerType.ON_EQUIP, null, null);
+                Bukkit.getPluginManager().callEvent(new ArtifactEquipEvent(player, newArt, ArtifactEquipEvent.EquipAction.EQUIP, ArtifactEquipEvent.EquipSlot.OFF_HAND));
                 plugin.getArtifactBagManager().recalcEffects(player);
             }
             lastOffhandArtifact.put(uuid, currentId);
@@ -298,6 +305,13 @@ public class ArtifactListener implements Listener {
         if (artifact != null) {
             fireTriggers(artifact, player, artifact, item, TriggerType.ON_DEATH, event, player.getKiller());
         }
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        UUID uuid = event.getPlayer().getUniqueId();
+        cooldownTracker.remove(uuid);
+        lastOffhandArtifact.remove(uuid);
     }
 
     private void fireTriggers(Artifact artifact, Player player, Artifact art, ItemStack item,

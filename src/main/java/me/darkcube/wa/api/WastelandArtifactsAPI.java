@@ -414,13 +414,27 @@ public class WastelandArtifactsAPI {
         return mgr != null ? mgr.getSocketedGems(artifactItem) : List.of();
     }
 
-    /** Вставить самоцвет в артефакт. */
+    /** Вставить самоцвет в артефакт (с вызовом GemSocketEvent). */
+    public boolean socketGem(@NotNull Player player, @NotNull ItemStack artifactItem, @NotNull String gemId) {
+        var mgr = plugin.getGemManager();
+        return mgr != null && mgr.socketGem(player, artifactItem, gemId);
+    }
+
+    /** @deprecated Используйте {@link #socketGem(Player, ItemStack, String)} для получения событий. */
+    @Deprecated
     public boolean socketGem(@NotNull ItemStack artifactItem, @NotNull String gemId) {
         var mgr = plugin.getGemManager();
         return mgr != null && mgr.socketGem(artifactItem, gemId);
     }
 
-    /** Извлечь самоцвет из артефакта по индексу. */
+    /** Извлечь самоцвет из артефакта по индексу (с вызовом GemUnsocketEvent). */
+    public @Nullable String unsocketGem(@NotNull Player player, @NotNull ItemStack artifactItem, int index) {
+        var mgr = plugin.getGemManager();
+        return mgr != null ? mgr.unsocketGem(player, artifactItem, index) : null;
+    }
+
+    /** @deprecated Используйте {@link #unsocketGem(Player, ItemStack, int)} для получения событий. */
+    @Deprecated
     public @Nullable String unsocketGem(@NotNull ItemStack artifactItem, int index) {
         var mgr = plugin.getGemManager();
         return mgr != null ? mgr.unsocketGem(artifactItem, index) : null;

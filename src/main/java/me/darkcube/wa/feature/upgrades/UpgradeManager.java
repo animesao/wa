@@ -1,9 +1,12 @@
 package me.darkcube.wa.feature.upgrades;
 
 import me.darkcube.wa.WastelandArtifacts;
+import me.darkcube.wa.api.event.ArtifactUpgradeEvent;
 import me.darkcube.wa.artifact.Artifact;
+import me.darkcube.wa.artifact.ArtifactRegistry;
 import me.darkcube.wa.database.DatabaseManager;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -39,14 +42,23 @@ public class UpgradeManager {
     }
 
     public void setLevel(Player player, String artifactId, int level) {
+        int oldLevel = getLevel(player, artifactId);
         int clamped = Math.min(level, maxLevel);
-        int currentLevel = getLevel(player, artifactId);
-        db.execute("INSERT OR REPLACE INTO wa_artifact_data (id, owner_uuid, level, xp, kills) VALUES (?,?,?, " +
+        db.execute(db.insertOrReplace("wa_artifact_data",
+                        "id, owner_uuid, level, xp, kills",
+                        "?,?,?, " +
                         "COALESCE((SELECT xp FROM wa_artifact_data WHERE id=? AND owner_uuid=?), 0), " +
-                        "COALESCE((SELECT kills FROM wa_artifact_data WHERE id=? AND owner_uuid=?), 0))",
+                        "COALESCE((SELECT kills FROM wa_artifact_data WHERE id=? AND owner_uuid=?), 0)"),
                 artifactId, player.getUniqueId().toString(), clamped,
                 artifactId, player.getUniqueId().toString(),
                 artifactId, player.getUniqueId().toString());
+
+        if (clamped != oldLevel) {
+            Artifact artifact = plugin.getArtifactRegistry().get(artifactId);
+            if (artifact != null) {
+                Bukkit.getPluginManager().callEvent(new ArtifactUpgradeEvent(player, artifact, oldLevel, clamped));
+            }
+        }
     }
 
     public boolean canUpgrade(Player player, String artifactId) {

@@ -155,7 +155,7 @@ public class GemBagGUI extends GUIBase {
             return;
         }
 
-        if (!gemManager.socketGem(artifactClone, gemId)) {
+        if (!gemManager.socketGem(player, artifactClone, gemId)) {
             event.setCancelled(true);
             player.sendMessage(ComponentUtil.fromMini("<red>Не удалось вставить самоцвет!"));
             return;
@@ -196,7 +196,7 @@ public class GemBagGUI extends GUIBase {
             return;
         }
 
-        String removed = gemManager.unsocketGem(artifactClone, index);
+        String removed = gemManager.unsocketGem(player, artifactClone, index);
         if (removed == null) return;
 
         // Даём самоцвет игроку

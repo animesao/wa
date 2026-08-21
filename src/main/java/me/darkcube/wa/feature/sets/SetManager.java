@@ -1,6 +1,7 @@
 package me.darkcube.wa.feature.sets;
 
 import me.darkcube.wa.WastelandArtifacts;
+import me.darkcube.wa.api.event.SetBonusActivateEvent;
 import me.darkcube.wa.artifact.Artifact;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -75,6 +76,26 @@ public class SetManager {
         for (String oldKey : oldKeys) {
             if (!newKeys.contains(oldKey)) {
                 removeEffect(player, oldKey);
+                // Deactivate event
+                String[] parts = oldKey.split(":");
+                ArtifactSet deactivatedSet = sets.get(parts[0]);
+                if (deactivatedSet != null) {
+                    int piecesReq = parts.length > 1 ? Integer.parseInt(parts[1]) : 0;
+                    Bukkit.getPluginManager().callEvent(
+                            new SetBonusActivateEvent(player, deactivatedSet, piecesReq, SetBonusActivateEvent.Action.DEACTIVATE));
+                }
+            }
+        }
+        for (String newKey : newKeys) {
+            if (!oldKeys.contains(newKey)) {
+                // Activate event
+                String[] parts = newKey.split(":");
+                ArtifactSet activatedSet = sets.get(parts[0]);
+                if (activatedSet != null) {
+                    int piecesReq = parts.length > 1 ? Integer.parseInt(parts[1]) : 0;
+                    Bukkit.getPluginManager().callEvent(
+                            new SetBonusActivateEvent(player, activatedSet, piecesReq, SetBonusActivateEvent.Action.ACTIVATE));
+                }
             }
         }
         activeBonusKeys.put(player.getUniqueId(), newKeys);

@@ -3,26 +3,23 @@ package me.darkcube.wa.resourcepack;
 import me.darkcube.wa.WastelandArtifacts;
 import me.darkcube.wa.config.MainConfig;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import fi.iki.elonen.NanoHTTPD;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 public class ResourcePackManager {
 
     private final WastelandArtifacts plugin;
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
     private final ModelGenerator modelGenerator;
-    private HttpServer httpServer;
+    private PackHttpServer httpServer;
     private File packFile;
     private byte[] packHash;
 
@@ -42,6 +39,7 @@ public class ResourcePackManager {
     public void stop() {
         if (httpServer != null) {
             httpServer.stop();
+            httpServer = null;
         }
     }
 
@@ -100,11 +98,60 @@ public class ResourcePackManager {
         plugin.getComponentLogger().info("<green>Ресурс-пак отправлен " + count + " игрокам");
     }
 
+    // ═══════════════════════════════════════════════════════════════
+    // ║  HTTP-сервер на NanoHTTPD
+    // ═══════════════════════════════════════════════════════════════
+
     private void startHttpServer(int port) {
-        httpServer = new HttpServer(port, packFile);
-        httpServer.start();
-        plugin.getComponentLogger().info("<green>HTTP-сервер RP запущен на порту " + port);
+        httpServer = new PackHttpServer(port);
+        try {
+            httpServer.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+            plugin.getComponentLogger().info("<green>HTTP-сервер RP запущен на порту " + port);
+        } catch (IOException e) {
+            plugin.getComponentLogger().warn("<red>Не удалось запустить HTTP-сервер на порту " + port + ": " + e.getMessage());
+        }
     }
+
+    private class PackHttpServer extends NanoHTTPD {
+
+        PackHttpServer(int port) {
+            super(port);
+        }
+
+        @Override
+        public Response serve(IHTTPSession session) {
+            String uri = session.getUri();
+
+            if (!"GET".equals(session.getMethod().name()) || !"/pack".equals(uri)) {
+                return newFixedLengthResponse(Response.Status.NOT_FOUND, NanoHTTPD.MIME_PLAINTEXT, "Not Found");
+            }
+
+            if (packFile == null || !packFile.exists()) {
+                return newFixedLengthResponse(Response.Status.NOT_FOUND, NanoHTTPD.MIME_PLAINTEXT, "Pack not built");
+            }
+
+            // Стриминг ZIP-файла — не загружаем весь файл в память
+            try {
+                FileInputStream fis = new FileInputStream(packFile);
+                return newChunkedResponse(Response.Status.OK, "application/zip", fis) {
+                    @Override
+                    public long send(OutputStream outputStream) throws IOException {
+                        try {
+                            return super.send(outputStream);
+                        } finally {
+                            fis.close();
+                        }
+                    }
+                };
+            } catch (FileNotFoundException e) {
+                return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, NanoHTTPD.MIME_PLAINTEXT, "File not found");
+            }
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // ║  Утилиты
+    // ═══════════════════════════════════════════════════════════════
 
     private byte[] generateHash(File file) {
         try {
@@ -189,64 +236,6 @@ public class ResourcePackManager {
             } else if (!dest.exists()) {
                 Files.copy(file.toPath(), dest.toPath());
             }
-        }
-    }
-
-    private static class HttpServer {
-        private final int port;
-        private final File packFile;
-        private volatile boolean running = false;
-        private ServerSocket serverSocket;
-
-        HttpServer(int port, File packFile) {
-            this.port = port;
-            this.packFile = packFile;
-        }
-
-        void start() {
-            running = true;
-            new Thread(() -> {
-                try {
-                    serverSocket = new ServerSocket(port);
-                    while (running) {
-                        Socket client = serverSocket.accept();
-                        handleClient(client);
-                    }
-                } catch (IOException ignored) {}
-            }, "WA-RP-HttpServer").start();
-        }
-
-        void stop() {
-            running = false;
-            try {
-                if (serverSocket != null) serverSocket.close();
-            } catch (IOException ignored) {}
-        }
-
-        private void handleClient(Socket client) {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                 OutputStream out = client.getOutputStream()) {
-
-                String requestLine = reader.readLine();
-                if (requestLine == null) return;
-
-                String[] parts = requestLine.split(" ");
-                String method = parts[0];
-                String path = parts.length > 1 ? parts[1] : "/";
-
-                if ("GET".equals(method) && "/pack".equals(path) && packFile != null && packFile.exists()) {
-                    byte[] data = Files.readAllBytes(packFile.toPath());
-                    String response = "HTTP/1.1 200 OK\r\n" +
-                            "Content-Type: application/zip\r\n" +
-                            "Content-Length: " + data.length + "\r\n" +
-                            "Connection: close\r\n\r\n";
-                    out.write(response.getBytes(StandardCharsets.UTF_8));
-                    out.write(data);
-                } else {
-                    String response = "HTTP/1.1 404 Not Found\r\nConnection: close\r\n\r\n";
-                    out.write(response.getBytes(StandardCharsets.UTF_8));
-                }
-            } catch (IOException ignored) {}
         }
     }
 }

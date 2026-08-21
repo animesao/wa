@@ -1,12 +1,15 @@
 package me.darkcube.wa.feature;
 
 import me.darkcube.wa.WastelandArtifacts;
-import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 public class FeatureManager {
     private final WastelandArtifacts plugin;
     private FeatureConfig config;
+    private final Map<String, BooleanSupplier> featureChecks = new HashMap<>();
 
     public FeatureManager(WastelandArtifacts plugin) {
         this.plugin = plugin;
@@ -14,7 +17,24 @@ public class FeatureManager {
 
     public void init(FeatureConfig cfg) {
         this.config = cfg;
+        registerFeatures();
         initIntegrations();
+    }
+
+    private void registerFeatures() {
+        featureChecks.put("placeholderAPI", () -> config.placeholderAPI);
+        featureChecks.put("mythicmobs", () -> config.mythicmobs);
+        featureChecks.put("nexo", () -> config.nexo);
+        featureChecks.put("oraxen", () -> config.oraxen);
+        featureChecks.put("collection", () -> config.collection);
+        featureChecks.put("sets", () -> config.artifactSets);
+        featureChecks.put("abilities", () -> config.activeAbilities);
+        featureChecks.put("upgrades", () -> config.upgrades);
+        featureChecks.put("fishing", () -> config.fishing);
+        featureChecks.put("elites", () -> config.customMobs);
+        featureChecks.put("xp", () -> config.artifactXP);
+        featureChecks.put("achievements", () -> config.achievements);
+        featureChecks.put("sockets", () -> config.sockets);
     }
 
     private void initIntegrations() {
@@ -27,22 +47,13 @@ public class FeatureManager {
 
     public boolean isEnabled(String feature) {
         if (config == null) return false;
-        switch (feature) {
-            case "placeholderAPI": return config.placeholderAPI;
-            case "mythicmobs": return config.mythicmobs;
-            case "nexo": return config.nexo;
-            case "oraxen": return config.oraxen;
-            case "collection": return config.collection;
-            case "sets": return config.artifactSets;
-            case "abilities": return config.activeAbilities;
-            case "upgrades": return config.upgrades;
-            case "fishing": return config.fishing;
-            case "elites": return config.customMobs;
-            case "xp": return config.artifactXP;
-            case "achievements": return config.achievements;
-            case "sockets": return config.sockets;
-            default: return false;
-        }
+        BooleanSupplier check = featureChecks.get(feature);
+        return check != null && check.getAsBoolean();
+    }
+
+    /** Позволяет другим плагинам регистрировать кастомные фичи. */
+    public void registerFeature(String name, BooleanSupplier check) {
+        featureChecks.put(name, check);
     }
 
     public FeatureConfig getConfig() { return config; }

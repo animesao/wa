@@ -20,13 +20,6 @@ public class AchievementManager {
     public AchievementManager(WastelandArtifacts plugin, DatabaseManager db) {
         this.plugin = plugin;
         this.db = db;
-        db.execute("CREATE TABLE IF NOT EXISTS wa_achievements (" +
-                "player_uuid VARCHAR(36), " +
-                "achievement_id VARCHAR(64), " +
-                "progress INT DEFAULT 0, " +
-                "completed BOOLEAN DEFAULT FALSE, " +
-                "completed_date BIGINT, " +
-                "PRIMARY KEY (player_uuid, achievement_id))");
     }
 
     public void loadConfig(ConfigurationSection section) {
@@ -98,7 +91,9 @@ public class AchievementManager {
     }
 
     private void complete(Player player, Achievement ach) {
-        db.execute("INSERT OR REPLACE INTO wa_achievements (player_uuid, achievement_id, progress, completed, completed_date) VALUES (?,?,?,?,?)",
+        db.execute(db.insertOrReplace("wa_achievements",
+                        "player_uuid, achievement_id, progress, completed, completed_date",
+                        "?,?,?,?,?"),
                 player.getUniqueId().toString(), ach.getId(), ach.getTarget(), true, System.currentTimeMillis());
 
         plugin.getComponentLogger().info("<gold>🏆 Игрок " + player.getName() + " выполнил достижение: " + ach.getDisplayName());

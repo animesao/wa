@@ -4,8 +4,8 @@ import me.darkcube.wa.altar.AltarManager;
 import me.darkcube.wa.api.WastelandArtifactsAPI;
 import me.darkcube.wa.artifact.ArtifactManager;
 import me.darkcube.wa.artifact.ArtifactRegistry;
-import me.darkcube.wa.artifact.rarity.RarityManager;
 import me.darkcube.wa.artifact.component.ComponentRegistry;
+import me.darkcube.wa.artifact.rarity.RarityManager;
 import me.darkcube.wa.bag.ArtifactBagManager;
 import me.darkcube.wa.config.ConfigManager;
 import me.darkcube.wa.config.MainConfig;
@@ -14,16 +14,19 @@ import me.darkcube.wa.database.DatabaseManager;
 import me.darkcube.wa.dungeon.DungeonManager;
 import me.darkcube.wa.feature.FeatureConfig;
 import me.darkcube.wa.feature.FeatureManager;
-import me.darkcube.wa.feature.collection.CollectionManager;
-import me.darkcube.wa.feature.sets.SetManager;
 import me.darkcube.wa.feature.abilities.AbilityManager;
-import me.darkcube.wa.feature.upgrades.UpgradeManager;
-import me.darkcube.wa.feature.fishing.FishingListener;
-import me.darkcube.wa.feature.elites.EliteMobManager;
-
 import me.darkcube.wa.feature.achievements.AchievementManager;
+import me.darkcube.wa.feature.collection.CollectionManager;
+import me.darkcube.wa.feature.elites.EliteMobManager;
+import me.darkcube.wa.feature.fishing.FishingListener;
+import me.darkcube.wa.feature.sets.SetManager;
+import me.darkcube.wa.feature.socket.GemManager;
+import me.darkcube.wa.feature.socket.SocketListener;
+import me.darkcube.wa.feature.upgrades.UpgradeManager;
 import me.darkcube.wa.feature.xp.ArtifactXPManager;
 import me.darkcube.wa.gui.ChatInputManager;
+import me.darkcube.wa.gui.GUIConfig;
+import me.darkcube.wa.gui.menu.MenuManager;
 import me.darkcube.wa.item.CustomItemRegistry;
 import me.darkcube.wa.resourcepack.ResourcePackManager;
 import me.darkcube.wa.schematic.SchematicManager;
@@ -31,40 +34,18 @@ import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/**
+ * Главный класс плагина Wasteland Artifacts.
+ * <p>
+ * Все менеджеры хранятся в {@link ManagerRegistry}. Доступ — через
+ * {@link #getRegistry()} (новый код) или через делегирующие геттеры
+ * (обратная совместимость).
+ */
 public final class WastelandArtifacts extends JavaPlugin {
 
     private static WastelandArtifacts instance;
-    private ConfigManager configManager;
-    private RarityManager rarityManager;
-    private ArtifactRegistry artifactRegistry;
-    private ArtifactManager artifactManager;
-    private ComponentRegistry componentRegistry;
-    private DungeonManager dungeonManager;
-    private AltarManager altarManager;
-    private CraftingManager craftingManager;
-    private SchematicManager schematicManager;
-    private ResourcePackManager resourcePackManager;
-    private ChatInputManager chatInputManager;
-    private CustomItemRegistry customItemRegistry;
-    private ArtifactBagManager artifactBagManager;
-    private WastelandArtifactsAPI api;
+    private final ManagerRegistry registry = new ManagerRegistry();
     private ComponentLogger componentLogger;
-
-    private DatabaseManager databaseManager;
-    private FeatureManager featureManager;
-    private CollectionManager collectionManager;
-    private SetManager setManager;
-    private AbilityManager abilityManager;
-    private UpgradeManager upgradeManager;
-    private FishingListener fishingListener;
-    private EliteMobManager eliteMobManager;
-    private ArtifactXPManager artifactXPManager;
-    private AchievementManager achievementManager;
-    private me.darkcube.wa.feature.socket.GemManager gemManager;
-    private me.darkcube.wa.feature.socket.SocketListener socketListener;
-    private me.darkcube.wa.gui.GUIConfig guiConfig;
-    private me.darkcube.wa.gui.menu.MenuManager menuManager;
-
 
     @Override
     public void onEnable() {
@@ -75,27 +56,59 @@ public final class WastelandArtifacts extends JavaPlugin {
         var bootstrapper = new FeatureBootstrapper(this);
         bootstrapper.saveDefaultResources();
 
-        this.configManager = new ConfigManager(this);
-        this.componentRegistry = new ComponentRegistry(this);
+        // ─── Core managers ───
+        var configManager = new ConfigManager(this);
+        registry.register(ConfigManager.class, configManager);
+
+        var componentRegistry = new ComponentRegistry(this);
         componentRegistry.registerDefaults();
-        this.rarityManager = new RarityManager(this);
-        this.artifactRegistry = new ArtifactRegistry();
-        this.artifactManager = new ArtifactManager(this);
-        this.altarManager = new AltarManager(this);
-        this.dungeonManager = new DungeonManager(this);
-        this.craftingManager = new CraftingManager(this);
-        this.schematicManager = new SchematicManager(this);
-        this.resourcePackManager = new ResourcePackManager(this);
-        this.customItemRegistry = new CustomItemRegistry(this);
-        this.artifactBagManager = new ArtifactBagManager(this);
-        this.chatInputManager = new ChatInputManager(this);
-        this.api = new WastelandArtifactsAPI(this);
+        registry.register(ComponentRegistry.class, componentRegistry);
 
-        this.guiConfig = new me.darkcube.wa.gui.GUIConfig(this);
+        var rarityManager = new RarityManager(this);
+        registry.register(RarityManager.class, rarityManager);
+
+        var artifactRegistry = new ArtifactRegistry();
+        registry.register(ArtifactRegistry.class, artifactRegistry);
+
+        var artifactManager = new ArtifactManager(this);
+        registry.register(ArtifactManager.class, artifactManager);
+
+        var altarManager = new AltarManager(this);
+        registry.register(AltarManager.class, altarManager);
+
+        var dungeonManager = new DungeonManager(this);
+        registry.register(DungeonManager.class, dungeonManager);
+
+        var craftingManager = new CraftingManager(this);
+        registry.register(CraftingManager.class, craftingManager);
+
+        var schematicManager = new SchematicManager(this);
+        registry.register(SchematicManager.class, schematicManager);
+
+        var resourcePackManager = new ResourcePackManager(this);
+        registry.register(ResourcePackManager.class, resourcePackManager);
+
+        var customItemRegistry = new CustomItemRegistry(this);
+        registry.register(CustomItemRegistry.class, customItemRegistry);
+
+        var artifactBagManager = new ArtifactBagManager(this);
+        registry.register(ArtifactBagManager.class, artifactBagManager);
+
+        var chatInputManager = new ChatInputManager(this);
+        registry.register(ChatInputManager.class, chatInputManager);
+
+        var api = new WastelandArtifactsAPI(this);
+        registry.register(WastelandArtifactsAPI.class, api);
+
+        var guiConfig = new GUIConfig(this);
         guiConfig.load();
-        this.menuManager = new me.darkcube.wa.gui.menu.MenuManager(this);
-        menuManager.loadAll();
+        registry.register(GUIConfig.class, guiConfig);
 
+        var menuManager = new MenuManager(this);
+        menuManager.loadAll();
+        registry.register(MenuManager.class, menuManager);
+
+        // ─── Load configs ───
         rarityManager.loadConfig();
         configManager.loadAll();
         customItemRegistry.loadConfig();
@@ -104,21 +117,26 @@ public final class WastelandArtifacts extends JavaPlugin {
         dungeonManager.loadConfigs();
         schematicManager.loadCache();
 
+        // ─── Database ───
         MainConfig mainConfig = configManager.getMainConfig();
         if (mainConfig.database.enabled) {
-            databaseManager = new DatabaseManager(this);
-            if (!databaseManager.init(mainConfig.database)) {
+            var dbManager = new DatabaseManager(this);
+            registry.register(DatabaseManager.class, dbManager);
+            if (!dbManager.init(mainConfig.database)) {
                 getComponentLogger().warn("<yellow>БД не подключена — фичи, требующие БД, будут отключены");
             }
         }
 
+        // ─── Feature managers ───
         FeatureConfig featureCfg = mainConfig.features;
         if (featureCfg != null) {
-            featureManager = new FeatureManager(this);
+            var featureManager = new FeatureManager(this);
             featureManager.init(featureCfg);
+            registry.register(FeatureManager.class, featureManager);
             bootstrapper.initFeatures(featureCfg);
         }
 
+        // ─── Post-init ───
         craftingManager.registerRecipes();
         new ListenerRegistrar(this).registerAll();
         new CommandRegistrar(this).registerAll();
@@ -130,9 +148,9 @@ public final class WastelandArtifacts extends JavaPlugin {
 
         resourcePackManager.start();
 
+        // ─── bStats ───
         int pluginId = 32340;
         var metrics = new org.bstats.bukkit.Metrics(this, pluginId);
-
         if (mainConfig != null) {
             metrics.addCustomChart(new org.bstats.charts.SimplePie(
                 "database_type",
@@ -141,7 +159,7 @@ public final class WastelandArtifacts extends JavaPlugin {
         }
         metrics.addCustomChart(new org.bstats.charts.SimplePie(
             "artifacts_loaded",
-            () -> String.valueOf(artifactRegistry != null ? artifactRegistry.size() : 0)
+            () -> String.valueOf(artifactRegistry.size())
         ));
 
         getComponentLogger().info("<gradient:gold:red>Wasteland Artifacts</gradient> <green>загружен за "
@@ -150,68 +168,87 @@ public final class WastelandArtifacts extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (socketListener != null) socketListener.stop();
-        if (resourcePackManager != null) resourcePackManager.stop();
-        if (databaseManager != null) databaseManager.close();
+        var sl = registry.get(SocketListener.class);
+        if (sl != null) sl.stop();
+        var rp = registry.get(ResourcePackManager.class);
+        if (rp != null) rp.stop();
+        var db = registry.get(DatabaseManager.class);
+        if (db != null) db.close();
         instance = null;
     }
 
-    // ─── Геттеры ───
+    // ═══════════════════════════════════════════════════════════════
+    // ║  Registry access
+    // ═══════════════════════════════════════════════════════════════
 
     public static WastelandArtifacts getInstance() { return instance; }
 
-    public ConfigManager getConfigManager() { return configManager; }
-    public RarityManager getRarityManager() { return rarityManager; }
-    public ArtifactRegistry getArtifactRegistry() { return artifactRegistry; }
-    public ArtifactManager getArtifactManager() { return artifactManager; }
-    public ComponentRegistry getComponentRegistry() { return componentRegistry; }
-    public AltarManager getAltarManager() { return altarManager; }
-    public DungeonManager getDungeonManager() { return dungeonManager; }
-    public CraftingManager getCraftingManager() { return craftingManager; }
-    public SchematicManager getSchematicManager() { return schematicManager; }
-    public ResourcePackManager getResourcePackManager() { return resourcePackManager; }
-    public ChatInputManager getChatInputManager() { return chatInputManager; }
-    public CustomItemRegistry getCustomItemRegistry() { return customItemRegistry; }
-    public ArtifactBagManager getArtifactBagManager() { return artifactBagManager; }
-    public WastelandArtifactsAPI getApi() { return api; }
+    /** Централизованное хранилище менеджеров. Предпочтительный способ доступа. */
+    public @org.jetbrains.annotations.NotNull ManagerRegistry getRegistry() { return registry; }
+
     public ComponentLogger getComponentLogger() { return componentLogger; }
 
-    public DatabaseManager getDatabaseManager() { return databaseManager; }
-    public FeatureManager getFeatureManager() { return featureManager; }
-    public CollectionManager getCollectionManager() { return collectionManager; }
-    public SetManager getSetManager() { return setManager; }
-    public AbilityManager getAbilityManager() { return abilityManager; }
-    public UpgradeManager getUpgradeManager() { return upgradeManager; }
-    public FishingListener getFishingListener() { return fishingListener; }
-    public EliteMobManager getEliteMobManager() { return eliteMobManager; }
-    public ArtifactXPManager getArtifactXPManager() { return artifactXPManager; }
-    public AchievementManager getAchievementManager() { return achievementManager; }
-    public me.darkcube.wa.feature.socket.GemManager getGemManager() { return gemManager; }
-    public me.darkcube.wa.gui.GUIConfig getGuiConfig() { return guiConfig; }
+    // ═══════════════════════════════════════════════════════════════
+    // ║  Делегирующие геттеры (обратная совместимость)
+    // ═══════════════════════════════════════════════════════════════
 
+    public ConfigManager getConfigManager() { return registry.configManager(); }
+    public RarityManager getRarityManager() { return registry.rarityManager(); }
+    public ArtifactRegistry getArtifactRegistry() { return registry.artifactRegistry(); }
+    public ArtifactManager getArtifactManager() { return registry.artifactManager(); }
+    public ComponentRegistry getComponentRegistry() { return registry.componentRegistry(); }
+    public AltarManager getAltarManager() { return registry.altarManager(); }
+    public DungeonManager getDungeonManager() { return registry.dungeonManager(); }
+    public CraftingManager getCraftingManager() { return registry.craftingManager(); }
+    public SchematicManager getSchematicManager() { return registry.schematicManager(); }
+    public ResourcePackManager getResourcePackManager() { return registry.resourcePackManager(); }
+    public ChatInputManager getChatInputManager() { return registry.chatInputManager(); }
+    public CustomItemRegistry getCustomItemRegistry() { return registry.customItemRegistry(); }
+    public ArtifactBagManager getArtifactBagManager() { return registry.artifactBagManager(); }
+    public WastelandArtifactsAPI getApi() { return registry.api(); }
+    public GUIConfig getGuiConfig() { return registry.guiConfig(); }
+    public MenuManager getMenuManager() { return registry.menuManager(); }
 
-    // ─── Сеттеры для FeatureBootstrapper ───
+    public DatabaseManager getDatabaseManager() { return registry.databaseManager(); }
+    public FeatureManager getFeatureManager() { return registry.featureManager(); }
+    public CollectionManager getCollectionManager() { return registry.collectionManager(); }
+    public SetManager getSetManager() { return registry.setManager(); }
+    public AbilityManager getAbilityManager() { return registry.abilityManager(); }
+    public UpgradeManager getUpgradeManager() { return registry.upgradeManager(); }
+    public FishingListener getFishingListener() { return registry.fishingListener(); }
+    public EliteMobManager getEliteMobManager() { return registry.eliteMobManager(); }
+    public ArtifactXPManager getArtifactXPManager() { return registry.artifactXPManager(); }
+    public AchievementManager getAchievementManager() { return registry.achievementManager(); }
+    public GemManager getGemManager() { return registry.gemManager(); }
+    public SocketListener getSocketListener() { return registry.socketListener(); }
 
-    public void setCollectionManager(CollectionManager collectionManager) { this.collectionManager = collectionManager; }
-    public void setSetManager(SetManager setManager) { this.setManager = setManager; }
-    public void setAbilityManager(AbilityManager abilityManager) { this.abilityManager = abilityManager; }
-    public void setUpgradeManager(UpgradeManager upgradeManager) { this.upgradeManager = upgradeManager; }
-    public void setFishingListener(FishingListener fishingListener) { this.fishingListener = fishingListener; }
-    public void setEliteMobManager(EliteMobManager eliteMobManager) { this.eliteMobManager = eliteMobManager; }
-    public void setArtifactXPManager(ArtifactXPManager artifactXPManager) { this.artifactXPManager = artifactXPManager; }
-    public void setAchievementManager(AchievementManager achievementManager) { this.achievementManager = achievementManager; }
-    public void setGemManager(me.darkcube.wa.feature.socket.GemManager gemManager) { this.gemManager = gemManager; }
-    public me.darkcube.wa.feature.socket.SocketListener getSocketListener() { return socketListener; }
-    public void setSocketListener(me.darkcube.wa.feature.socket.SocketListener socketListener) { this.socketListener = socketListener; }
-    public void setGuiConfig(me.darkcube.wa.gui.GUIConfig guiConfig) { this.guiConfig = guiConfig; }
-    public me.darkcube.wa.gui.menu.MenuManager getMenuManager() { return menuManager; }
+    // ═══════════════════════════════════════════════════════════════
+    // ║  Делегирующие сеттеры (обратная совместимость)
+    // ═══════════════════════════════════════════════════════════════
 
+    public void setCollectionManager(CollectionManager m) { registry.register(CollectionManager.class, m); }
+    public void setSetManager(SetManager m) { registry.register(SetManager.class, m); }
+    public void setAbilityManager(AbilityManager m) { registry.register(AbilityManager.class, m); }
+    public void setUpgradeManager(UpgradeManager m) { registry.register(UpgradeManager.class, m); }
+    public void setFishingListener(FishingListener m) { registry.register(FishingListener.class, m); }
+    public void setEliteMobManager(EliteMobManager m) { registry.register(EliteMobManager.class, m); }
+    public void setArtifactXPManager(ArtifactXPManager m) { registry.register(ArtifactXPManager.class, m); }
+    public void setAchievementManager(AchievementManager m) { registry.register(AchievementManager.class, m); }
+    public void setGemManager(GemManager m) { registry.register(GemManager.class, m); }
+    public void setSocketListener(SocketListener m) { registry.register(SocketListener.class, m); }
+    public void setGuiConfig(GUIConfig m) { registry.register(GUIConfig.class, m); }
+
+    // ═══════════════════════════════════════════════════════════════
+    // ║  Утилиты
+    // ═══════════════════════════════════════════════════════════════
 
     public String msg(String key, Object... args) {
-        return configManager != null ? configManager.getLang(key, args) : key;
+        var cm = registry.get(ConfigManager.class);
+        return cm != null ? cm.getLang(key, args) : key;
     }
 
     public String msgFor(Player player, String key, Object... args) {
-        return configManager != null ? configManager.getLangFor(player, key, args) : key;
+        var cm = registry.get(ConfigManager.class);
+        return cm != null ? cm.getLangFor(player, key, args) : key;
     }
 }
