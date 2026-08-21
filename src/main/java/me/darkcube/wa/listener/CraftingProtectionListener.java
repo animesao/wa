@@ -11,8 +11,23 @@ import org.bukkit.event.inventory.PrepareGrindstoneEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.PrepareSmithingEvent;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.recipe.CraftingRecipe;
+import org.bukkit.inventory.recipe.RecipeChoice;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Защита крафта: кастомные предметы (артефакты, кастомные ингредиенты)
+ * принимаются ТОЛЬКО если рецепт их явно ожидает.
+ * Если рецепт ожидает ванильный материал — кастомный предмет отклоняется.
+ */
 public class CraftingProtectionListener implements Listener {
 
     private final WastelandArtifacts plugin;
@@ -23,14 +38,29 @@ public class CraftingProtectionListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPrepareCraft(PrepareItemCraftEvent event) {
-        if (containsProtectedItem(event.getInventory().getMatrix())) {
+        ItemStack[] matrix = event.getInventory().getMatrix();
+        if (!hasCustomItems(matrix)) return;
+
+        Recipe recipe = event.getRecipe();
+        if (recipe == null) {
+            // Нет рецепта — кастомные предметы в сетке блокируют результат
+            event.getInventory().setResult(null);
+            return;
+        }
+
+        // Есть рецепт — проверяем, что каждый кастомный предмет совпадает с ожидаемым ингредиентом
+        if (!recipeMatchesCustomItems(event.getInventory(), recipe)) {
             event.getInventory().setResult(null);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCraftItem(CraftItemEvent event) {
-        if (containsProtectedItem(event.getInventory().getMatrix())) {
+        ItemStack[] matrix = event.getInventory().getMatrix();
+        if (!hasCustomItems(matrix)) return;
+
+        Recipe recipe = event.getRecipe();
+        if (recipe == null || !recipeMatchesCustomItems(event.getInventory(), recipe)) {
             event.setCancelled(true);
         }
     }
@@ -39,7 +69,7 @@ public class CraftingProtectionListener implements Listener {
     public void onPrepareAnvil(PrepareAnvilEvent event) {
         ItemStack first = event.getInventory().getItem(0);
         ItemStack second = event.getInventory().getItem(1);
-        if (containsProtectedItem(first, second)) {
+        if (isProtected(first) || isProtected(second)) {
             event.setResult(null);
         }
     }
@@ -48,7 +78,7 @@ public class CraftingProtectionListener implements Listener {
     public void onPrepareGrindstone(PrepareGrindstoneEvent event) {
         ItemStack top = event.getInventory().getItem(0);
         ItemStack bottom = event.getInventory().getItem(1);
-        if (containsProtectedItem(top, bottom)) {
+        if (isProtected(top) || isProtected(bottom)) {
             event.setResult(null);
         }
     }
@@ -58,7 +88,7 @@ public class CraftingProtectionListener implements Listener {
         ItemStack template = event.getInventory().getItem(0);
         ItemStack base = event.getInventory().getItem(1);
         ItemStack addition = event.getInventory().getItem(2);
-        if (containsProtectedItem(template, base, addition)) {
+        if (isProtected(template) || isProtected(base) || isProtected(addition)) {
             event.setResult(null);
         }
     }
@@ -70,11 +100,82 @@ public class CraftingProtectionListener implements Listener {
         }
     }
 
-    private boolean containsProtectedItem(ItemStack... items) {
+    // ═══════════════════════════════════════════════════════════════
+    // ║  Проверка: кастомный предмет совпадает с рецептом?
+    // ═══════════════════════════════════════════════════════════════
+
+    /**
+     * Проверяет, что каждый кастомный предмет в сетке совпадает
+     * с соответствующим Choice рецепта.
+     */
+    private boolean recipeMatchesCustomItems(CraftingInventory inv, Recipe recipe) {
+        ItemStack[] matrix = inv.getMatrix();
+
+        if (recipe instanceof ShapedRecipe shaped) {
+            String[] shape = shaped.getShape();
+            int width = shape[0].length();
+            int height = shape.length;
+            Map<Character, RecipeChoice> choiceMap = shaped.getIngredientMap();
+
+            for (int row = 0; row < height; row++) {
+                for (int col = 0; col < width; col++) {
+                    int idx = row * 3 + col;
+                    if (idx >= matrix.length) continue;
+                    ItemStack item = matrix[idx];
+                    if (!isCustom(item)) continue;
+
+                    char ch = shape[row].charAt(col);
+                    if (ch == ' ') continue;
+                    RecipeChoice choice = choiceMap.get(ch);
+                    if (choice == null || !choice.test(item)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        if (recipe instanceof ShapelessRecipe shapeless) {
+            List<RecipeChoice> choices = new ArrayList<>(shapeless.getChoiceList());
+            List<ItemStack> customItems = new ArrayList<>();
+            for (ItemStack item : matrix) {
+                if (isCustom(item)) customItems.add(item);
+            }
+
+            for (ItemStack custom : customItems) {
+                boolean matched = false;
+                for (var it = choices.iterator(); it.hasNext(); ) {
+                    RecipeChoice choice = it.next();
+                    if (choice != null && choice.test(custom)) {
+                        it.remove();
+                        matched = true;
+                        break;
+                    }
+                }
+                if (!matched) return false;
+            }
+            return true;
+        }
+
+        // Неизвестный тип рецепта — блокируем кастомные предметы
+        return !hasCustomItems(matrix);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // ║  Утилиты
+    // ═══════════════════════════════════════════════════════════════
+
+    private boolean hasCustomItems(ItemStack[] items) {
         for (ItemStack item : items) {
-            if (isProtected(item)) return true;
+            if (isCustom(item)) return true;
         }
         return false;
+    }
+
+    private boolean isCustom(ItemStack item) {
+        if (item == null || item.getType() == Material.AIR) return false;
+        return plugin.getArtifactManager().isArtifact(item)
+                || plugin.getCustomItemRegistry().isCustomItem(item);
     }
 
     private boolean isProtected(ItemStack item) {
