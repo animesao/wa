@@ -5,6 +5,7 @@ import me.darkcube.wa.api.event.SetBonusActivateEvent;
 import me.darkcube.wa.artifact.Artifact;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
@@ -116,9 +117,9 @@ public class SetManager {
                 case "ATTRIBUTE" -> {
                     Attribute attr = Attribute.valueOf(parts[1].toUpperCase());
                     double amount = Double.parseDouble(parts[2]);
+                    var key = new NamespacedKey(plugin, "set_" + effect.replaceAll("[^a-zA-Z0-9]", "_"));
                     player.getAttribute(attr).addModifier(new AttributeModifier(
-                            UUID.nameUUIDFromBytes(("set_" + effect).getBytes()),
-                            "set_bonus", amount, AttributeModifier.Operation.ADD_NUMBER));
+                            key, amount, AttributeModifier.Operation.ADD_NUMBER));
                 }
                 case "COMMAND" -> {
                     String cmd = effect.substring(8).replace("%player%", player.getName());
@@ -146,7 +147,8 @@ public class SetManager {
             var instance = player.getAttribute(attr);
             if (instance == null) continue;
             var toRemove = instance.getModifiers().stream()
-                    .filter(m -> m.getName().equals("set_bonus"))
+                    .filter(m -> m.getKey() != null && m.getKey().getNamespace().equals("wastelandartifacts")
+                            && m.getKey().getKey().startsWith("set_"))
                     .toList();
             toRemove.forEach(instance::removeModifier);
         }

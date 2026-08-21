@@ -1,8 +1,10 @@
 package me.darkcube.wa.artifact.component.components;
 
 import me.darkcube.wa.artifact.component.ArtifactComponent;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
@@ -58,24 +60,28 @@ public class DamageComponent implements ArtifactComponent {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public void apply(@NotNull ItemStack item) {
         var meta = item.getItemMeta();
         if (meta == null) return;
         var att = org.bukkit.attribute.Attribute.GENERIC_ATTACK_DAMAGE;
         var op = org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER;
         double val = damage - 1;
-        EquipmentSlot s = resolveSlot(item);
-        if (s == EquipmentSlot.HAND) {
-            meta.addAttributeModifier(att, new org.bukkit.attribute.AttributeModifier(
-                    java.util.UUID.randomUUID(), "wa_dmg", val, op, EquipmentSlot.HAND));
-            meta.addAttributeModifier(att, new org.bukkit.attribute.AttributeModifier(
-                    java.util.UUID.randomUUID(), "wa_dmg_off", val, op, EquipmentSlot.OFF_HAND));
-        } else {
-            meta.addAttributeModifier(att, new org.bukkit.attribute.AttributeModifier(
-                    java.util.UUID.randomUUID(), "wa_dmg", val, op, s));
-        }
+        EquipmentSlotGroup group = toSlotGroup(resolveSlot(item));
+        var key = new NamespacedKey("wastelandartifacts", "wa_dmg");
+        meta.addAttributeModifier(att, new org.bukkit.attribute.AttributeModifier(
+                key, val, op, group));
         item.setItemMeta(meta);
+    }
+
+    private static EquipmentSlotGroup toSlotGroup(EquipmentSlot slot) {
+        return switch (slot) {
+            case HEAD -> EquipmentSlotGroup.HEAD;
+            case CHEST -> EquipmentSlotGroup.CHEST;
+            case LEGS -> EquipmentSlotGroup.LEGS;
+            case FEET -> EquipmentSlotGroup.FEET;
+            case OFF_HAND -> EquipmentSlotGroup.OFFHAND;
+            default -> EquipmentSlotGroup.MAINHAND;
+        };
     }
 
     @Override

@@ -1,14 +1,14 @@
 package me.darkcube.wa.artifact.component.components;
 
 import me.darkcube.wa.artifact.component.ArtifactComponent;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
 
 public class AttributeComponent implements ArtifactComponent {
 
@@ -72,28 +72,26 @@ public class AttributeComponent implements ArtifactComponent {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public void apply(@NotNull ItemStack item) {
         var meta = item.getItemMeta();
         if (meta == null) return;
-        EquipmentSlot s = resolveSlot(item);
-        if (s == EquipmentSlot.HAND) {
-            meta.addAttributeModifier(attribute, new AttributeModifier(
-                    UUID.randomUUID(), "wa_" + attribute.name(), amount, operation, EquipmentSlot.HAND
-            ));
-            meta.addAttributeModifier(attribute, new AttributeModifier(
-                    UUID.randomUUID(), "wa_" + attribute.name() + "_off", amount, operation, EquipmentSlot.OFF_HAND
-            ));
-        } else if (s == EquipmentSlot.OFF_HAND) {
-            meta.addAttributeModifier(attribute, new AttributeModifier(
-                    UUID.randomUUID(), "wa_" + attribute.name(), amount, operation, EquipmentSlot.OFF_HAND
-            ));
-        } else {
-            meta.addAttributeModifier(attribute, new AttributeModifier(
-                    UUID.randomUUID(), "wa_" + attribute.name(), amount, operation, s
-            ));
-        }
+        EquipmentSlotGroup group = toSlotGroup(resolveSlot(item));
+        var key = new NamespacedKey("wastelandartifacts", "wa_" + attribute.name().toLowerCase());
+        meta.addAttributeModifier(attribute, new AttributeModifier(
+                key, amount, operation, group
+        ));
         item.setItemMeta(meta);
+    }
+
+    private static EquipmentSlotGroup toSlotGroup(EquipmentSlot slot) {
+        return switch (slot) {
+            case HEAD -> EquipmentSlotGroup.HEAD;
+            case CHEST -> EquipmentSlotGroup.CHEST;
+            case LEGS -> EquipmentSlotGroup.LEGS;
+            case FEET -> EquipmentSlotGroup.FEET;
+            case OFF_HAND -> EquipmentSlotGroup.OFFHAND;
+            default -> EquipmentSlotGroup.MAINHAND;
+        };
     }
 
     @Override
