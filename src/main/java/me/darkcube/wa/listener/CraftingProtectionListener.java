@@ -14,10 +14,9 @@ import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
-import org.bukkit.inventory.recipe.CraftingRecipe;
-import org.bukkit.inventory.recipe.RecipeChoice;
 
 import java.util.ArrayList;
 import java.util.List;
