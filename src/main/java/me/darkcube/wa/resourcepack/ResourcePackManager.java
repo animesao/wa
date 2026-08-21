@@ -133,16 +133,8 @@ public class ResourcePackManager {
             // Стриминг ZIP-файла — не загружаем весь файл в память
             try {
                 FileInputStream fis = new FileInputStream(packFile);
-                return newChunkedResponse(Response.Status.OK, "application/zip", fis) {
-                    @Override
-                    public long send(OutputStream outputStream) throws IOException {
-                        try {
-                            return super.send(outputStream);
-                        } finally {
-                            fis.close();
-                        }
-                    }
-                };
+                Response response = newChunkedResponse(Response.Status.OK, "application/zip", fis);
+                return response;
             } catch (FileNotFoundException e) {
                 return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, NanoHTTPD.MIME_PLAINTEXT, "File not found");
             }
