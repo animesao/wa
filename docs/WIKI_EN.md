@@ -1,11 +1,24 @@
 # Wasteland Artifacts — Complete Wiki
 
-> **Version:** v2.4.0 | **Platform:** Paper 1.21.11 | **Java:** 21  
+> **Version:** v2.5.0 | **Platform:** Paper 1.21.11 | **Java:** 21  
 > Auto-synced from `docs/` via GitHub Actions
 
 ---
 
 ## Changelog
+
+### v2.5.0 — Quality, Architecture & Extensibility Improvements
+- **Fix:** MySQL compatibility — dialect-aware SQL helpers `insertOrIgnore`/`insertOrReplace` for correct `INSERT OR IGNORE`/`INSERT OR REPLACE` behavior
+- **Fix:** Thread safety — `ThreadLocalRandom` instead of `Random` in `DungeonManager`, cleanup on player quit
+- **Refactor:** God-class `WastelandArtifacts` — 30+ manager fields extracted into centralized `ManagerRegistry`
+- **Feature:** Atomic bag writes — write to `.tmp` file, atomic rename + `.bak` backup with automatic recovery
+- **Feature:** DB migration system — `MigrationRunner` with `wa_migrations` tracking table, auto-applied on startup
+- **Feature:** All 8 custom Bukkit events now fire: `ArtifactEquipEvent`, `ArtifactUpgradeEvent`, `SetBonusActivateEvent`, `GemSocketEvent`, `GemUnsocketEvent` (Cancellable)
+- **Refactor:** `FeatureManager.isEnabled()` — switch-case replaced with `Map<String, BooleanSupplier>` + `registerFeature()` for custom features
+- **Refactor:** `ArtifactSerializer` — 20-branch component deserialization switch replaced with registry `Map<String, Function<JsonNode, ArtifactComponent>>` + public `registerComponentDeserializer()`
+- **Refactor:** `ResourcePackManager` — raw HTTP socket replaced with NanoHTTPD streaming (`ChunkedResponse`), relocated to `me.darkcube.libs.nanohttpd`
+- **Refactor:** `AchievementManager` — `CREATE TABLE` moved from constructor to migration system
+- **Refactor:** Removed duplicate imports in `DungeonManager` and `ArtifactListener`
 
 ### v2.4.0 — Artifact Equip/Unequip Rewrite & Lazy Dungeon Loot
 - **Rewrite:** `ArtifactBagManager.recalcEffects()` is now the single source of truth for all artifact effects (armor, main hand, offhand, bag)

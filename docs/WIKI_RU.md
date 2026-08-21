@@ -1,10 +1,23 @@
 # Wasteland Artifacts — Полная вики
 
-> **Версия:** v2.4.0 | **Платформа:** Paper 1.21.11 | **Java:** 21
+> **Версия:** v2.5.0 | **Платформа:** Paper 1.21.11 | **Java:** 21
 
 ---
 
 ## История изменений
+
+### v2.5.0 — Улучшения качества, архитектуры и расширяемости
+- **Исправление:** Совместимость с MySQL — диалект-зависимые SQL-хелперы `insertOrIgnore`/`insertOrReplace` для корректной работы `INSERT OR IGNORE`/`INSERT OR REPLACE`
+- **Исправление:** Потокобезопасность — `ThreadLocalRandom` вместо `Random` в `DungeonManager`, очистка данных при выходе игрока
+- **Рефакторинг:** God-class `WastelandArtifacts` — 30+ полей менеджеров извлечены в централизованное хранилище `ManagerRegistry`
+- **Функция:** Атомарная запись сумок артефактов — запись во временный `.tmp` файл, атомарный rename + `.bak` бэкап с автоматическим восстановлением
+- **Функция:** Система миграций БД — `MigrationRunner` с таблицей-трекером `wa_migrations`, автоматическое применение при запуске
+- **Функция:** Все 8 кастомных Bukkit-событий теперь реально вызываются: `ArtifactEquipEvent`, `ArtifactUpgradeEvent`, `SetBonusActivateEvent`, `GemSocketEvent`, `GemUnsocketEvent` (Cancellable)
+- **Рефакторинг:** `FeatureManager.isEnabled()` — switch-case заменён на `Map<String, BooleanSupplier>` с возможностью регистрации кастомных фич
+- **Рефакторинг:** `ArtifactSerializer` — 20-веточный switch для десериализации компонентов заменён на реестр `Map<String, Function<JsonNode, ArtifactComponent>>` с публичным `registerComponentDeserializer()`
+- **Рефакторинг:** `ResourcePackManager` — сырой HTTP-сокет заменён на NanoHTTPD со стримингом ZIP-файла (`ChunkedResponse`), relocate в `me.darkcube.libs.nanohttpd`
+- **Рефакторинг:** `AchievementManager` — `CREATE TABLE` вынесен из конструктора в систему миграций
+- **Рефакторинг:** Удалены дублирующие импорты в `DungeonManager` и `ArtifactListener`
 
 ### v2.4.0 — Переработка экипировки и ленивая генерация лута
 - **Переработка:** `ArtifactBagManager.recalcEffects()` теперь единственный источник правды для всех эффектов артефактов (броня, основная рука, левая рука, сумка)
