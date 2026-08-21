@@ -11,6 +11,7 @@ import me.darkcube.wa.config.ConfigManager;
 import me.darkcube.wa.crafting.CraftingManager;
 import me.darkcube.wa.database.DatabaseManager;
 import me.darkcube.wa.dungeon.DungeonManager;
+import me.darkcube.wa.feature.FeatureManager;
 import me.darkcube.wa.feature.abilities.AbilityManager;
 import me.darkcube.wa.feature.achievements.AchievementManager;
 import me.darkcube.wa.feature.collection.CollectionManager;
