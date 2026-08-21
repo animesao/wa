@@ -161,15 +161,15 @@ public class CraftingManager {
             if (iaItem != null) return new RecipeChoice.ExactChoice(iaItem);
         }
         Material mat = Material.matchMaterial(value);
-        if (mat != null) return new RecipeChoice.MaterialChoice(mat);
-        return new RecipeChoice.MaterialChoice(Material.STONE);
+        if (mat != null) return vanillaOnly(mat);
+        return vanillaOnly(Material.STONE);
     }
 
     private @NotNull RecipeChoice parseIngredient(IngredientDef def) {
-        if (def == null) return new RecipeChoice.MaterialChoice(Material.STONE);
+        if (def == null) return vanillaOnly(Material.STONE);
 
         String type = def.type;
-        if (type == null) return new RecipeChoice.MaterialChoice(Material.STONE);
+        if (type == null) return vanillaOnly(Material.STONE);
 
         if (type.startsWith("artifact:")) {
             String artId = type.substring(9);
@@ -195,8 +195,35 @@ public class CraftingManager {
         }
 
         Material mat = Material.matchMaterial(type);
-        if (mat != null) return new RecipeChoice.MaterialChoice(mat);
-        return new RecipeChoice.MaterialChoice(Material.STONE);
+        if (mat != null) return vanillaOnly(mat);
+        return vanillaOnly(Material.STONE);
+    }
+
+    /**
+     * MaterialChoice, который ОТВЕРГАЕТ кастомные предметы (артефакты, кастомные ингредиенты).
+     * Если рецепт ожидает ванильный BLAZE_POWDER — кастомный fire_core не пройдёт.
+     */
+    private RecipeChoice vanillaOnly(Material material) {
+        return new RecipeChoice() {
+            @Override
+            public boolean test(ItemStack item) {
+                if (item == null || item.getType() != material) return false;
+                // Отвергаем кастомные предметы — только ванильные
+                if (plugin.getArtifactManager().isArtifact(item)) return false;
+                if (plugin.getCustomItemRegistry().isCustomItem(item)) return false;
+                return true;
+            }
+
+            @Override
+            public ItemStack getItemStack() {
+                return new ItemStack(material);
+            }
+
+            @Override
+            public RecipeChoice clone() {
+                return this;
+            }
+        };
     }
 
     private void autoGenRecipe(NamespacedKey key, ItemStack bp, int tierLevel) {
