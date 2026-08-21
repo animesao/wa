@@ -14,7 +14,6 @@ import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 
@@ -114,7 +113,8 @@ public class CraftingProtectionListener implements Listener {
             String[] shape = shaped.getShape();
             int width = shape[0].length();
             int height = shape.length;
-            Map<Character, RecipeChoice> choiceMap = shaped.getIngredientMap();
+            // getIngredientMap() возвращает Map<Character, ItemStack> — шаблоны ингредиентов
+            Map<Character, ItemStack> ingredientMap = shaped.getIngredientMap();
 
             for (int row = 0; row < height; row++) {
                 for (int col = 0; col < width; col++) {
@@ -125,8 +125,9 @@ public class CraftingProtectionListener implements Listener {
 
                     char ch = shape[row].charAt(col);
                     if (ch == ' ') continue;
-                    RecipeChoice choice = choiceMap.get(ch);
-                    if (choice == null || !choice.test(item)) {
+                    ItemStack expected = ingredientMap.get(ch);
+                    // Если рецепт ожидает ванильный предмет, а положили кастомный — отклоняем
+                    if (expected == null || (!isCustom(expected) && isCustom(item))) {
                         return false;
                     }
                 }
@@ -135,7 +136,7 @@ public class CraftingProtectionListener implements Listener {
         }
 
         if (recipe instanceof ShapelessRecipe shapeless) {
-            List<RecipeChoice> choices = new ArrayList<>(shapeless.getChoiceList());
+            List<ItemStack> expectedIngredients = new ArrayList<>(shapeless.getIngredientList());
             List<ItemStack> customItems = new ArrayList<>();
             for (ItemStack item : matrix) {
                 if (isCustom(item)) customItems.add(item);
@@ -143,9 +144,9 @@ public class CraftingProtectionListener implements Listener {
 
             for (ItemStack custom : customItems) {
                 boolean matched = false;
-                for (var it = choices.iterator(); it.hasNext(); ) {
-                    RecipeChoice choice = it.next();
-                    if (choice != null && choice.test(custom)) {
+                for (var it = expectedIngredients.iterator(); it.hasNext(); ) {
+                    ItemStack expected = it.next();
+                    if (isCustom(expected) && expected.isSimilar(custom)) {
                         it.remove();
                         matched = true;
                         break;
