@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "me.darkcube"
-version = "2.5.0"
+version = "2.6.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
