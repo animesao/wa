@@ -5,6 +5,7 @@ import me.darkcube.wa.api.event.ArtifactCraftEvent;
 import me.darkcube.wa.artifact.Artifact;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -34,11 +35,17 @@ public class AltarCraftingManager {
                 String recipeId = altarEntry.getKey() + "_" + recipeEntry.id;
                 List<AltarRecipe.Ingredient> ingredients = new ArrayList<>();
                 for (var ing : recipeEntry.ingredients) {
-                    ItemStack template = ing.buildTemplate();
-                    if (template != null && (ing.name != null || ing.lore != null || ing.customModelData != null)) {
-                        ingredients.add(new AltarRecipe.Ingredient(template, ing.amount, ing.slot));
+                    // Resolve custom: / artifact: / itemsadder: prefix from itemType string
+                    ItemStack customTemplate = resolveCustomTemplate(ing);
+                    if (customTemplate != null) {
+                        ingredients.add(new AltarRecipe.Ingredient(customTemplate, ing.amount, ing.slot));
                     } else {
-                        ingredients.add(new AltarRecipe.Ingredient(ing.type, ing.amount, ing.slot));
+                        ItemStack template = ing.buildTemplate();
+                        if (template != null && (ing.name != null || ing.lore != null || ing.customModelData != null)) {
+                            ingredients.add(new AltarRecipe.Ingredient(template, ing.amount, ing.slot));
+                        } else {
+                            ingredients.add(new AltarRecipe.Ingredient(ing.type, ing.amount, ing.slot));
+                        }
                     }
                 }
 
@@ -120,6 +127,32 @@ public class AltarCraftingManager {
         player.sendMessage(mm.deserialize(plugin.getConfigManager().getLang("altar-craft-success")));
 
         return true;
+    }
+
+    /**
+     * Resolves custom item from itemType string (custom:xxx, artifact:xxx, itemsadder:xxx).
+     * Returns null for vanilla material types.
+     */
+    private @Nullable ItemStack resolveCustomTemplate(AltarConfig.IngredientEntry ing) {
+        String itemType = ing.getItemType();
+        if (itemType == null) return null;
+
+        if (itemType.startsWith("artifact:")) {
+            String artId = itemType.substring(9);
+            Artifact art = plugin.getArtifactRegistry().get(artId);
+            if (art != null) return plugin.getArtifactManager().createItemStack(art);
+        }
+        if (itemType.startsWith("custom:")) {
+            String customId = itemType.substring(7);
+            ItemStack item = plugin.getCustomItemRegistry().create(customId);
+            if (item != null) return item;
+        }
+        if (itemType.startsWith("itemsadder:")) {
+            String iaId = itemType.substring(11);
+            ItemStack item = plugin.getCustomItemRegistry().create("itemsadder:" + iaId);
+            if (item != null) return item;
+        }
+        return null;
     }
 
     public @Nullable AltarRecipe getRecipe(String id) {

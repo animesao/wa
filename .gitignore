@@ -34,3 +34,4 @@ logs/
 !gradle/wrapper/gradle-wrapper.jar
 
 session-*.md
+plan.md

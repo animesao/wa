@@ -40,13 +40,13 @@ public class AltarHologram {
         for (var ing : recipe.getIngredients()) {
             int slot = ing.getSlot();
             ItemStack slotItem = (slot >= 0 && slot < slots.length) ? slots[slot] : null;
-            boolean hasItem = slotItem != null && slotItem.getType() == ing.getType()
+            boolean hasItem = slotItem != null && ing.matchesItem(slotItem)
                     && slotItem.getAmount() >= ing.getAmount();
             if (!hasItem) allReady = false;
 
             sb.append(hasItem ? "<green>✅" : "<red>❌");
             sb.append(" <white>").append(getIngredientName(ing));
-            int current = (slotItem != null && slotItem.getType() == ing.getType())
+            int current = (slotItem != null && ing.matchesItem(slotItem))
                     ? slotItem.getAmount() : 0;
             sb.append(" <gray>x").append(ing.getAmount())
               .append(" <dark_gray>(").append(current).append("/").append(ing.getAmount()).append(")")
@@ -104,12 +104,7 @@ public class AltarHologram {
                 && ing.getTemplate().getItemMeta().hasDisplayName()) {
             return mm.serialize(ing.getTemplate().getItemMeta().displayName());
         }
-        for (var def : plugin.getCustomItemRegistry().getAll().entrySet()) {
-            if (def.getValue().material == ing.getType()
-                    && def.getValue().name != null && !def.getValue().name.isEmpty()) {
-                return def.getValue().name;
-            }
-        }
+        // Template is null = vanilla material — show vanilla name, not custom item name
         return me.darkcube.wa.util.ItemNameUtil.getRussianName(ing.getType());
     }
 
@@ -118,12 +113,7 @@ public class AltarHologram {
                 && cat.getTemplate().getItemMeta().hasDisplayName()) {
             return mm.serialize(cat.getTemplate().getItemMeta().displayName());
         }
-        for (var def : plugin.getCustomItemRegistry().getAll().entrySet()) {
-            if (def.getValue().material == cat.getItem()
-                    && def.getValue().name != null && !def.getValue().name.isEmpty()) {
-                return def.getValue().name;
-            }
-        }
+        // Template is null = vanilla material — show vanilla name
         return me.darkcube.wa.util.ItemNameUtil.getRussianName(cat.getItem());
     }
 }

@@ -45,12 +45,7 @@ public class AltarRecipe {
             ItemStack item = slots[slot];
             if (item == null) return false;
             if (item.getAmount() < ing.amount) return false;
-
-            if (ing.template != null) {
-                if (!item.isSimilar(ing.template)) return false;
-            } else {
-                if (item.getType() != ing.type) return false;
-            }
+            if (!ing.matchesItem(item)) return false;
         }
         return true;
     }
@@ -73,6 +68,15 @@ public class AltarRecipe {
             this.amount = amount;
             this.slot = slot;
             this.template = template;
+        }
+
+        /** Checks if an item matches this ingredient (template-based or material-only) */
+        public boolean matchesItem(ItemStack item) {
+            if (item == null) return false;
+            if (template != null) {
+                return item.isSimilar(template);
+            }
+            return item.getType() == type;
         }
 
         public Material getType() { return type; }

@@ -101,6 +101,7 @@ public class AltarConfig {
 
     public static class IngredientEntry {
         public Material type;
+        public String itemType;     // String type — supports custom:shadow_essence, artifact:xxx, etc.
         public int amount = 1;
         public int slot;
         public String name;          // MiniMessage display name (optional)
@@ -108,6 +109,11 @@ public class AltarConfig {
         public Integer customModelData;
 
         public transient ItemStack itemTemplate;
+
+        /** Returns the resolved string type (custom:xxx, artifact:xxx) or null for vanilla materials */
+        public String getItemType() {
+            return itemType;
+        }
 
         public ItemStack buildTemplate() {
             if (itemTemplate != null) return itemTemplate;

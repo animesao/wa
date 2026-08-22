@@ -184,8 +184,7 @@ public class AltarBlockTracker {
         if (recipe.getCatalyst() != null && (state.catalyst == null || !state.catalyst.isValid())) {
             boolean isIngredient = false;
             for (var ing : recipe.getIngredients()) {
-                if (dropType == ing.getType()) { isIngredient = true; break; }
-                if (ing.getTemplate() != null && itemsMatch(dropStack, ing.getTemplate())) { isIngredient = true; break; }
+                if (ing.matchesItem(dropStack)) { isIngredient = true; break; }
             }
             if (!isIngredient) {
                 boolean matchesCat = false;
@@ -210,9 +209,9 @@ public class AltarBlockTracker {
             int slot = ing.getSlot();
             if (slot < 1 || slot >= getMaxSlots()) continue;
             boolean matched = false;
-            if (ing.getTemplate() != null && itemsMatch(dropStack, ing.getTemplate())) {
+            if (ing.getTemplate() != null && ing.matchesItem(dropStack)) {
                 matched = true;
-            } else if (!isArtifact && dropType == ing.getType()) {
+            } else if (!isArtifact && ing.getTemplate() == null && dropType == ing.getType()) {
                 matched = true;
             }
             if (matched) {
@@ -506,7 +505,7 @@ public class AltarBlockTracker {
 
         for (var ing : recipe.getIngredients()) {
             ItemStack slotItem = slots[ing.getSlot()];
-            if (slotItem == null || slotItem.getType() != ing.getType()
+            if (slotItem == null || !ing.matchesItem(slotItem)
                     || slotItem.getAmount() < ing.getAmount()) {
                 return;
             }
@@ -740,12 +739,7 @@ public class AltarBlockTracker {
                 && ing.getTemplate().getItemMeta().hasDisplayName()) {
             return mm.serialize(ing.getTemplate().getItemMeta().displayName());
         }
-        for (var def : plugin.getCustomItemRegistry().getAll().entrySet()) {
-            if (def.getValue().material == ing.getType()
-                    && def.getValue().name != null && !def.getValue().name.isEmpty()) {
-                return def.getValue().name;
-            }
-        }
+        // Template is null = vanilla material
         return me.darkcube.wa.util.ItemNameUtil.getRussianName(ing.getType());
     }
 }

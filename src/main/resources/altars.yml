@@ -88,19 +88,23 @@ altars:
           item: NETHER_STAR
           consume: true
         ingredients:
-          - type: PHANTOM_MEMBRANE
+          - itemType: custom:phantom_wing
+            type: PHANTOM_MEMBRANE
             amount: 8
             slot: 1
-          - type: PHANTOM_MEMBRANE
+          - itemType: custom:phantom_wing
+            type: PHANTOM_MEMBRANE
             amount: 8
             slot: 3
           - type: ELYTRA
             amount: 1
             slot: 5
-          - type: INK_SAC
+          - itemType: custom:shadow_essence
+            type: INK_SAC
             amount: 16
             slot: 7
-          - type: INK_SAC
+          - itemType: custom:shadow_essence
+            type: INK_SAC
             amount: 16
             slot: 8
 
